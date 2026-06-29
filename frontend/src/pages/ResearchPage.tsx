@@ -290,14 +290,7 @@ const ResearchPage: React.FC = () => {
                       <FileText size={20} className="text-indigo-400" /> Full Research Report
                     </h2>
                   </div>
-                  <div className="prose prose-invert prose-sm max-w-none
-                    prose-headings:text-white prose-headings:font-bold
-                    prose-h1:text-2xl prose-h2:text-xl prose-h2:text-indigo-300 prose-h2:border-b prose-h2:border-slate-700 prose-h2:pb-2
-                    prose-h3:text-lg prose-h3:text-slate-200
-                    prose-p:text-slate-300 prose-p:leading-relaxed
-                    prose-li:text-slate-300 prose-strong:text-white
-                    prose-code:text-indigo-300 prose-code:bg-slate-800 prose-code:px-1 prose-code:rounded
-                  ">
+                  <div className="markdown-body p-6">
                     <ReactMarkdown>{report.generated_report}</ReactMarkdown>
                   </div>
                 </div>

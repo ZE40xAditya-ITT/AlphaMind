@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { getLatestDigest, generateDigest, DigestData } from '../services/digestService';
+import { getLatestDigest, generateDigest, DigestData, downloadDigestPdf } from '../services/digestService';
 import { useAuth } from '../context/AuthContext';
 
 const SentimentBadge = ({ sentiment }: { sentiment: string }) => {
