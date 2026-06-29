@@ -5,7 +5,7 @@ from app.db.base_class import Base
 class SearchHistory(Base):
     __tablename__ = "search_history"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     stock_symbol = Column(String(20), nullable=False)
     stock_name = Column(String(255), nullable=True)
     technical_score = Column(Float, nullable=True)

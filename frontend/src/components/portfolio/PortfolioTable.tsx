@@ -72,4 +72,4 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
   );
 };
 
-export default PortfolioTable;
+export default React.memo(PortfolioTable);

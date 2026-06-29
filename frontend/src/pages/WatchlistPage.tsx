@@ -10,10 +10,6 @@ const WatchlistPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchWatchlist();
-  }, []);
-
   const fetchWatchlist = async () => {
     try {
       setLoading(true);
@@ -25,6 +21,10 @@ const WatchlistPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchWatchlist();
+  }, []);
 
   const handleRemove = async (symbol: string) => {
     try {

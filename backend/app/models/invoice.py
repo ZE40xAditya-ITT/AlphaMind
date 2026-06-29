@@ -5,7 +5,7 @@ from app.db.base_class import Base
 class Invoice(Base):
     __tablename__ = "invoices"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     invoice_number = Column(String(50), unique=True, nullable=False)
     total_searches = Column(Integer, nullable=False)
     amount = Column(Float, nullable=False)

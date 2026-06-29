@@ -11,10 +11,12 @@ import PortfolioPage from './pages/PortfolioPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import GlobalChatbot from './components/GlobalChatbot';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <>
+    <Toaster position="top-right" toastOptions={{ className: 'dark:bg-slate-800 dark:text-white glass' }} />
     <Routes>
       {/* Public route */}
       <Route path="/login" element={<LoginPage />} />

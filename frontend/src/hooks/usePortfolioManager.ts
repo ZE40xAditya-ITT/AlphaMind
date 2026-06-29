@@ -4,6 +4,7 @@ import {
   PortfolioResponse, PortfolioAnalysisResponse 
 } from '../services/portfolioService';
 import { getStockDetails } from '../services/stockService';
+import toast from 'react-hot-toast';
 
 export const usePortfolioManager = () => {
   const [portfolios, setPortfolios] = useState<PortfolioResponse[]>([]);
@@ -92,8 +93,10 @@ export const usePortfolioManager = () => {
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
       setNewSymbol(''); setNewQuantity(''); setNewPrice(''); setPriceFetched(false);
       setAnalysis(null); // invalidate analysis
+      toast.success('Stock added successfully');
     } catch (err) {
       setError('Failed to add stock.');
+      toast.error('Failed to add stock.');
     }
   };
 
@@ -108,8 +111,10 @@ export const usePortfolioManager = () => {
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
       setAnalysis(null);
+      toast.success('Stock removed');
     } catch (err) {
       setError('Failed to remove stock.');
+      toast.error('Failed to remove stock.');
     }
   };
 

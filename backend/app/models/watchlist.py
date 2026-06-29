@@ -7,7 +7,7 @@ class Watchlist(Base):
     __tablename__ = "watchlist"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     stock_symbol = Column(String(50), nullable=False)
     added_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 

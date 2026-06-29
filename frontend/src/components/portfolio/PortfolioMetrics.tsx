@@ -31,4 +31,4 @@ const PortfolioMetrics: React.FC<PortfolioMetricsProps> = ({ analysis }) => {
   );
 };
 
-export default PortfolioMetrics;
+export default React.memo(PortfolioMetrics);
