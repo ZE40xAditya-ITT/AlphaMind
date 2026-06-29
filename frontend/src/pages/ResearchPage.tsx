@@ -10,7 +10,7 @@ import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import {
   startResearch, getResearchReport, getResearchHistory,
-  ResearchCandidate, ResearchReport, PipelineStage
+  ResearchCandidate, ResearchReport, PipelineStage, createSSEConnection
 } from '../services/researchService';
 
 const PIPELINE_STAGES = [

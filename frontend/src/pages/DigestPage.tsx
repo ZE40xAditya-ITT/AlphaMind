@@ -278,27 +278,28 @@ const DigestPage: React.FC = () => {
               <h2 className="flex items-center gap-2 text-lg font-bold mb-6">
                 <Star size={20} className="text-emerald-400" /> Recommendations
               </h2>
-              {(digest.recommendations?.strong_buy_opportunities || []).length > 0 && (
+              {Array.isArray(digest.recommendations?.strong_buy_opportunities) && digest.recommendations.strong_buy_opportunities.length > 0 && (
                 <div className="mb-4">
                   <div className="text-xs text-emerald-400 font-bold mb-2">STRONG BUY</div>
                   <div className="flex flex-wrap gap-2">
-                    {digest.recommendations.strong_buy_opportunities.map((s, i) => (
+                    {digest.recommendations.strong_buy_opportunities.map((s: string, i: number) => (
                       <span key={i} className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs font-bold">{s}</span>
                     ))}
                   </div>
                 </div>
               )}
-              {(digest.recommendations?.avoid_list || []).length > 0 && (
+              {Array.isArray(digest.recommendations?.avoid_list) && digest.recommendations.avoid_list.length > 0 && (
                 <div>
                   <div className="text-xs text-red-400 font-bold mb-2">AVOID</div>
                   <div className="flex flex-wrap gap-2">
-                    {digest.recommendations.avoid_list.map((s, i) => (
+                    {digest.recommendations.avoid_list.map((s: string, i: number) => (
                       <span key={i} className="px-2 py-1 bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg text-xs font-bold">{s}</span>
                     ))}
                   </div>
                 </div>
               )}
-              {(!digest.recommendations?.strong_buy_opportunities?.length && !digest.recommendations?.avoid_list?.length) && (
+              {(!Array.isArray(digest.recommendations?.strong_buy_opportunities) || digest.recommendations.strong_buy_opportunities.length === 0) &&
+               (!Array.isArray(digest.recommendations?.avoid_list) || digest.recommendations.avoid_list.length === 0) && (
                 <p className="text-slate-500 text-sm">Analyze more stocks to see recommendations.</p>
               )}
             </motion.div>
