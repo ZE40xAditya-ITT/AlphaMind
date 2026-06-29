@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import UserDashboard from './pages/UserDashboard';
@@ -8,15 +9,32 @@ import SignupPage from './pages/SignupPage';
 import WatchlistPage from './pages/WatchlistPage';
 import ComparePage from './pages/ComparePage';
 import PortfolioPage from './pages/PortfolioPage';
+import DigestPage from './pages/DigestPage';
+import ResearchPage from './pages/ResearchPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import GlobalChatbot from './components/GlobalChatbot';
+import CommandPalette from './components/CommandPalette';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
+  const [cmdOpen, setCmdOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdOpen(prev => !prev);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
+
   return (
     <>
     <Toaster position="top-right" toastOptions={{ className: 'dark:bg-slate-800 dark:text-white glass' }} />
+    <CommandPalette isOpen={cmdOpen} onClose={() => setCmdOpen(false)} />
     <Routes>
       {/* Public route */}
       <Route path="/login" element={<LoginPage />} />
@@ -29,6 +47,8 @@ function App() {
         <Route path="/watchlist" element={<WatchlistPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/digest" element={<DigestPage />} />
+        <Route path="/research" element={<ResearchPage />} />
 
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>

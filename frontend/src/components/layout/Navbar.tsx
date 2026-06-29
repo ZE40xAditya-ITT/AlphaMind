@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { LayoutDashboard, History, Users, FileText, LogOut, TrendingUp, Bookmark, ArrowRightLeft, Sun, Moon, Menu, X, PieChart } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, LogOut, Bookmark, ArrowRightLeft, Sun, Moon, Menu, X, PieChart, Brain, Newspaper, Command } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -72,6 +72,20 @@ const Navbar: React.FC = () => {
             <PieChart size={16} />
             <span>Portfolio</span>
           </Link>
+          <Link
+            to="/research"
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-b-2 text-sm font-semibold transition-all duration-300 ${isActive('/research')}`}
+          >
+            <Brain size={16} />
+            <span>Research</span>
+          </Link>
+          <Link
+            to="/digest"
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-b-2 text-sm font-semibold transition-all duration-300 ${isActive('/digest')}`}
+          >
+            <Newspaper size={16} />
+            <span>Digest</span>
+          </Link>
           {/* Admin Links */}
           {isAdmin && (
             <>
@@ -95,6 +109,18 @@ const Navbar: React.FC = () => {
 
         {/* User profile, Theme Toggle, Logout & Mobile Menu Toggle */}
         <div className="flex items-center space-x-2 md:space-x-4">
+          {/* ⌘K Command Palette Button */}
+          <button
+            onClick={() => {
+              const ev = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true });
+              document.dispatchEvent(ev);
+            }}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-primary text-xs font-semibold transition-all duration-200"
+            title="Open Command Palette (Ctrl+K)"
+          >
+            <Command size={13} />
+            <span>K</span>
+          </button>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors duration-300"
@@ -176,6 +202,22 @@ const Navbar: React.FC = () => {
           >
             <PieChart size={18} />
             <span>Portfolio</span>
+          </Link>
+          <Link
+            to="/research"
+            onClick={closeMenu}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-semibold transition-all ${isActive('/research')}`}
+          >
+            <Brain size={18} />
+            <span>Research</span>
+          </Link>
+          <Link
+            to="/digest"
+            onClick={closeMenu}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-semibold transition-all ${isActive('/digest')}`}
+          >
+            <Newspaper size={18} />
+            <span>Weekly Digest</span>
           </Link>
           
           {isAdmin && (

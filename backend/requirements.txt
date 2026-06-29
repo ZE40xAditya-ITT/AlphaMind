@@ -16,3 +16,5 @@ requests
 wikipedia
 google-generativeai
 slowapi 
+resend
+apscheduler

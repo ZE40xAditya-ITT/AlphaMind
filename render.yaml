@@ -21,6 +21,15 @@ services:
       - key: RATE_PER_SEARCH
         value: "20.0"
 
+  - type: cron
+    name: alphamind-digest-scheduler
+    runtime: python
+    schedule: "0 2 * * 0"
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python -m app.services.digest_scheduler
+    envVars:
+      - fromGroup: alphamind-env
+
 databases:
   - name: alphamind-db
     plan: free

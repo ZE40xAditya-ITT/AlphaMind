@@ -56,6 +56,8 @@ def on_startup():
     from app.models.search_history import SearchHistory
     from app.models.watchlist import Watchlist
     from app.models.invoice import Invoice
+    from app.models.digest import WeeklyDigest
+    from app.models.research_report import ResearchReport
     Base.metadata.create_all(bind=engine)
     
     # Automatically seed the database with admin and demo users

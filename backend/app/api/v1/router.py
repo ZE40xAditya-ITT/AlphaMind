@@ -9,6 +9,8 @@ from app.api.v1.endpoints.invoices import router as invoices_router
 from app.api.v1.endpoints.copilot import router as copilot_router
 from app.api.v1.endpoints.portfolio import router as portfolio_router
 from app.api.v1.endpoints.watchlist import router as watchlist_router
+from app.api.v1.endpoints.digest import router as digest_router
+from app.api.v1.endpoints.research import router as research_router
 
 api_router = APIRouter()
 
@@ -41,3 +43,6 @@ api_router.include_router(
     prefix="/watchlist",
     tags=["Watchlist"]
 )
+
+api_router.include_router(digest_router, prefix="/digest", tags=["Weekly Digest"])
+api_router.include_router(research_router, prefix="/research", tags=["Research Pipeline"])

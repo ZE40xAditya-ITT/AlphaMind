@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # Auth
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_API_KEY: str = ""
+    # Email (Resend)
+    RESEND_API_KEY: str = ""
+    RESEND_FROM_EMAIL: str = "digest@alphamind.ai"
     class Config:
         env_file = ".env"
 settings = Settings()

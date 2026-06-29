@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import { getMyHistory } from '../services/historyService';
 import { SearchHistoryItem } from '../types/history';
-import { Search, History, HelpCircle, Activity, TrendingUp, ChevronRight } from 'lucide-react';
+import { Search, History, HelpCircle, Activity, TrendingUp, ChevronRight, Brain, Newspaper, ArrowUpRight, Zap } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { NSE_STOCKS } from '../utils/nseStocks';
+import { useAuth } from '../context/AuthContext';
 
 const UserDashboard: React.FC = () => {
+  const { user } = useAuth();
   const [symbol, setSymbol] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
@@ -91,17 +93,70 @@ const UserDashboard: React.FC = () => {
       
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8 animate-fade-in">
         
-        {/* Welcome Block */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800/60 pb-6 gap-4">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tight">Stock Analysis Dashboard</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              Search NSE stock symbols to query real-time data and analyze financial quality scores.
-            </p>
+        {/* Enhanced Hero / Welcome Block */}
+        <div className="space-y-4">
+          {/* Greeting Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800/60 pb-6 gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
+                <h2 className="text-3xl font-extrabold tracking-tight">
+                  {(() => { const h = new Date().getHours(); return h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening'; })()}, {user?.username || 'Investor'} 👋
+                </h2>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                  <Activity size={11} className="animate-pulse" /> Market Bullish
+                </span>
+              </div>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Search NSE stock symbols to query real-time data and analyze financial quality scores.
+              </p>
+            </div>
+            <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-500 font-semibold bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg w-fit">
+              <Activity size={14} className="text-primary animate-pulse" />
+              <span>Exchange: NSE (India)</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-500 font-semibold bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg w-fit">
-            <Activity size={14} className="text-primary animate-pulse" />
-            <span>Exchange: NSE (India)</span>
+
+          {/* Quick Action Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Link
+              to="/digest"
+              className="group relative overflow-hidden glass dark:glass rounded-2xl p-5 border border-indigo-500/20 hover:border-indigo-500/50 transition-all duration-300 flex items-center gap-4 cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative p-3 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:scale-110 transition-transform">
+                <Newspaper size={22} />
+              </div>
+              <div className="relative flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">Weekly Digest</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 text-[10px] font-bold border border-indigo-500/20">
+                    <Zap size={9} /> Available
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">AI-powered investment digest with market insights</p>
+              </div>
+              <ArrowUpRight size={16} className="text-slate-400 group-hover:text-indigo-400 transition-colors" />
+            </Link>
+
+            <Link
+              to="/research"
+              className="group relative overflow-hidden glass dark:glass rounded-2xl p-5 border border-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 flex items-center gap-4 cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative p-3 rounded-xl bg-emerald-500/10 text-emerald-400 group-hover:scale-110 transition-transform">
+                <Brain size={22} />
+              </div>
+              <div className="relative flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">AI Research Pipeline</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold border border-emerald-500/20">
+                    <Zap size={9} /> 7 Agents
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Screen, analyze &amp; rank NSE stocks autonomously</p>
+              </div>
+              <ArrowUpRight size={16} className="text-slate-400 group-hover:text-emerald-400 transition-colors" />
+            </Link>
           </div>
         </div>
 
