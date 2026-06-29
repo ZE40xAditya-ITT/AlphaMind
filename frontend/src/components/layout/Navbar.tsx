@@ -5,7 +5,7 @@ import { useTheme } from '../../context/ThemeContext';
 import {
   LayoutDashboard, Users, FileText, LogOut, Bookmark,
   ArrowRightLeft, Sun, Moon, Menu, X, PieChart, Brain,
-  Newspaper, Command
+  Newspaper, Command, Search
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
@@ -83,14 +83,18 @@ const Navbar: React.FC = () => {
 
         {/* Right controls */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Cmd+K */}
+          {/* Cmd+K Search Box */}
           <button
             onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }))}
-            className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-primary hover:border-primary/40 text-xs font-medium transition-all duration-200"
-            title="Open Command Palette (Ctrl+K)"
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 w-48 lg:w-64 transition-all duration-200 group shadow-sm inner"
+            title="Search (Ctrl+K)"
           >
-            <Command size={12} />
-            <span>K</span>
+            <Search size={14} className="text-slate-400 group-hover:text-primary transition-colors" />
+            <span className="text-xs font-medium flex-1 text-left">Search AlphaMind...</span>
+            <div className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-400 dark:text-slate-500 shadow-sm">
+              <Command size={10} />
+              <span>K</span>
+            </div>
           </button>
 
           {/* Theme toggle */}
