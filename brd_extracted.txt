@@ -1,0 +1,664 @@
+--- Page 1 ---
+ 
+ 
+ 
+ 
+ 
+ 
+Executive Summary 
+ 
+Project Vision 
+AlphaMind is an NSE-focused stock intelligence platform that helps retail investors identify 
+high-quality investment opportunities through a transparent technical and fundamental ranking 
+system.  
+ 
+Problem Statement 
+ 
+Retail investors face difficulty analyzing stocks because financial and market data is scattered, 
+complex, and often requires significant expertise to interpret. Existing platforms primarily provide 
+raw information rather than actionable insights. AlphaMind addresses this challenge by combining 
+key technical and fundamental indicators into a transparent stock-ranking system that helps 
+investors quickly identify attractive investment opportunities.  
+ 
+Core Innovation 
+AlphaMind introduces a transparent and explainable stock-ranking framework that combines both technical and 
+fundamental analysis into a single investment score. Instead of presenting investors with dozens of 
+disconnected financial ratios and market indicators, the platform evaluates each stock using four carefully 
+selected technical KPIs (RSI, SMA Trend, Momentum, and Volume Trend) and four fundamental KPIs (ROE, 
+Debt-to-Equity, Revenue Growth, and EPS Growth). These indicators are weighted and normalized to generate 
+Technical and Fundamental Scores, which are then combined into a Final Investment Score ranging from 0 to 
+100. This approach enables retail investors to quickly compare stocks, identify high-potential opportunities, and 
+make data-driven investment decisions through a simple, objective, and fully explainable ranking methodology. 
+Target Audience & Market Focus 
+ 
+Target Users 
+•​Retail Investors: Individuals seeking professional, data-driven financial insights without the overhead 
+of learning institutional toolsets. 
+•​Active Traders: Power users demanding continuous asset monitoring and high-velocity contextual 
+alert generation. 
+•​Finance Students: Academic users studying operational balance sheets, corporate actions, 
+and advanced valuation metrics. 
+•​Research Analysts: Institutional and independent professionals intent on accelerating manual 
+data aggregation workflows. 
+ 
+ 
+ 
+ 
+
+--- Page 2 ---
+ 
+Geographic Scope & Phased Rollout 
+To ensure data pipeline stability and adherence to localized financial exchange regulatory protocols, 
+deployment is segmented into distinct geographical market milestones: 
+ 
+Phase 1 (Immediate Market Focus): Indian Stock Market, covering all core equities listed on the 
+National Stock Exchange (NSE) and Bombay Stock Exchange (BSE). 
+Phase 2 (Global Expansion Architecture): Integration of international exchanges including 
+NASDAQ, New York Stock Exchange (NYSE), London Stock Exchange (LSE), and other major 
+global financial markets. 
+ 
+Platform & Functional Modules 
+Stock Data Ingestion Module 
+The Data Ingestion Module serves as the platform's data acquisition layer. It fetches historical price data 
+and company financial data for NSE-listed stocks. The module follows a hybrid approach where stocks are 
+dynamically fetched and stored upon user requests. The collected data is standardized. 
+Technical Analysis Engine (40%) 
+The Technical Analysis Engine evaluates market behavior, trend strength, and investor sentiment using 
+historical stock price data. 
+KPIs Used 
+●​ RSI (25%) – Measures overbought and oversold conditions. 
+●​ SMA 50 vs SMA 200 (30%) – Identifies long-term trend direction. 
+●​ Price Momentum (25%) – Measures stock price appreciation over the previous six months. 
+●​ Volume Trend (20%) – Evaluates trading activity and trend confirmation. 
+Output 
+●​ Technical Score (0–100) 
+●​ Technical Strength Classification 
+●​ Technical Insights 
+Fundamental Analysis Engine (60%) 
+The Fundamental Analysis Engine evaluates business quality, financial health, and growth potential. 
+KPIs Used 
+●​ ROE (30%) – Measures profitability and capital efficiency. 
+●​ Debt-to-Equity Ratio (25%) – Evaluates financial leverage and risk. 
+●​ Revenue Growth (20%) – Measures business expansion and growth trajectory. 
+●​ EPS Growth (25%) – Measures growth in shareholder earnings. 
+Output 
+●​ Fundamental Score (0–100) 
+●​ Growth Strength Evaluation 
+ 
+
+--- Page 3 ---
+ 
+Ranking Engine 
+The Ranking Engine combines the outputs of the Technical and Fundamental Analysis Engines to 
+generate a unified investment score. 
+Scoring Formula 
+Final Score = 0.6 × Fundamental Score + 0.4 × Technical Score 
+Recommendation Framework 
+●​ 85 – 100: Strong Buy 
+●​ 70 – 84: Buy 
+●​ 55 – 69: Hold 
+●​ 40 – 54: Weak 
+●​ 0 – 39: Avoid 
+Output 
+●​ Final Investment Score 
+●​ Investment Recommendation 
+●​ Stock Ranking Position 
+Stock Search & Dashboard Module 
+This module provides the user-facing interface for searching stocks and viewing analysis results. Investors 
+can access technical metrics, fundamental metrics, final rankings, and recommendations through a unified 
+dashboard. 
+Features 
+●​ Stock Search 
+●​ Technical Score Display 
+●​ Fundamental Score Display 
+●​ Final Ranking Display 
+●​ Recommendation Dashboard 
+Authentication & User Management Module 
+Responsible for user registration, login, role management, password security, and session management. 
+Features: 
+●​ User Registration 
+●​ User Login 
+●​ JWT Authentication 
+●​ Role-Based Access Control 
+●​ Admin/User Roles 
+Usage Tracking Module 
+Responsible for tracking platform consumption. 
+Features: 
+●​ Search Tracking 
+●​ Usage Statistics 
+●​ User Activity Logs 
+●​ Search Count Monitoring 
+ 
+
+--- Page 4 ---
+ 
+Billing & Invoice Module 
+Responsible for monetization and invoice generation. 
+Features: 
+●​ Per Search Charging 
+●​ Usage Aggregation 
+●​ Invoice Generation 
+●​ PDF Download 
+●​ Billing History 
+DataBase schema  
+ 
+Users (Unique and not null) 
+├── id (Primary key) 
+├── username 
+├── email 
+├── password_hash 
+├── role 
+└── is_active 
+ 
+search_history 
+├── id (Primary Key) 
+├── user_id (Foreign Key) 
+├── stock_symbol 
+├── stock_name 
+├── technical_score 
+├── fundamental_score 
+├── final_score 
+└── recommendation 
+ 
+Invoices (not null) 
+├── id (Primary Key) 
+├── user_id (Foreign Key) 
+├── invoice_number  
+├── total_searches 
+├── amount 
+├── invoice_date 
+└── pdf_path 
+ 
+  
+ER Diagram  
+                              USERS 
+                                     │ 
+                                     │ 
+                                     │ 
+         ┌──────────┴──────────┐ 
+         │                                                      │ 
+         │                                                      │ 
+        ▼                                                    ▼ 
+ 
+ SEARCH_HISTORY                     INVOICES 
+ 
+ user_id (FK)                                    user_id (FK) 
+ 
+ references                                     references 
+ 
+ users.id                                          users.id 
+ 
+
+--- Page 5 ---
+  
+Class Relation 
+ 
+ 
+ 
+ 
+ 
+ System Architecture 
+ 
+Frontend (React) 
+        | 
+       ▼ 
+FastAPI Backend 
+        | 
+       ▼ 
+Business Logic Layer 
+         | 
+        ├── Authentication Module 
+        ├── Stock Analysis Module 
+        ├── Search Tracking Module 
+        └── Invoice Module 
+         | 
+        ▼ 
+PostgreSQL Database 
+ 
+ 
+Technology Stack  
+ 
+Frontend 
+React 
+Tailwind CSS 
+Axios 
+ 
+
+--- Page 6 ---
+ 
+Backend 
+FastAPI 
+Pydantic 
+SQLAlchemy 
+Alembic 
+JWT 
+Database 
+PostgreSQL 
+Analysis Libraries 
+Pandas 
+NumPy 
+yfinance 
+PDF Generation 
+ReportLab 
+ 
+ 
+API Creation and Requirements  
+Authentication APIs 
+POST /api/auth/login 
+GET /api/auth/me 
+User Management APIs (Admin) 
+POST /api/users 
+GET /api/users 
+GET /api/users/{id} 
+PUT /api/users/{id} 
+DELETE /api/users/{id} 
+Stock Analysis APIs 
+GET /api/stocks/analyze/{symbol} 
+GET /api/stocks/details/{symbol} 
+Search History APIs 
+GET /api/history 
+GET /api/history/user/{user_id} 
+Invoice APIs 
+POST /api/invoices/generate/{user_id} 
+GET /api/invoices 
+GET /api/invoices/{invoice_id} 
+GET /api/invoices/download/{invoice_id} 
+ 
+ 
+ 
+ 
+
+--- Page 7 ---
+ 
+Sequence Diagram 
+  
+User  
+ 
+ User 
+ │ 
+ │ Login Request 
+ ▼ 
+Frontend (React) 
+ │ 
+ │ POST /api/auth/login 
+▼ 
+FastAPI 
+ │ 
+ │ Validate Credentials 
+▼ 
+AuthService 
+ │ 
+ │ Query User 
+▼ 
+PostgreSQL 
+ │ 
+ │ User Found 
+▼ 
+AuthService 
+ │ 
+ │ Generate JWT 
+ ▼ 
+FastAPI 
+ │ 
+ │ Return Token 
+▼ 
+Frontend 
+ │ 
+ │ Store Token 
+▼ 
+User Dashboard 
+ 
+ 
+Stock Analysis Flow (Core Flow)  
+ 
+ 
+User 
+ │ 
+ │ Search Stock (TCS) 
+ ▼ 
+Frontend 
+ │ 
+ │ GET /api/stocks/analyze/TCS 
+ ▼ 
+FastAPI 
+ │ 
+ ▼ 
+StockService 
+ │ 
+ 
+
+--- Page 8 ---
+ │ Fetch Live Data 
+ ▼ 
+Yahoo Finance 
+ │ 
+ │ Historical + Fundamental Data 
+ ▼ 
+StockService 
+ │ 
+ ├─────────────────────► TechnicalAnalysisService 
+ │                        │ 
+ │                        ├─ RSI 
+ │                        ├─ SMA50/200 
+ │                        ├─ Momentum 
+ │                        └─ Volume Trend 
+ │ 
+ └─────────────────────► FundamentalAnalysisService 
+                          │ 
+                          ├─ ROE 
+                          ├─ Debt/Equity 
+                          ├─ Revenue Growth 
+                          └─ EPS Growth 
+ 
+Technical Score 
+        │ 
+        ▼ 
+ 
+Fundamental Score 
+        │ 
+        ▼ 
+ 
+RankingService 
+ │ 
+ │ Generate Final Score 
+ │ Generate Recommendation 
+ ▼ 
+ 
+SearchHistoryService 
+ │ 
+ │ Save Search Record 
+ ▼ 
+ 
+PostgreSQL 
+ 
+ │ 
+ ▼ 
+ 
+FastAPI 
+ │ 
+ ▼ 
+ 
+Frontend 
+ │ 
+ ▼ 
+ 
+User 
+ 
+ 
+ 
+
+--- Page 9 ---
+ 
+Invoice Generation  
+ 
+Admin 
+ │ 
+ │ Generate Invoice 
+▼ 
+Frontend 
+ │ 
+ │ POST /api/invoices/generate/{user_id} 
+▼ 
+FastAPI 
+ │ 
+▼ 
+InvoiceService 
+ │ 
+ │ Fetch Search History 
+▼ 
+PostgreSQL 
+ │ 
+ │ Search Records 
+▼ 
+InvoiceService 
+ │ 
+ │ Calculate Amount 
+ │ 
+ │ Generate Invoice Record 
+▼ 
+PostgreSQL 
+ │ 
+ │ Store Invoice 
+▼ 
+InvoiceService 
+ │ 
+ │ Generate PDF 
+▼ 
+PDF Generator 
+ │ 
+ │ PDF Path 
+▼ 
+InvoiceService 
+ │ 
+▼ 
+FastAPI 
+ │ 
+▼ 
+Frontend 
+ │ 
+▼ 
+Admin 
+ 
+ 
+ 
+ 
+ 
+  
+
+--- Page 10 ---
+ 
+Final Backend Folder Structure  
+ 
+backend/ 
+│ 
+├── alembic/ 
+│   ├── versions/ 
+│   ├── env.py 
+│   └── script.py.mako 
+│ 
+├── app/ 
+│ 
+│   ├── api/ 
+│   │   ├── auth.py 
+│   │   ├── users.py 
+│   │   ├── stocks.py 
+│   │   ├── history.py 
+│   │   └── invoices.py 
+│   │ 
+│   ├── models/ 
+│   │   ├── user.py 
+│   │   ├── search_history.py 
+│   │   └── invoice.py 
+│   │ 
+│   ├── schemas/ 
+│   │   ├── user.py 
+│   │   ├── auth.py 
+│   │   ├── stock.py 
+│   │   ├── history.py 
+│   │   └── invoice.py 
+│   │ 
+│   ├── services/ 
+│   │   ├── auth_service.py 
+│   │   ├── user_service.py 
+│   │   ├── stock_service.py 
+│   │   ├── technical_analysis_service.py 
+│   │   ├── fundamental_analysis_service.py 
+│   │   ├── ranking_service.py 
+│   │   ├── history_service.py 
+│   │   └── invoice_service.py 
+│   │ 
+│   ├── core/ 
+│   │   ├── config.py 
+│   │   ├── security.py 
+│   │   └── dependencies.py 
+│   │ 
+│   ├── db/ 
+│   │   ├── database.py 
+│   │   └── base.py 
+│   │ 
+│   ├── utils/ 
+│   │   ├── pdf_generator.py 
+│   │   └── helpers.py 
+│   │ 
+│   └── main.py 
+│ 
+├── tests/ 
+ 
+
+--- Page 11 ---
+│ 
+├── requirements.txt 
+│ 
+└── .env 
+Data Source Design 
+Source 
+Yahoo Finance (yfinance) 
+Technical Data Retrieved 
+Open Price 
+Close Price 
+High Price 
+Low Price 
+Volume 
+Used For: 
+RSI 
+SMA 50 
+SMA 200 
+Momentum 
+Volume Trend 
+Fundamental Data Retrieved 
+ROE 
+Debt to Equity 
+Revenue Growth 
+EPS Growth 
+Used For: 
+Fundamental Score Calculation 
+ 
+Billing Formula 
+ 
+Invoice Amount = 
+Total Searches × Rate Per Search 
+ 
+Default Rate: 
+₹20 per Search  
+ 
+UI Wireframes 
+ 
+1. Login Page 
+Components 
+●​ AlphaMind Logo 
+●​ Email Input Field 
+●​ Password Input Field 
+●​ Login Button 
+●​ Error Message Section 
+ 
+
+--- Page 12 ---
+ 
+Functions 
+●​ Accept user credentials 
+●​ Authenticate user 
+●​ Generate JWT token 
+●​ Redirect user based on role 
+●​ Display login errors 
+2. User Dashboard 
+Components 
+●​ Navigation Bar 
+●​ User Profile Section 
+●​ Logout Button 
+●​ Stock Search Bar 
+●​ Analyze Button 
+●​ Recent Searches Section 
+●​ Quick Recommendations Section 
+Functions 
+●​ Search stocks 
+●​ View previous searches 
+●​ Navigate to stock analysis page 
+●​ Logout 
+●​ View recommendation summary 
+3. Stock Analysis Page 
+Components 
+●​ Stock Information Header 
+●​ Technical Analysis Section 
+●​ Fundamental Analysis Section 
+●​ Final Score Section 
+●​ Recommendation Section 
+●​ Back Button 
+Functions 
+●​ Display stock details 
+●​ Display technical KPIs 
+●​ Display fundamental KPIs 
+●​ Display calculated scores 
+●​ Display recommendation 
+●​ Navigate back to dashboard 
+4. Admin Dashboard 
+Components 
+●​ Navigation Bar 
+●​ User Statistics Section 
+ 
+
+--- Page 13 ---
+●​ Create User Button 
+●​ User Table 
+●​ Edit User Button 
+●​ Delete User Button 
+●​ Generate Invoice Button 
+●​ Logout Button 
+Functions 
+●​ Create users 
+●​ Update users 
+●​ Delete users 
+●​ View user list 
+●​ View system statistics 
+●​ Navigate to invoice management 
+●​ Logout 
+5. Invoice Management Page 
+Components 
+●​ User Selection Dropdown 
+●​ User Information Section 
+●​ Search Statistics Section 
+●​ Invoice Amount Section 
+●​ Generate Invoice Button 
+●​ Download PDF Button 
+Functions 
+●​ Select user 
+●​ Fetch search history count 
+●​ Calculate invoice amount 
+●​ Generate invoice 
+●​ Store invoice record 
+●​ Download PDF invoice 
+      
+Overall Navigation Flow 
+Login 
+│ 
+├── User Dashboard 
+│      │ 
+│      ├── Search Stock 
+│      │ 
+│      └── Stock Analysis 
+│ 
+└── Admin Dashboard 
+       │ 
+       ├── User Management 
+       │ 
+       └── Invoice Management 
+ 
+ 
+
+--- Page 14 ---
+ 
+ 
+ 
+
+--- Page 15 ---
+ 
+ 
+ 
+ 
+
+--- Page 16 ---
+ 
+ 
+ 
+ 
+ 
+

@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Vibrant Purple Primary replacing Blue */
+  --color-blue-300: #d8b4fe;
+  --color-blue-400: #c084fc;
+  --color-blue-500: #a855f7;
+  --color-blue-600: #9333ea;
+  --color-blue-700: #7e22ce;
+  
+  /* Deep Premium Dark replacing Slate */
+  --color-slate-100: #f4f4f5;
+  --color-slate-200: #e4e4e7;
+  --color-slate-300: #d4d4d8;
+  --color-slate-400: #a1a1aa;
+  --color-slate-500: #71717a;
+  --color-slate-600: #52525b;
+  --color-slate-700: #27272a;
+  --color-slate-800: #18181b;
+  --color-slate-900: #121214;
+  --color-slate-950: #09090b;
+
+  /* Additional Custom Overrides */
+  --color-primary: #a855f7;
+  --color-secondary: #c084fc;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+.dark body {
+  background-color: #09090b;
+  color: #f4f4f5;
+}
+
+/* Base Styles */
+* {
+  font-family: 'Inter', sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.3) rgba(15, 23, 42, 0.8);
+}
+
+/* Custom Webkit scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
+
+/* Glassmorphism Class - Adapts to Light/Dark Mode */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.dark .glass {
+  background: rgba(24, 24, 27, 0.7); /* slate-800 */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+.glass-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 10px 30px -5px rgba(168, 85, 247, 0.1);
+  transform: translateY(-2px);
+}
+
+.dark .glass-hover:hover {
+  background: rgba(24, 24, 27, 0.95);
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 10px 30px -5px rgba(168, 85, 247, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Circular progress stroke animation */
+@keyframes score-fill {
+  from {
+    stroke-dashoffset: 283;
+  }
+  to {
+    stroke-dashoffset: var(--score-offset);
+  }
+}
+
+.score-circle {
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+/* Custom animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glow effect */
+.glow-blue {
+  box-shadow: 0 0 40px -5px rgba(59, 130, 246, 0.15);
+}
+.glow-purple {
+  box-shadow: 0 0 40px -5px rgba(139, 92, 246, 0.15);
+}
+.glow-green {
+  box-shadow: 0 0 40px -5px rgba(16, 185, 129, 0.15);
+}

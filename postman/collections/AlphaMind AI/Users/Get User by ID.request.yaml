@@ -1,0 +1,17 @@
+$kind: http-request
+name: Get User by ID
+method: GET
+url: '{{baseUrl}}/api/v1/users/{{createdUserId}}'
+order: 4000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{adminToken}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200", function() { pm.response.to.have.status(200); });
+      var json = pm.response.json();
+      pm.test("id matches createdUserId", function() { pm.expect(String(json.id)).to.eql(String(pm.environment.get("createdUserId"))); });

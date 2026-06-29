@@ -1,0 +1,13 @@
+$kind: http-request
+name: Analyze Stock - Invalid Symbol
+method: GET
+url: '{{baseUrl}}/api/v1/stocks/analyze/INVALIDSYMBOL999'
+order: 2000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 404 or 500", function() {
+        pm.expect([404, 500]).to.include(pm.response.code);
+      });
+      pm.test("Response is not 200", function() { pm.expect(pm.response.code).to.not.eql(200); });

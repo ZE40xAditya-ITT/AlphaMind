@@ -1,0 +1,15 @@
+$kind: http-request
+name: Get User - Not Found
+method: GET
+url: '{{baseUrl}}/api/v1/users/999999'
+order: 5000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{adminToken}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 404", function() { pm.response.to.have.status(404); });

@@ -1,0 +1,7 @@
+workspace:
+  id: 4a0f1e69-b5d4-471d-8083-6023ffa541b1
+cloudResources:
+  collections:
+    ../postman/collections/AlphaMind AI: 55966246-806d1ea8-6889-416c-b86f-317c8bf97096
+  environments:
+    ../postman/environments/AlphaMind-Local.environment.yaml: 55966246-4f2a0bc5-5a46-4f61-80c3-76d308fa065b

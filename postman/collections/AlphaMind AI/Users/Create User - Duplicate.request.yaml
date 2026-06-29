@@ -1,0 +1,28 @@
+$kind: http-request
+name: Create User - Duplicate
+method: POST
+url: '{{baseUrl}}/api/v1/users/'
+order: 2000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{adminToken}}'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "anotheruser",
+      "email": "{{adminEmail}}",
+      "password": "Test@1234",
+      "role": "user"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 400", function() { pm.response.to.have.status(400); });
+      pm.test("Response contains already registered", function() { pm.expect(pm.response.text()).to.include("already registered"); });

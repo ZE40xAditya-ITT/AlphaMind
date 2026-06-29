@@ -1,0 +1,12 @@
+$kind: http-request
+name: Get History - No Auth
+method: GET
+url: '{{baseUrl}}/api/v1/history/'
+order: 3000
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 401", function() { pm.response.to.have.status(401); });

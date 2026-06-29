@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic-settings
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+alembic
+yfinance
+pandas
+numpy
+reportlab
+google-auth
+requests
+wikipedia
+google-generativeai

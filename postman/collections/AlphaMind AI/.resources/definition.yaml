@@ -1,0 +1,26 @@
+$kind: collection
+name: AlphaMind AI
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{authToken}}'
+variables:
+  - key: baseUrl
+    value: 'http://localhost:8000'
+  - key: authToken
+    value: ''
+  - key: adminToken
+    value: ''
+  - key: adminEmail
+    value: 'admin@alphamind.ai'
+  - key: adminPassword
+    value: 'Admin@1234'
+  - key: userEmail
+    value: 'user@alphamind.ai'
+  - key: userPassword
+    value: 'User@1234'
+  - key: testStockSymbol
+    value: 'RELIANCE'
+  - key: createdUserId
+    value: ''

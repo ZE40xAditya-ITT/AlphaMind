@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: alphamind-backend
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: alphamind-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: PYTHONPATH
+        value: "."
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: RATE_PER_SEARCH
+        value: "20.0"
+
+databases:
+  - name: alphamind-db
+    plan: free
