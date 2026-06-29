@@ -3,6 +3,7 @@ import { MessageSquare, X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import LoadingSpinner from './common/LoadingSpinner';
+import ReactMarkdown from 'react-markdown';
 
 const GlobalChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,12 +24,11 @@ const GlobalChatbot: React.FC = () => {
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }, 50);
   };
-
   const faqs = [
     "What is the overall market sentiment?",
-    "How does the diversification score work?",
-    "What are the top performing sectors right now?",
-    "How are AI recommendations generated?"
+    "How do I optimize my portfolio diversification?",
+    "Which sectors are currently overvalued?",
+    "How does the AI score my portfolio risk?"
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,14 +86,20 @@ const GlobalChatbot: React.FC = () => {
                       ? 'bg-indigo-600 text-white rounded-br-none' 
                       : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm border border-slate-100 dark:border-slate-700'
                   }`}>
-                    <span dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br />') }} />
+                    {msg.role === 'user' ? (
+                      msg.content
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white dark:bg-slate-800 text-slate-500 rounded-2xl rounded-bl-none p-3 shadow-sm border border-slate-100 dark:border-slate-700">
-                    <LoadingSpinner message="Thinking..." />
+                    <span className="text-sm font-medium animate-pulse">Thinking...</span>
                   </div>
                 </div>
               )}
@@ -106,7 +112,7 @@ const GlobalChatbot: React.FC = () => {
                       <button 
                         key={idx} 
                         onClick={() => {
-                          setQuery(faq);
+                          setQuery('');
                           setMessages(prev => [...prev, { role: 'user', content: faq }]);
                           setIsLoading(true);
                           api.post('/copilot/ask-global', { question: faq })

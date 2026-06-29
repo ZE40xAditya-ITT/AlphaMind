@@ -5,7 +5,7 @@ import { usePortfolioManager } from '../hooks/usePortfolioManager';
 import PortfolioTable from '../components/portfolio/PortfolioTable';
 import PortfolioMetrics from '../components/portfolio/PortfolioMetrics';
 import AddStockForm from '../components/portfolio/AddStockForm';
-import PortfolioCopilot from '../components/portfolio/PortfolioCopilot';
+
 import { PieChart, Briefcase, Plus, TrendingUp, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -149,15 +149,7 @@ const PortfolioPage: React.FC = () => {
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <PortfolioMetrics analysis={analysis} />
                     
-                    <PortfolioCopilot 
-                      handleAskCopilot={handleAskCopilot}
-                      copilotQuery={copilotQuery}
-                      setCopilotQuery={setCopilotQuery}
-                      copilotResponse={copilotResponse}
-                      isAskingCopilot={isAskingCopilot}
-                    />
-
-                    <div className="glass dark:glass p-6 rounded-3xl md:col-span-2">
+                    <div className="glass dark:glass p-6 rounded-3xl">
                       <h3 className="text-lg font-bold mb-6">Sector Allocation</h3>
                       <div className="space-y-4">
                         {Object.entries(analysis.sector_allocation).sort((a,b)=>b[1]-a[1]).map(([sector, pct], idx) => (

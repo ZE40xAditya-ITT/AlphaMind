@@ -63,6 +63,7 @@ const Navbar: React.FC = () => {
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-b-2 text-sm font-semibold transition-all duration-300 ${isActive('/compare')}`}
           >
             <ArrowRightLeft size={16} />
+            <span>Compare</span>
           </Link>
           <Link
             to="/portfolio"

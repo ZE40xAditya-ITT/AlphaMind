@@ -14,14 +14,14 @@ class CopilotService:
             "You are AlphaMind Copilot, a strict financial and stock market AI assistant. "
             "CRITICAL RULES:\n"
             "1. You MUST reject and refuse to answer ANY prompt that is not related to finance, investing, stocks, or the AlphaMind platform.\n"
-            "2. Your answer MUST be structured as follows: First, repeat the user's question clearly. Then, provide a concise, structured, and clear answer using bullet points if necessary. Do not include verbose fluff.\n"
+            "2. Provide a concise, structured, and clear answer using markdown formatting. Use bold headings (e.g., **Heading**), bullet points, and short paragraphs. DO NOT repeat the user's question in your response.\n"
             "3. Ground your answers in the provided data context (which comes from Yahoo Finance and Wikipedia). If the context is missing, use your general financial knowledge."
         )
         
         # Use a modern Gemini model
         try:
             self.model = genai.GenerativeModel(
-                "gemini-1.5-flash",
+                "gemini-2.5-flash",
                 system_instruction=self.system_instruction
             )
         except Exception:
