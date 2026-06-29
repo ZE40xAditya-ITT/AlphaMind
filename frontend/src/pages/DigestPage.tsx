@@ -105,7 +105,7 @@ const DigestPage: React.FC = () => {
                 Weekly Investment Digest
               </div>
               <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-                {greeting()}, {user?.username || 'Investor'} 👋
+                {greeting()}, {user?.username || 'Investor'}
               </h1>
               {digest && (
                 <div className="flex items-center gap-4 mt-4 flex-wrap">
@@ -235,7 +235,7 @@ const DigestPage: React.FC = () => {
               className="lg:col-span-3 bg-gradient-to-r from-indigo-600/10 to-purple-600/10 border border-indigo-500/20 rounded-2xl p-6"
             >
               <h2 className="flex items-center gap-2 text-lg font-bold mb-4">
-                <Brain size={20} className="text-indigo-400" /> AI Executive Summary
+                <Brain size={20} className="text-indigo-400" /> Executive Summary
               </h2>
               <p className="text-slate-300 leading-relaxed text-base mb-4">
                 {digest.ai_suggestions?.executive_summary}
@@ -258,7 +258,7 @@ const DigestPage: React.FC = () => {
               className="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-6"
             >
               <h2 className="flex items-center gap-2 text-lg font-bold mb-6">
-                <Zap size={20} className="text-amber-400" /> AI Suggestions
+                <Zap size={20} className="text-amber-400" /> Investment Suggestions
               </h2>
               <div className="space-y-3">
                 {(digest.ai_suggestions?.suggestions || []).map((s, i) => (
