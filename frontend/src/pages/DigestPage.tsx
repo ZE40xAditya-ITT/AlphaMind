@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Newspaper, TrendingUp, TrendingDown, Download, RefreshCw,
   Brain, Eye, BarChart2, CheckCircle, AlertTriangle, Clock,
-  ArrowUp, ArrowDown, Minus, Star, Bell, Zap
+  ArrowUp, ArrowDown, Minus, Star, Bell, Zap, Loader2
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -131,7 +131,7 @@ const DigestPage: React.FC = () => {
                 disabled={generating}
                 className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition disabled:opacity-50 shadow-lg shadow-indigo-500/25"
               >
-                {generating ? <LoadingSpinner message="" /> : <RefreshCw size={18} />}
+                {generating ? <Loader2 size={18} className="animate-spin" /> : <RefreshCw size={18} />}
                 {digest ? 'Refresh Digest' : 'Generate Digest'}
               </button>
               {digest?.has_pdf && (

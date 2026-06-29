@@ -1,6 +1,5 @@
 import React from 'react';
-import { Plus, Check } from 'lucide-react';
-import LoadingSpinner from '../common/LoadingSpinner';
+import { Plus, Check, Loader2 } from 'lucide-react';
 
 interface AddStockFormProps {
   handleAddStock: (e: React.FormEvent) => void;
@@ -59,7 +58,7 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
           disabled={!newSymbol || isFetchingPrice} 
           className="absolute right-1 top-1 bottom-1 px-3 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-semibold rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition text-sm disabled:opacity-50 flex items-center justify-center min-w-[70px]"
         >
-          {isFetchingPrice ? <LoadingSpinner message="" /> : (priceFetched ? <Check size={16}/> : 'Fetch')}
+          {isFetchingPrice ? <Loader2 size={16} className="animate-spin" /> : (priceFetched ? <Check size={16}/> : 'Fetch')}
         </button>
       </div>
       <input 
