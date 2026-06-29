@@ -6,7 +6,7 @@ import PortfolioTable from '../components/portfolio/PortfolioTable';
 import PortfolioMetrics from '../components/portfolio/PortfolioMetrics';
 import AddStockForm from '../components/portfolio/AddStockForm';
 
-import { PieChart, Briefcase, Plus, TrendingUp, AlertTriangle } from 'lucide-react';
+import { PieChart, Briefcase, Plus, TrendingUp, AlertTriangle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PortfolioPage: React.FC = () => {
@@ -118,7 +118,7 @@ const PortfolioPage: React.FC = () => {
                       disabled={analyzing || selectedPortfolio.stocks.length === 0}
                       className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {analyzing ? <LoadingSpinner message="" /> : <TrendingUp size={18} />}
+                      {analyzing ? <Loader2 size={18} className="animate-spin" /> : <TrendingUp size={18} />}
                       Analyze with AI
                     </button>
                   </div>
