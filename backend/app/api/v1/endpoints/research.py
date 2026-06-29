@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from app.core.dependencies import get_db, get_current_user
+from app.core.dependencies import get_db, get_current_user, get_current_user_from_query
 from app.models.user import User
 from app.models.research_report import ResearchReport
 from app.services.research_pipeline_service import ResearchPipelineService
@@ -51,7 +51,7 @@ def start_research(
 def stream_research(
     report_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user_from_query)
 ):
     report = db.query(ResearchReport).filter(
         ResearchReport.id == report_id,

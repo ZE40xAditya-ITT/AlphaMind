@@ -70,8 +70,8 @@ const ResearchPage: React.FC = () => {
     try {
       const { report_id } = await startResearch(searchQuery);
 
-      const baseUrl = 'http://127.0.0.1:8000/api/v1';
-      const es = new EventSource(`${baseUrl}/research/${report_id}/stream`);
+      const token = localStorage.getItem('alphamind_token') || '';
+      const es = createSSEConnection(report_id, token);
       eventSourceRef.current = es;
 
       es.onmessage = (event) => {
@@ -118,9 +118,6 @@ const ResearchPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-sm font-semibold mb-6">
-            <Sparkles size={16} /> Autonomous Research Pipeline
-          </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
             What would you like to{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">research?</span>

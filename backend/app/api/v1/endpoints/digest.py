@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from app.core.dependencies import get_db, get_current_user
+from app.core.dependencies import get_db, get_current_user, get_current_user_from_query
 from app.models.user import User
 from app.services.digest_service import DigestService
 import os
@@ -39,7 +39,7 @@ def generate_digest(db: Session = Depends(get_db), current_user: User = Depends(
 def download_digest_pdf(
     digest_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user_from_query)
 ):
     digest = digest_service.get_digest_by_id(db, digest_id, current_user.id)
     if not digest:

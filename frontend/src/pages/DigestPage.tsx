@@ -136,7 +136,7 @@ const DigestPage: React.FC = () => {
               </button>
               {digest?.has_pdf && (
                 <a
-                  href={`/api/v1/digest/${digest.id}/download`}
+                  href={downloadDigestPdf(digest.id)}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition"

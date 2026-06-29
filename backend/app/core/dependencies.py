@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException, status
+from typing import Optional
+from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
@@ -39,6 +40,29 @@ def get_current_user(
     if user is None or not user.is_active:
         raise credentials_exception
 
+    return user
+
+
+def get_current_user_from_query(
+    token: Optional[str] = Query(default=None),
+    db: Session = Depends(get_db),
+) -> User:
+    """Auth via ?token= query param — for SSE and direct download links."""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+    )
+    if not token:
+        raise credentials_exception
+    payload = decode_access_token(token)
+    if payload is None:
+        raise credentials_exception
+    user_id: int | None = payload.get("sub")
+    if user_id is None:
+        raise credentials_exception
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if user is None or not user.is_active:
+        raise credentials_exception
     return user
 
 

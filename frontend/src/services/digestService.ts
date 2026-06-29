@@ -46,4 +46,7 @@ export interface DigestData {
 export const getLatestDigest = () => api.get<DigestData>('/digest/latest').then(r => r.data);
 export const generateDigest = () => api.post('/digest/generate').then(r => r.data);
 export const getDigestHistory = () => api.get('/digest/history').then(r => r.data);
-export const downloadDigestPdf = (id: number) => `${api.defaults.baseURL}/digest/${id}/download`;
+export const downloadDigestPdf = (id: number) => {
+  const token = localStorage.getItem('alphamind_token');
+  return `${api.defaults.baseURL}/digest/${id}/download?token=${token}`;
+};
