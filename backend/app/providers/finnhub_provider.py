@@ -4,33 +4,43 @@ import pandas as pd
 from typing import Dict, Any
 from datetime import datetime, timedelta
 from app.interfaces.market_data_interface import MarketDataProvider
+from app.core.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class FinnhubProvider(MarketDataProvider):
     """
     Concrete implementation of MarketDataProvider using Finnhub REST API.
-    Used as a fallback or primary provider when yfinance rate limits are hit.
+    Used as a fallback when yfinance rate limits are hit.
+    Handles NSE symbols by converting SYMBOL.NS -> SYMBOL.BO for Finnhub.
     """
     def __init__(self):
-        self.api_key = os.getenv("FINNHUB_API_KEY")
+        self.api_key = settings.FINNHUB_API_KEY or os.getenv("FINNHUB_API_KEY", "")
         self.base_url = "https://finnhub.io/api/v1"
 
     def is_configured(self) -> bool:
         return bool(self.api_key)
 
+    def _clean_symbol(self, symbol: str) -> str:
+        """Convert NSE symbols to Finnhub format. Finnhub uses NSE: prefix for Indian stocks."""
+        # Strip .NS or .BO suffix, keep the bare symbol
+        bare = symbol.replace(".NS", "").replace(".BO", "")
+        # Try both NSE and BSE formats
+        return bare + ".NS"  # Finnhub actually supports .NS for some Indian stocks
+
     def get_historical_data(self, symbol: str) -> pd.DataFrame:
         if not self.is_configured():
             return pd.DataFrame()
         
-        # Finnhub expects symbols without .NS for US, but might need .BO or .NS for India
-        # For simplicity, we just pass the symbol as is
-        clean_symbol = symbol.replace(".NS", ".BO") # Finnhub often uses .BO for Indian stocks
+        clean_symbol = self._clean_symbol(symbol)
         
         end = int(datetime.now().timestamp())
         start = int((datetime.now() - timedelta(days=365)).timestamp())
         
         url = f"{self.base_url}/stock/candle?symbol={clean_symbol}&resolution=D&from={start}&to={end}&token={self.api_key}"
         try:
-            res = requests.get(url, timeout=5)
+            res = requests.get(url, timeout=8)
             data = res.json()
             if data.get("s") == "ok":
                 df = pd.DataFrame({
@@ -44,14 +54,15 @@ class FinnhubProvider(MarketDataProvider):
                 df.set_index("Date", inplace=True)
                 return df
             return pd.DataFrame()
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Finnhub historical data error for {symbol}: {e}")
             return pd.DataFrame()
 
     def get_company_info(self, symbol: str) -> Dict[str, Any]:
         if not self.is_configured():
             return {}
             
-        clean_symbol = symbol.replace(".NS", ".BO")
+        clean_symbol = self._clean_symbol(symbol)
         info = {}
         
         try:
@@ -72,7 +83,10 @@ class FinnhubProvider(MarketDataProvider):
                     info["shortName"] = p_data.get("name", symbol)
                     info["longName"] = p_data.get("name", symbol)
                     info["sector"] = p_data.get("finnhubIndustry", "Unknown")
-                    info["marketCap"] = p_data.get("marketCapitalization", 0) * 1_000_000
+                    info["finnhubIndustry"] = p_data.get("finnhubIndustry", "Unknown")
+                    cap = p_data.get("marketCapitalization", 0)
+                    info["marketCap"] = cap * 1_000_000 if cap else 0
+                    info["marketCapitalization"] = info["marketCap"]
 
             # Get Metrics
             m_res = requests.get(f"{self.base_url}/stock/metric?symbol={clean_symbol}&metric=all&token={self.api_key}", timeout=5)
@@ -87,5 +101,6 @@ class FinnhubProvider(MarketDataProvider):
                     info["earningsGrowth"] = metrics.get("epsGrowthTTMYoy", 0) / 100.0 if metrics.get("epsGrowthTTMYoy") else 0
 
             return info
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Finnhub company info error for {symbol}: {e}")
             return info

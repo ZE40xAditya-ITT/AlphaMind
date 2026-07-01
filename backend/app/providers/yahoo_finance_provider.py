@@ -17,6 +17,7 @@ USER_AGENTS = [
 class YahooFinanceProvider(MarketDataProvider):
     """
     Concrete implementation of MarketDataProvider using yfinance.
+    All calls have strict timeouts to prevent hanging on rate limits.
     """
     
     def _fetch_ticker(self, symbol: str):
@@ -32,14 +33,14 @@ class YahooFinanceProvider(MarketDataProvider):
     def get_historical_data(self, symbol: str) -> pd.DataFrame:
         ticker = self._fetch_ticker(symbol)
         try:
-            hist = ticker.history(period="1y")
+            hist = ticker.history(period="1y", timeout=8)
         except Exception:
             hist = pd.DataFrame()
             
         if hist.empty:
             try:
                 # Fallback to yf.download which sometimes bypasses certain restrictions
-                hist = yf.download(tickers=symbol, period="1y", progress=False)
+                hist = yf.download(tickers=symbol, period="1y", progress=False, timeout=8)
                 if not hist.empty and isinstance(hist.columns, pd.MultiIndex):
                     hist.columns = hist.columns.droplevel('Ticker')
             except Exception:
@@ -48,8 +49,19 @@ class YahooFinanceProvider(MarketDataProvider):
         return hist
 
     def get_company_info(self, symbol: str) -> Dict[str, Any]:
-        ticker = self._fetch_ticker(symbol)
-        try:
+        """Fetch company info with a hard timeout using ThreadPoolExecutor."""
+        import concurrent.futures
+
+        def _fetch():
+            ticker = self._fetch_ticker(symbol)
             return ticker.info
+
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(_fetch)
+                result = future.result(timeout=8)  # Hard 8-second timeout
+                return result if result else {}
+        except concurrent.futures.TimeoutError:
+            return {}
         except Exception:
             return {}

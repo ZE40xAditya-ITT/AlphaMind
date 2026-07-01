@@ -94,11 +94,23 @@ const ResearchPage: React.FC = () => {
       };
 
       es.onerror = () => {
-        // Vercel/Render proxies drop idle connections after 60-100s.
-        // The backend AI is likely still running. We switch to polling.
+        // SSE connection dropped (proxy timeout, network issue, etc.)
+        // Switch to polling the report status from the database.
         es.close();
         
+        let pollAttempts = 0;
+        const MAX_POLL_ATTEMPTS = 18; // 18 * 5s = 90s max wait
+        
         pollIntervalRef.current = setInterval(async () => {
+          pollAttempts++;
+          
+          if (pollAttempts >= MAX_POLL_ATTEMPTS) {
+            clearInterval(pollIntervalRef.current);
+            setIsRunning(false);
+            setError('Research is taking too long. Please try again.');
+            return;
+          }
+          
           try {
             const r = await getResearchReport(report_id);
             if (r.status === 'done') {
@@ -109,7 +121,7 @@ const ResearchPage: React.FC = () => {
             } else if (r.status === 'failed') {
               clearInterval(pollIntervalRef.current);
               setIsRunning(false);
-              setError('Research pipeline failed on server.');
+              setError('Research pipeline failed on server. Please try again.');
             }
           } catch (e) {
             // Ignore temporary network errors during polling

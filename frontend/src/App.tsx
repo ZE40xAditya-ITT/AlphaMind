@@ -31,6 +31,18 @@ function App() {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
+  // Keep Render backend warm — ping on app load and every 10 minutes.
+  // This eliminates the 30-50s cold start delay on Render free tier.
+  useEffect(() => {
+    const backendUrl = import.meta.env.VITE_API_URL || '';
+    const pingBackend = () => {
+      fetch(`${backendUrl}/health`).catch(() => {});
+    };
+    pingBackend(); // Immediate ping on page load
+    const interval = setInterval(pingBackend, 10 * 60 * 1000); // Every 10 min
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
     <Toaster position="top-right" toastOptions={{ className: 'dark:bg-slate-800 dark:text-white glass' }} />

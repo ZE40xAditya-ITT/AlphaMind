@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     # Auth
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_API_KEY: str = ""
+    # Finnhub
+    FINNHUB_API_KEY: str = ""
     # Email (Resend)
     RESEND_API_KEY: str = ""
     RESEND_FROM_EMAIL: str = "digest@alphamind.ai"
