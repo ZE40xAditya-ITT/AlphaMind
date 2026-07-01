@@ -1,5 +1,6 @@
 import json
 import re
+import concurrent.futures
 from typing import Generator, List, Dict
 from sqlalchemy.orm import Session
 import yfinance as yf
@@ -60,13 +61,14 @@ class ResearchPipelineService:
 
     def _screen_stocks(self, symbols: List[str], limit: int = 10) -> List[Dict]:
         candidates = []
-        for sym in symbols[:limit]:
+        
+        def fetch_stock_info(sym: str):
             try:
                 ticker = yf.Ticker(f"{sym}.NS")
                 info = ticker.info or {}
                 if not info or len(info) < 5:
-                    continue
-                candidates.append({
+                    return None
+                return {
                     "symbol": sym,
                     "name": info.get("longName") or info.get("shortName", sym),
                     "sector": info.get("sector", "Unknown"),
@@ -77,9 +79,17 @@ class ResearchPipelineService:
                     "market_cap": info.get("marketCap"),
                     "revenue_growth": info.get("revenueGrowth"),
                     "eps_growth": info.get("earningsGrowth"),
-                })
+                }
             except Exception:
-                continue
+                return None
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            results = executor.map(fetch_stock_info, symbols[:limit])
+            
+        for res in results:
+            if res:
+                candidates.append(res)
+                
         return candidates
 
     def _score_candidates(self, candidates: List[Dict]) -> List[Dict]:
