@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import {
   LayoutDashboard, Users, FileText, LogOut, Bookmark,
-  ArrowRightLeft, Sun, Moon, Menu, X, PieChart, Brain,
+  ArrowRightLeft, Menu, X, PieChart, Brain,
   Newspaper, Command, Search
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const { user, logout, isAdmin } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -97,14 +95,7 @@ const Navbar: React.FC = () => {
             </div>
           </button>
 
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors duration-200"
-            title="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
+          {/* Search bar */}
 
           {/* Divider + user */}
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">

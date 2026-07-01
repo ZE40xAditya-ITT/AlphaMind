@@ -41,6 +41,6 @@ export const getResearchHistory = () =>
   api.get('/research/history').then(r => r.data);
 
 export const createSSEConnection = (reportId: number, token: string): EventSource => {
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
+  const baseUrl = import.meta.env.VITE_API_URL || '/api/v1';
   return new EventSource(`${baseUrl}/research/${reportId}/stream?token=${token}`);
 };

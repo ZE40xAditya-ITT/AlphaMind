@@ -63,7 +63,7 @@ const SignupPage: React.FC = () => {
       // Hacky way to reload auth context state
       window.location.href = '/dashboard';
     } catch (err: any) {
-      setError('Google Sign-In failed');
+      setError(err.response?.data?.detail || 'Google Sign-In failed');
       setLoading(false);
     }
   };

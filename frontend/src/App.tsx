@@ -34,7 +34,7 @@ function App() {
   // Keep Render backend warm — ping on app load and every 10 minutes.
   // This eliminates the 30-50s cold start delay on Render free tier.
   useEffect(() => {
-    const backendUrl = import.meta.env.VITE_API_URL || '';
+    const backendUrl = import.meta.env.VITE_API_URL || '/api/v1';
     const pingBackend = () => {
       fetch(`${backendUrl}/health`).catch(() => {});
     };

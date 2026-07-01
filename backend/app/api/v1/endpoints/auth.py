@@ -72,20 +72,33 @@ def google_login(
     """Authenticate or register user via Google SSO."""
     try:
         from app.core.config import settings
-        client_id = settings.GOOGLE_CLIENT_ID
-        # If client_id is empty, this will fail in production, but we allow it for dummy dev testing if needed
-        # Actually verify_oauth2_token needs the real client ID.
-        # We will decode the token.
-        idinfo = id_token.verify_oauth2_token(req.token, requests.Request(), client_id)
+        client_id = settings.GOOGLE_CLIENT_ID or None
+        # Verify token with 60s clock skew tolerance
+        idinfo = id_token.verify_oauth2_token(
+            req.token, 
+            requests.Request(), 
+            client_id, 
+            clock_skew_in_seconds=60
+        )
         
         email = idinfo.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Google token does not contain email.")
+
         google_id = idinfo.get("sub")
-        name = idinfo.get("name", "").replace(" ", "").lower() or f"user_{google_id[:5]}"
+        raw_name = idinfo.get("name", "").replace(" ", "").lower() or f"user_{google_id[:5]}"
 
         # Find user by google_id or email
         user = db.query(User).filter((User.google_id == google_id) | (User.email == email)).first()
         
         if not user:
+            # Ensure username is unique
+            name = raw_name
+            counter = 1
+            while db.query(User).filter(User.username == name).first():
+                name = f"{raw_name}_{counter}"
+                counter += 1
+
             # Register new user
             user = User(
                 username=name,
@@ -106,5 +119,8 @@ def google_login(
         token = auth_service.create_token_for_user(user)
         return TokenResponse(access_token=token, token_type="bearer")
         
-    except ValueError as e:
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Google SSO Error: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Invalid Google token: {str(e)}")
+

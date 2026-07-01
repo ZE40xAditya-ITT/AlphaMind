@@ -28,21 +28,10 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0B1121 0%, #1E3A8A 100%);
-  color: #e3e5e9;
-}
-html.light body,
-:root:not(.dark) body {
-  background: linear-gradient(135deg, #0B1121 0%, #1E3A8A 100%);
-  color: #e3e5e9;
-}
-:root:not(.dark) .min-h-screen.bg-slate-50 {
-  background: transparent !important;
-}
-.dark body {
   background-color: #09090b;
   color: #f4f4f5;
 }
+
 
 /* Base Styles */
 * {
