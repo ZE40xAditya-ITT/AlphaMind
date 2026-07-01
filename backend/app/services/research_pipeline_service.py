@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Generator, List, Dict
 from sqlalchemy.orm import Session
 import yfinance as yf
@@ -55,11 +56,11 @@ class ResearchPipelineService:
         for keyword, stocks in SECTOR_MAP.items():
             if keyword in query_lower:
                 return stocks
-        return NSE_UNIVERSE[:10]
+        return NSE_UNIVERSE
 
-    def _screen_stocks(self, symbols: List[str]) -> List[Dict]:
+    def _screen_stocks(self, symbols: List[str], limit: int = 10) -> List[Dict]:
         candidates = []
-        for sym in symbols[:7]:
+        for sym in symbols[:limit]:
             try:
                 ticker = yf.Ticker(f"{sym}.NS")
                 info = ticker.info or {}
@@ -170,11 +171,17 @@ Write a complete markdown report with:
         def event(stage: str, status: str, **kwargs):
             payload = {"stage": stage, "status": status, **kwargs}
             return f"data: {json.dumps(payload)}\n\n"
+            
+        # Parse requested amount from query (default to 5, max 15)
+        match = re.search(r'\b(\d+)\b', query)
+        requested_amount = min(int(match.group(1)), 15) if match else 5
+        # Screen enough stocks to likely fulfill the requested amount
+        screen_limit = min(requested_amount * 2, 30)
 
-        yield event("screening", "running", message="Screening stock universe...")
+        yield event("screening", "running", message=f"Screening stock universe for top {requested_amount}...")
         try:
             universe = self._pick_universe(query)
-            candidates_raw = self._screen_stocks(universe)
+            candidates_raw = self._screen_stocks(universe, limit=screen_limit)
             yield event("screening", "done", message=f"Found {len(candidates_raw)} candidates")
             yield event("fundamental", "running", message="Running fundamental analysis...")
             scored = self._score_candidates(candidates_raw)
@@ -184,7 +191,7 @@ Write a complete markdown report with:
             yield event("news", "running", message="Gathering news intelligence...")
             yield event("news", "done", message="News analysis complete")
             yield event("ranking", "running", message="Ranking opportunities...")
-            top_candidates = scored[:5]
+            top_candidates = scored[:requested_amount]
             yield event("ranking", "done", message=f"Top {len(top_candidates)} opportunities ranked")
             yield event("ai_report", "running", message="Generating AI research report...")
             report_text = self._generate_report(query, top_candidates)
