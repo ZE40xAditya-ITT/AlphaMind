@@ -225,11 +225,24 @@ Write a complete markdown report with:
             
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(self._generate_report, query, top_candidates)
+                start_time = time.time()
                 while not future.done():
+                    if time.time() - start_time > 45:
+                        print("Gemini generation timed out (45s). Falling back.")
+                        break
                     # Send a keep-alive ping every 5 seconds to prevent Render/Vercel proxy timeout
                     yield ": keep-alive\n\n"
                     time.sleep(5)
-                report_text = future.result()
+                
+                try:
+                    # Give it a max of 1 second (we already waited 45s in the loop)
+                    report_text = future.result(timeout=1)
+                except concurrent.futures.TimeoutError:
+                    report_text = self._fallback_report(query, top_candidates)
+                except Exception as e:
+                    # If Gemini throws an error (e.g. rate limit), use fallback
+                    print(f"Gemini generation error: {e}")
+                    report_text = self._fallback_report(query, top_candidates)
 
             report = db.query(ResearchReport).filter(ResearchReport.id == report_id).first()
             if report:
