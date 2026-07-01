@@ -8,6 +8,8 @@ from app.models.user import User
 # Import the new decoupled services and providers
 from app.services.stock_analysis_service import StockAnalysisService
 from app.providers.yahoo_finance_provider import YahooFinanceProvider
+from app.providers.finnhub_provider import FinnhubProvider
+from app.providers.fallback_market_provider import FallbackMarketDataProvider
 from app.providers.wikipedia_provider import WikipediaProvider
 from app.providers.memory_cache_provider import MemoryCacheProvider
 from app.providers.mock_institutional_provider import MockInstitutionalProvider
@@ -21,7 +23,9 @@ from app.services.analysis_engine import AnalysisEngine
 router = APIRouter()
 
 # Instantiate providers (in a real app, these might be singletons or injected via a container)
-market_provider = YahooFinanceProvider()
+yahoo_provider = YahooFinanceProvider()
+finnhub_provider = FinnhubProvider()
+market_provider = FallbackMarketDataProvider(primary=yahoo_provider, secondary=finnhub_provider)
 company_info_provider = WikipediaProvider()
 cache_provider = MemoryCacheProvider()
 institutional_provider = MockInstitutionalProvider()

@@ -79,10 +79,10 @@ const ResearchPage: React.FC = () => {
         const data: PipelineStage = JSON.parse(event.data);
         setStages(prev => ({ ...prev, [data.stage]: data }));
 
-        if (data.stage === 'complete' && data.report_id) {
+        if (data.stage === 'ai_report' && data.status === 'done') {
           es.close();
           setIsRunning(false);
-          getResearchReport(data.report_id).then(r => {
+          getResearchReport(report_id).then(r => {
             setReport(r);
             getResearchHistory().then(setHistory).catch(() => {});
           });
