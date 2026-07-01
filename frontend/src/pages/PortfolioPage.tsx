@@ -69,6 +69,43 @@ const PortfolioPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-4 space-y-8">
+            {/* Portfolio Selector Tabs & Create */}
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-[#111827] p-4 rounded-2xl border border-slate-800">
+              <div className="flex flex-wrap items-center gap-2">
+                {portfolios.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => { setSelectedPortfolio(p); setAnalysis(null); }}
+                    className={`px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2 ${
+                      selectedPortfolio?.id === p.id 
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25' 
+                        : 'bg-slate-800/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    <Briefcase size={16} />
+                    {p.name}
+                    <span className="text-xs opacity-70 bg-black/20 px-1.5 py-0.5 rounded-md">{p.stocks.length}</span>
+                  </button>
+                ))}
+              </div>
+              <form onSubmit={handleCreatePortfolio} className="flex items-center gap-2">
+                <input 
+                  type="text" 
+                  placeholder="New Portfolio Name..." 
+                  value={newPortfolioName} 
+                  onChange={e => setNewPortfolioName(e.target.value)} 
+                  className="bg-[#1f2937] text-white text-sm px-3 py-2 rounded-xl border border-slate-700 outline-none w-48 focus:border-indigo-500 transition"
+                />
+                <button 
+                  type="submit" 
+                  disabled={!newPortfolioName.trim()}
+                  className="bg-slate-800 hover:bg-indigo-600 text-white px-3 py-2 rounded-xl text-sm font-semibold flex items-center gap-1 transition disabled:opacity-50"
+                >
+                  <Plus size={16} /> Create
+                </button>
+              </form>
+            </div>
+
             {selectedPortfolio ? (
               <>
                 <div className="bg-[#111827] border border-slate-800 p-6 rounded-3xl">

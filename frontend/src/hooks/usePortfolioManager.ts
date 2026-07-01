@@ -18,7 +18,7 @@ export const usePortfolioManager = () => {
   // Form states
   const [newPortfolioName, setNewPortfolioName] = useState('');
   const [newSymbol, setNewSymbol] = useState('');
-  const [newQuantity, setNewQuantity] = useState('');
+  const [newQuantity, setNewQuantity] = useState('1');
   const [newPrice, setNewPrice] = useState('');
 
   const [copilotQuery, setCopilotQuery] = useState('');
@@ -33,17 +33,15 @@ export const usePortfolioManager = () => {
 
   const fetchPortfolios = async () => {
     try {
+      setLoading(true);
       const data = await getPortfolios();
-      if (data.length === 0) {
-        const newPortfolio = await createPortfolio('My Portfolio');
-        setPortfolios([newPortfolio]);
-        setSelectedPortfolio(newPortfolio);
-      } else {
-        setPortfolios(data);
-        if (!selectedPortfolio) setSelectedPortfolio(data[0]);
+      setPortfolios(data);
+      if (data.length > 0 && !selectedPortfolio) {
+        setSelectedPortfolio(data[0]);
       }
     } catch (err) {
       setError('Failed to fetch portfolios.');
+      toast.error('Failed to fetch portfolios.');
     } finally {
       setLoading(false);
     }
@@ -53,26 +51,30 @@ export const usePortfolioManager = () => {
     e.preventDefault();
     if (!newPortfolioName.trim()) return;
     try {
-      const p = await createPortfolio(newPortfolioName);
-      setPortfolios([...portfolios, p]);
-      setSelectedPortfolio(p);
+      const created = await createPortfolio(newPortfolioName);
+      setPortfolios([...portfolios, created]);
+      setSelectedPortfolio(created);
       setNewPortfolioName('');
+      toast.success('Portfolio created successfully');
     } catch (err) {
       setError('Failed to create portfolio.');
+      toast.error('Failed to create portfolio.');
     }
   };
 
   const handleCheckSymbol = async () => {
     if (!newSymbol) return;
     setIsFetchingPrice(true);
-    setError('');
+    let sym = newSymbol.trim().toUpperCase();
+    if (!sym.includes('.')) sym += '.NS';
     try {
-      const details = await getStockDetails(newSymbol.toUpperCase());
-      if (details.current_price) {
+      const stockDetails = await getStockDetails(sym);
+      if (stockDetails && stockDetails.current_price) {
+        setNewPrice(stockDetails.current_price.toString());
         setPriceFetched(true);
+        toast.success(`Fetched market price for ${sym}: ₹${stockDetails.current_price}`);
       } else {
-        setError('Valid stock found, but no current price available.');
-        setPriceFetched(false);
+        setPriceFetched(true);
       }
     } catch (err) {
       setError('Invalid stock symbol or price not found.');
@@ -84,23 +86,36 @@ export const usePortfolioManager = () => {
 
   const handleAddStock = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPortfolio || !newSymbol || !newQuantity || !newPrice || !priceFetched) return;
+    if (!selectedPortfolio || !newSymbol || !newPrice) return;
+    let sym = newSymbol.trim().toUpperCase();
+    if (!sym.includes('.')) sym += '.NS';
+    const qty = parseFloat(newQuantity) || 1;
+    const price = parseFloat(newPrice);
+    if (isNaN(price) || price <= 0) {
+      toast.error('Please enter a valid buy price');
+      return;
+    }
     try {
       const stock = await addStockToPortfolio(selectedPortfolio.id, {
-        symbol: newSymbol.toUpperCase(),
-        quantity: parseFloat(newQuantity),
-        average_buy_price: parseFloat(newPrice)
+        symbol: sym,
+        quantity: qty,
+        average_buy_price: price
+      });
+      const updatedStocks = selectedPortfolio.stocks.filter(s => {
+        const sClean = s.symbol.toUpperCase().replace('.NS', '').replace('.BO', '');
+        const symClean = sym.replace('.NS', '').replace('.BO', '');
+        return s.id !== stock.id && sClean !== symClean;
       });
       const updated = { 
         ...selectedPortfolio, 
         stocks: [
-          ...selectedPortfolio.stocks.filter(s => s.id !== stock.id),
+          ...updatedStocks,
           stock
         ] 
       };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
-      setNewSymbol(''); setNewQuantity(''); setNewPrice(''); setPriceFetched(false);
+      setNewSymbol(''); setNewQuantity('1'); setNewPrice(''); setPriceFetched(false);
       setAnalysis(null); // invalidate analysis
       toast.success('Stock added successfully');
     } catch (err) {

@@ -37,6 +37,10 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
           type="text" 
           placeholder="Symbol (e.g., INFY.NS)" 
           value={newSymbol} 
+          onChange={e => {
+            setNewSymbol(e.target.value);
+            setPriceFetched(false);
+          }}
           className="w-full bg-[#1f2937] text-white px-4 py-2 rounded-xl border border-slate-700 outline-none pr-24" 
         />
         <datalist id="popular-stocks">
@@ -61,14 +65,14 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
         </button>
       </div>
       <div className="col-span-1">
-        <input required type="number" step="0.01" min="1" placeholder="Qty" value={newQuantity} onChange={e => setNewQuantity(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
+        <input type="number" step="0.01" min="0.01" placeholder="Qty (def: 1)" value={newQuantity} onChange={e => setNewQuantity(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
       </div>
       <div className="col-span-1">
-        <input required type="number" step="0.01" min="1" placeholder="Avg Price" value={newPrice} onChange={e => setNewPrice(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
+        <input required type="number" step="0.01" min="0.01" placeholder="Avg Price" value={newPrice} onChange={e => setNewPrice(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
       </div>
       <button 
         type="submit" 
-        disabled={!priceFetched} 
+        disabled={!newSymbol || !newPrice} 
         className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-indigo-700 flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed h-[40px]"
       >
         <Plus size={18} /> Add

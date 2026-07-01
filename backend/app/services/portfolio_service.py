@@ -27,10 +27,13 @@ class PortfolioService:
     def add_stock(self, db: Session, portfolio_id: int, user_id: int, data: PortfolioStockCreate) -> PortfolioStock:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
             
-        existing_stock = db.query(PortfolioStock).filter(
-            PortfolioStock.portfolio_id == portfolio.id,
-            PortfolioStock.symbol == data.symbol
-        ).first()
+        sym_clean = data.symbol.upper().replace(".NS", "").replace(".BO", "").strip()
+        existing_stock = None
+        for s in portfolio.stocks:
+            s_clean = s.symbol.upper().replace(".NS", "").replace(".BO", "").strip()
+            if s_clean == sym_clean:
+                existing_stock = s
+                break
 
         if existing_stock:
             # Merge: Calculate new quantity and average price
@@ -44,13 +47,15 @@ class PortfolioService:
                 avg_price = ((old_qty * old_price) + (new_qty * new_price)) / total_qty
                 existing_stock.quantity = total_qty
                 existing_stock.average_buy_price = avg_price
+                if ".NS" in data.symbol.upper() or ".BO" in data.symbol.upper():
+                    existing_stock.symbol = data.symbol.upper()
             db.commit()
             db.refresh(existing_stock)
             return existing_stock
         else:
             stock = PortfolioStock(
                 portfolio_id=portfolio.id,
-                symbol=data.symbol,
+                symbol=data.symbol.upper(),
                 quantity=data.quantity,
                 average_buy_price=data.average_buy_price
             )
