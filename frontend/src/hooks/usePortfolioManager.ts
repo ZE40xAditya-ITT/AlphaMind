@@ -34,9 +34,13 @@ export const usePortfolioManager = () => {
   const fetchPortfolios = async () => {
     try {
       const data = await getPortfolios();
-      setPortfolios(data);
-      if (data.length > 0 && !selectedPortfolio) {
-        setSelectedPortfolio(data[0]);
+      if (data.length === 0) {
+        const newPortfolio = await createPortfolio('My Portfolio');
+        setPortfolios([newPortfolio]);
+        setSelectedPortfolio(newPortfolio);
+      } else {
+        setPortfolios(data);
+        if (!selectedPortfolio) setSelectedPortfolio(data[0]);
       }
     } catch (err) {
       setError('Failed to fetch portfolios.');
@@ -87,8 +91,13 @@ export const usePortfolioManager = () => {
         quantity: parseFloat(newQuantity),
         average_buy_price: parseFloat(newPrice)
       });
-      // Update local state
-      const updated = { ...selectedPortfolio, stocks: [...selectedPortfolio.stocks, stock] };
+      const updated = { 
+        ...selectedPortfolio, 
+        stocks: [
+          ...selectedPortfolio.stocks.filter(s => s.id !== stock.id),
+          stock
+        ] 
+      };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
       setNewSymbol(''); setNewQuantity(''); setNewPrice(''); setPriceFetched(false);
@@ -115,6 +124,31 @@ export const usePortfolioManager = () => {
     } catch (err) {
       setError('Failed to remove stock.');
       toast.error('Failed to remove stock.');
+    }
+  };
+
+  const handleReduceStock = async (stockId: number, quantityToReduce: number) => {
+    if (!selectedPortfolio) return;
+    try {
+      const { reduceStockInPortfolio } = await import('../services/portfolioService');
+      const updatedStock = await reduceStockInPortfolio(selectedPortfolio.id, stockId, quantityToReduce);
+      
+      let updatedStocks;
+      if (updatedStock && updatedStock.id) {
+        updatedStocks = selectedPortfolio.stocks.map(s => s.id === stockId ? updatedStock : s);
+      } else {
+        // Stock was removed
+        updatedStocks = selectedPortfolio.stocks.filter(s => s.id !== stockId);
+      }
+      
+      const updated = { ...selectedPortfolio, stocks: updatedStocks };
+      setSelectedPortfolio(updated);
+      setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
+      setAnalysis(null);
+      toast.success('Stock reduced');
+    } catch (err) {
+      setError('Failed to reduce stock.');
+      toast.error('Failed to reduce stock.');
     }
   };
 
@@ -180,6 +214,7 @@ export const usePortfolioManager = () => {
     handleCheckSymbol,
     handleAddStock,
     handleRemoveStock,
+    handleReduceStock,
     handleAnalyze,
     handleAskCopilot
   };

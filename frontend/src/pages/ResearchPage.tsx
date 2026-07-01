@@ -165,7 +165,7 @@ const ResearchPage: React.FC = () => {
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="Find undervalued banking stocks..."
               disabled={isRunning}
-              className="w-full bg-slate-900/80 border border-slate-700 rounded-2xl py-5 pl-14 pr-36 text-white text-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-500 disabled:opacity-50"
+              className="w-full bg-[#111827]/80 border border-slate-700 rounded-2xl py-5 pl-14 pr-36 text-white text-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-500 disabled:opacity-50"
             />
             <button
               onClick={() => handleSearch()}
@@ -183,7 +183,7 @@ const ResearchPage: React.FC = () => {
                 key={i}
                 onClick={() => handleSearch(sq)}
                 disabled={isRunning}
-                className="px-4 py-2 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700 text-slate-300 hover:text-white rounded-xl text-sm transition disabled:opacity-50"
+                className="px-4 py-1.5 bg-[#111827] border border-slate-800 rounded-lg text-sm text-slate-400 hover:text-white hover:border-slate-600 transition disabled:opacity-50"
               >
                 {sq}
               </button>
@@ -198,7 +198,7 @@ const ResearchPage: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 mb-8 overflow-hidden"
+              className="bg-[#111827] border border-slate-800 rounded-2xl p-6 mb-8 text-center"
             >
               <h3 className="flex items-center gap-2 text-base font-bold mb-6 text-indigo-400">
                 <Brain size={18} className="animate-pulse" /> Running Research Pipeline for &ldquo;{query}&rdquo;
@@ -222,7 +222,7 @@ const ResearchPage: React.FC = () => {
                       }`}>
                         {isDone ? <CheckCircle size={16} /> : isActive ? <Loader2 size={16} className="animate-spin" /> : stage.icon}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 text-left">
                         <div className={`text-sm font-semibold ${
                           isDone ? 'text-emerald-400' : isActive ? 'text-white' : 'text-slate-500'
                         }`}>{stage.label}</div>
@@ -255,7 +255,7 @@ const ResearchPage: React.FC = () => {
               {/* Opportunity Cards */}
               {report.candidates && report.candidates.length > 0 && (
                 <div>
-                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
                     <TrendingUp size={20} className="text-emerald-400" />
                     Top Opportunities Found
                   </h2>
@@ -266,7 +266,7 @@ const ResearchPage: React.FC = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-slate-900/60 border border-slate-800 hover:border-indigo-500/40 rounded-2xl p-5 transition cursor-pointer group"
+                        className="bg-[#111827] border border-slate-800 hover:border-indigo-500/40 rounded-2xl p-5 transition cursor-pointer group"
                         onClick={() => navigate(`/analysis/${c.symbol}`)}
                       >
                         <div className="flex items-start justify-between mb-3">
@@ -306,9 +306,9 @@ const ResearchPage: React.FC = () => {
 
               {/* Full Markdown Report */}
               {report.generated_report && (
-                <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                <div className="bg-[#111827] border border-slate-800 rounded-2xl p-6 mb-8">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold flex items-center gap-2">
+                    <h2 className="text-xl font-bold flex items-center gap-2 text-white">
                       <FileText size={20} className="text-indigo-400" /> Full Research Report
                     </h2>
                   </div>

@@ -39,14 +39,14 @@ export const createPortfolio = async (name: string): Promise<PortfolioResponse> 
   return res.data;
 };
 
-export const addStockToPortfolio = async (portfolioId: number, data: { symbol: string; quantity: number; average_buy_price: number }): Promise<PortfolioStockResponse> => {
-  const res = await api.post(`/portfolios/${portfolioId}/stocks`, data);
-  return res.data;
-};
+export const addStockToPortfolio = (portfolioId: number, data: PortfolioStockCreate) =>
+  api.post<PortfolioStockResponse>(`/portfolios/${portfolioId}/stocks`, data).then(r => r.data);
 
-export const removeStockFromPortfolio = async (portfolioId: number, stockId: number): Promise<void> => {
-  await api.delete(`/portfolios/${portfolioId}/stocks/${stockId}`);
-};
+export const removeStockFromPortfolio = (portfolioId: number, stockId: number) =>
+  api.delete(`/portfolios/${portfolioId}/stocks/${stockId}`).then(r => r.data);
+
+export const reduceStockInPortfolio = (portfolioId: number, stockId: number, quantity: number) =>
+  api.post(`/portfolios/${portfolioId}/stocks/${stockId}/reduce`, { quantity }).then(r => r.data);
 
 export const analyzePortfolio = async (portfolioId: number): Promise<PortfolioAnalysisResponse> => {
   const res = await api.get(`/portfolios/${portfolioId}/analyze`);

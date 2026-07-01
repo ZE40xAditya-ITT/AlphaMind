@@ -27,16 +27,37 @@ class PortfolioService:
     def add_stock(self, db: Session, portfolio_id: int, user_id: int, data: PortfolioStockCreate) -> PortfolioStock:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
             
-        stock = PortfolioStock(
-            portfolio_id=portfolio.id,
-            symbol=data.symbol,
-            quantity=data.quantity,
-            average_buy_price=data.average_buy_price
-        )
-        db.add(stock)
-        db.commit()
-        db.refresh(stock)
-        return stock
+        existing_stock = db.query(PortfolioStock).filter(
+            PortfolioStock.portfolio_id == portfolio.id,
+            PortfolioStock.symbol == data.symbol
+        ).first()
+
+        if existing_stock:
+            # Merge: Calculate new quantity and average price
+            old_qty = existing_stock.quantity
+            old_price = existing_stock.average_buy_price
+            new_qty = data.quantity
+            new_price = data.average_buy_price
+            
+            total_qty = old_qty + new_qty
+            if total_qty > 0:
+                avg_price = ((old_qty * old_price) + (new_qty * new_price)) / total_qty
+                existing_stock.quantity = total_qty
+                existing_stock.average_buy_price = avg_price
+            db.commit()
+            db.refresh(existing_stock)
+            return existing_stock
+        else:
+            stock = PortfolioStock(
+                portfolio_id=portfolio.id,
+                symbol=data.symbol,
+                quantity=data.quantity,
+                average_buy_price=data.average_buy_price
+            )
+            db.add(stock)
+            db.commit()
+            db.refresh(stock)
+            return stock
 
     def remove_stock(self, db: Session, portfolio_id: int, user_id: int, stock_id: int) -> None:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
@@ -45,6 +66,22 @@ class PortfolioService:
             raise HTTPException(status_code=404, detail="Stock not found in portfolio")
         db.delete(stock)
         db.commit()
+
+    def reduce_stock(self, db: Session, portfolio_id: int, user_id: int, stock_id: int, reduce_quantity: float) -> PortfolioStock | None:
+        portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
+        stock = db.query(PortfolioStock).filter(PortfolioStock.id == stock_id, PortfolioStock.portfolio_id == portfolio.id).first()
+        if not stock:
+            raise HTTPException(status_code=404, detail="Stock not found in portfolio")
+            
+        if reduce_quantity >= stock.quantity:
+            db.delete(stock)
+            db.commit()
+            return None
+        else:
+            stock.quantity -= reduce_quantity
+            db.commit()
+            db.refresh(stock)
+            return stock
 
     def analyze_portfolio(self, db: Session, portfolio_id: int, user_id: int) -> PortfolioAnalysisResponse:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)

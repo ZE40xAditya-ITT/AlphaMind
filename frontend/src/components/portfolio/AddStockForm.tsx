@@ -29,7 +29,7 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
   setNewPrice
 }) => {
   return (
-    <form onSubmit={handleAddStock} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/50 items-end">
+    <form onSubmit={handleAddStock} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 bg-[#111827] p-4 rounded-2xl border border-slate-800 items-end">
       <div className="col-span-1 md:col-span-2 relative">
         <input 
           list="popular-stocks" 
@@ -37,8 +37,7 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
           type="text" 
           placeholder="Symbol (e.g., INFY.NS)" 
           value={newSymbol} 
-          onChange={e => { setNewSymbol(e.target.value); setPriceFetched(false); }} 
-          className="w-full bg-white dark:bg-slate-900 px-4 py-2 rounded-xl outline-none pr-24" 
+          className="w-full bg-[#1f2937] text-white px-4 py-2 rounded-xl border border-slate-700 outline-none pr-24" 
         />
         <datalist id="popular-stocks">
           <option value="RELIANCE.NS">Reliance Industries</option>
@@ -56,30 +55,17 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
           type="button" 
           onClick={handleCheckSymbol} 
           disabled={!newSymbol || isFetchingPrice} 
-          className="absolute right-1 top-1 bottom-1 px-3 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-semibold rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition text-sm disabled:opacity-50 flex items-center justify-center min-w-[70px]"
+          className="absolute right-1 top-1 bottom-1 px-3 bg-indigo-900/40 text-indigo-400 font-semibold rounded-lg hover:bg-indigo-800/60 transition text-sm disabled:opacity-50 flex items-center justify-center min-w-[70px]"
         >
           {isFetchingPrice ? <Loader2 size={16} className="animate-spin" /> : (priceFetched ? <Check size={16}/> : 'Fetch')}
         </button>
       </div>
-      <input 
-        required 
-        type="number" 
-        step="0.01" 
-        placeholder="Quantity" 
-        value={newQuantity} 
-        onChange={e => setNewQuantity(e.target.value)} 
-        className="bg-white dark:bg-slate-900 px-4 py-2 rounded-xl outline-none" 
-      />
-      <input 
-        required 
-        type="number" 
-        step="0.01" 
-        placeholder="Avg Buy Price" 
-        value={newPrice} 
-        onChange={e => setNewPrice(e.target.value)} 
-        className="bg-white dark:bg-slate-900 px-4 py-2 rounded-xl outline-none" 
-        title="Your entry price" 
-      />
+      <div className="col-span-1">
+        <input required type="number" step="0.01" min="1" placeholder="Qty" value={newQuantity} onChange={e => setNewQuantity(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
+      </div>
+      <div className="col-span-1">
+        <input required type="number" step="0.01" min="1" placeholder="Avg Price" value={newPrice} onChange={e => setNewPrice(e.target.value)} className="w-full bg-[#1f2937] text-white border border-slate-700 px-4 py-2 rounded-xl outline-none" />
+      </div>
       <button 
         type="submit" 
         disabled={!priceFetched} 

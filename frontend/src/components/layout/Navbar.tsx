@@ -108,8 +108,12 @@ const Navbar: React.FC = () => {
 
           {/* Divider + user */}
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white text-[10px] shadow shadow-primary/30">
-              {user.username.substring(0, 2).toUpperCase()}
+            <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-sm shadow-primary/20 shrink-0">
+              <img 
+                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.username}`} 
+                alt={user.username}
+                className="w-full h-full object-cover bg-amber-50"
+              />
             </div>
             <div className="hidden sm:block leading-tight">
               <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">{user.username}</p>

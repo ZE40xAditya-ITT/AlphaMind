@@ -45,74 +45,39 @@ const PortfolioPage: React.FC = () => {
   if (loading) return <LoadingSpinner fullPage message="Loading Portfolios..." />;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1121] text-slate-800 dark:text-slate-200 font-sans pb-20">
+    <div className="min-h-screen bg-[#0B1121] text-white font-sans pb-20">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-8">
         <header>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
             <PieChart className="text-indigo-500" size={32} />
             AI Portfolio Advisor
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
+          <p className="text-slate-400 mt-2 max-w-2xl">
             Evaluate your entire investment portfolio. AlphaMind calculates diversification, sector allocation, and overall risk to generate actionable AI insights.
           </p>
         </header>
 
         {error && (
-          <div className="bg-rose-50 text-rose-600 p-4 rounded-xl flex items-center gap-3">
+          <div className="bg-rose-900/20 text-rose-400 border border-rose-900 p-4 rounded-xl flex items-center gap-3">
             <AlertTriangle size={20} /> {error}
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="glass dark:glass p-6 rounded-3xl">
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <Briefcase size={18} /> My Portfolios
-              </h2>
-              <div className="space-y-2 mb-6">
-                {portfolios.map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => { setSelectedPortfolio(p); setAnalysis(null); }}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition ${
-                      selectedPortfolio?.id === p.id 
-                        ? 'bg-indigo-600 text-white shadow-md' 
-                        : 'bg-white/50 dark:bg-slate-800/40 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
-                  >
-                    {p.name}
-                  </button>
-                ))}
-              </div>
-
-              <form onSubmit={handleCreatePortfolio} className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Create New</p>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newPortfolioName}
-                    onChange={e => setNewPortfolioName(e.target.value)}
-                    placeholder="E.g., Retirement Fund"
-                    className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                  />
-                  <button type="submit" className="bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 px-3 py-2 rounded-lg hover:opacity-90">
-                    <Plus size={18} />
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-4 space-y-8">
             {selectedPortfolio ? (
               <>
-                <div className="glass dark:glass p-6 rounded-3xl">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">{selectedPortfolio.name} Holdings</h2>
+                <div className="bg-[#111827] border border-slate-800 p-6 rounded-3xl">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h2 className="text-2xl font-bold flex items-center gap-3 text-white">
+                      {selectedPortfolio.name}
+                      <span className="px-3 py-1 bg-indigo-500/20 text-indigo-400 text-xs rounded-full border border-indigo-500/30">
+                        {selectedPortfolio.stocks.length} Holdings
+                      </span>
+                    </h2>
                     <button 
                       onClick={handleAnalyze}
                       disabled={analyzing || selectedPortfolio.stocks.length === 0}

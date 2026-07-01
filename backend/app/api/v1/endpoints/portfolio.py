@@ -57,6 +57,24 @@ def remove_stock_from_portfolio(
     service.remove_stock(db, portfolio_id, current_user.id, stock_id)
     return {"status": "success", "message": "Stock removed from portfolio"}
 
+class ReduceStockRequest(BaseModel):
+    quantity: float
+
+@router.post("/{portfolio_id}/stocks/{stock_id}/reduce")
+def reduce_stock_in_portfolio(
+    portfolio_id: int,
+    stock_id: int,
+    data: ReduceStockRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    service: PortfolioService = Depends(get_portfolio_service)
+):
+    """Reduce the quantity of a stock in a portfolio."""
+    stock = service.reduce_stock(db, portfolio_id, current_user.id, stock_id, data.quantity)
+    if stock is None:
+        return {"status": "success", "message": "Stock removed from portfolio"}
+    return stock
+
 @router.get("/{portfolio_id}/analyze", response_model=PortfolioAnalysisResponse)
 def analyze_portfolio(
     portfolio_id: int,
