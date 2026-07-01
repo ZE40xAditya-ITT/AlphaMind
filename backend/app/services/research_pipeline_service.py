@@ -217,8 +217,20 @@ Write a complete markdown report with:
             yield event("ranking", "running", message="Ranking opportunities...")
             top_candidates = scored[:requested_amount]
             yield event("ranking", "done", message=f"Top {len(top_candidates)} opportunities ranked")
-            yield event("ai_report", "running", message="Generating AI research report...")
-            report_text = self._generate_report(query, top_candidates)
+            yield event("ai_report", "running", message="Generating AI research report... (this takes a moment)")
+            
+            import concurrent.futures
+            import time
+            report_text = None
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(self._generate_report, query, top_candidates)
+                while not future.done():
+                    # Send a keep-alive ping every 5 seconds to prevent Render/Vercel proxy timeout
+                    yield ": keep-alive\n\n"
+                    time.sleep(5)
+                report_text = future.result()
+
             report = db.query(ResearchReport).filter(ResearchReport.id == report_id).first()
             if report:
                 report.status = "done"
@@ -228,8 +240,9 @@ Write a complete markdown report with:
             yield event("ai_report", "done", message="Report ready!", report_id=report_id, candidates=top_candidates)
             yield event("complete", "done", report_id=report_id)
         except Exception as e:
+            yield event("error", "failed", message=str(e))
+        finally:
             report = db.query(ResearchReport).filter(ResearchReport.id == report_id).first()
-            if report:
+            if report and report.status == "running":
                 report.status = "failed"
                 db.commit()
-            yield event("error", "failed", message=str(e))
