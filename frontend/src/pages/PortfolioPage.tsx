@@ -38,6 +38,7 @@ const PortfolioPage: React.FC = () => {
     handleCheckSymbol,
     handleAddStock,
     handleRemoveStock,
+    handleReduceStock,
     handleAnalyze,
     handleAskCopilot
   } = usePortfolioManager();
@@ -106,6 +107,7 @@ const PortfolioPage: React.FC = () => {
                     selectedPortfolio={selectedPortfolio}
                     analysis={analysis}
                     handleRemoveStock={handleRemoveStock}
+                    handleReduceStock={handleReduceStock}
                   />
                 </div>
 
