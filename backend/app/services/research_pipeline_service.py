@@ -41,6 +41,15 @@ SECTOR_MAP = {
 }
 
 
+from app.providers.yahoo_finance_provider import YahooFinanceProvider
+from app.providers.finnhub_provider import FinnhubProvider
+from app.providers.fallback_market_provider import FallbackMarketDataProvider
+
+# Initialize providers
+yahoo = YahooFinanceProvider()
+finnhub = FinnhubProvider()
+market_provider = FallbackMarketDataProvider(primary=yahoo, secondary=finnhub)
+
 class ResearchPipelineService:
     def __init__(self):
         try:
@@ -66,31 +75,22 @@ class ResearchPipelineService:
         
         def fetch_stock_info(sym: str):
             try:
-                session = requests.Session()
-                session.headers.update({
-                    "User-Agent": random.choice([
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1",
-                    ]),
-                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                    "Accept-Language": "en-US,en;q=0.5",
-                })
-                ticker = yf.Ticker(f"{sym}.NS", session=session)
-                info = ticker.info or {}
+                info = market_provider.get_company_info(sym)
                 if not info or len(info) < 5:
                     return None
+                    
+                # Use current price if regularMarketPrice is missing
+                price = info.get("currentPrice") or info.get("regularMarketPrice") or info.get("navPrice") or 0
+                
                 return {
                     "symbol": sym,
-                    "name": info.get("longName") or info.get("shortName", sym),
-                    "sector": info.get("sector", "Unknown"),
-                    "price": info.get("currentPrice") or info.get("regularMarketPrice", 0),
+                    "name": info.get("longName") or info.get("shortName") or sym,
+                    "sector": info.get("sector") or info.get("finnhubIndustry") or "Unknown",
+                    "price": price,
                     "pe": info.get("trailingPE"),
                     "roe": info.get("returnOnEquity"),
                     "debt_equity": info.get("debtToEquity"),
-                    "market_cap": info.get("marketCap"),
+                    "market_cap": info.get("marketCap") or info.get("marketCapitalization"),
                     "revenue_growth": info.get("revenueGrowth"),
                     "eps_growth": info.get("earningsGrowth"),
                 }
