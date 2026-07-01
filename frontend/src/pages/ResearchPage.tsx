@@ -53,6 +53,7 @@ const ResearchPage: React.FC = () => {
   const [history, setHistory] = useState<any[]>([]);
   const [error, setError] = useState('');
   const eventSourceRef = useRef<EventSource | null>(null);
+  const pollIntervalRef = useRef<any>(null);
 
   useEffect(() => {
     getResearchHistory().then(setHistory).catch(() => {});
@@ -93,9 +94,27 @@ const ResearchPage: React.FC = () => {
       };
 
       es.onerror = () => {
+        // Vercel/Render proxies drop idle connections after 60-100s.
+        // The backend AI is likely still running. We switch to polling.
         es.close();
-        setIsRunning(false);
-        setError('Connection lost. Please try again.');
+        
+        pollIntervalRef.current = setInterval(async () => {
+          try {
+            const r = await getResearchReport(report_id);
+            if (r.status === 'done') {
+              clearInterval(pollIntervalRef.current);
+              setIsRunning(false);
+              setReport(r);
+              getResearchHistory().then(setHistory).catch(() => {});
+            } else if (r.status === 'failed') {
+              clearInterval(pollIntervalRef.current);
+              setIsRunning(false);
+              setError('Research pipeline failed on server.');
+            }
+          } catch (e) {
+            // Ignore temporary network errors during polling
+          }
+        }, 5000);
       };
     } catch (e: any) {
       setIsRunning(false);
@@ -104,7 +123,10 @@ const ResearchPage: React.FC = () => {
   };
 
   useEffect(() => {
-    return () => { eventSourceRef.current?.close(); };
+    return () => { 
+      eventSourceRef.current?.close();
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
   }, []);
 
   return (
