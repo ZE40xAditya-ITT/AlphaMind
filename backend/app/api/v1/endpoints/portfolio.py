@@ -34,6 +34,17 @@ def get_portfolios(
     """Get all portfolios for the current user."""
     return service.get_portfolios(db, current_user.id)
 
+@router.delete("/{portfolio_id}")
+def delete_portfolio(
+    portfolio_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    service: PortfolioService = Depends(get_portfolio_service)
+):
+    """Delete a portfolio."""
+    service.delete_portfolio(db, current_user.id, portfolio_id)
+    return {"status": "success", "message": "Portfolio deleted successfully"}
+
 @router.post("/{portfolio_id}/stocks", response_model=PortfolioStockResponse)
 def add_stock_to_portfolio(
     portfolio_id: int,

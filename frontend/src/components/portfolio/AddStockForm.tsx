@@ -1,5 +1,6 @@
-import React from 'react';
-import { Plus, Check, Loader2 } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Plus, Check, Loader2, TrendingUp } from 'lucide-react';
+import { NSE_STOCKS } from '../../utils/nseStocks';
 
 interface AddStockFormProps {
   handleAddStock: (e: React.FormEvent) => void;
@@ -28,33 +29,63 @@ const AddStockForm: React.FC<AddStockFormProps> = ({
   newPrice,
   setNewPrice
 }) => {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const matchingStocks = useMemo(() => {
+    if (!newSymbol.trim()) return NSE_STOCKS.slice(0, 50);
+    const q = newSymbol.toLowerCase().replace('.ns', '').replace('.bo', '').trim();
+    return NSE_STOCKS.filter(s => 
+      s.symbol.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
+    ).slice(0, 60);
+  }, [newSymbol]);
+
   return (
-    <form onSubmit={handleAddStock} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 bg-[#111827] p-4 rounded-2xl border border-slate-800 items-end">
+    <form onSubmit={handleAddStock} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 bg-[#111827] p-4 rounded-2xl border border-slate-800 items-end relative">
       <div className="col-span-1 md:col-span-2 relative">
         <input 
-          list="popular-stocks" 
+          list="nse-stocks" 
           required 
           type="text" 
-          placeholder="Symbol (e.g., INFY.NS)" 
+          placeholder="Search Symbol or Name (e.g. RELIANCE, TCS)..." 
           value={newSymbol} 
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           onChange={e => {
             setNewSymbol(e.target.value);
             setPriceFetched(false);
+            setShowSuggestions(true);
           }}
-          className="w-full bg-[#1f2937] text-white px-4 py-2 rounded-xl border border-slate-700 outline-none pr-24" 
+          className="w-full bg-[#1f2937] text-white px-4 py-2 rounded-xl border border-slate-700 outline-none pr-24 focus:border-indigo-500 transition" 
         />
-        <datalist id="popular-stocks">
-          <option value="RELIANCE.NS">Reliance Industries</option>
-          <option value="TCS.NS">Tata Consultancy Services</option>
-          <option value="HDFCBANK.NS">HDFC Bank</option>
-          <option value="INFY.NS">Infosys</option>
-          <option value="ICICIBANK.NS">ICICI Bank</option>
-          <option value="HINDUNILVR.NS">Hindustan Unilever</option>
-          <option value="ITC.NS">ITC Limited</option>
-          <option value="SBIN.NS">State Bank of India</option>
-          <option value="BHARTIARTL.NS">Bharti Airtel</option>
-          <option value="BAJFINANCE.NS">Bajaj Finance</option>
+        <datalist id="nse-stocks">
+          {matchingStocks.map(s => (
+            <option key={s.symbol} value={`${s.symbol}.NS`}>
+              {s.name} ({s.symbol})
+            </option>
+          ))}
         </datalist>
+        {showSuggestions && newSymbol.trim().length > 0 && matchingStocks.length > 0 && (
+          <div className="absolute left-0 right-0 top-full mt-2 bg-[#1e293b] border border-slate-700 rounded-2xl shadow-2xl z-50 max-h-60 overflow-y-auto divide-y divide-slate-800">
+            {matchingStocks.map(s => (
+              <div
+                key={s.symbol}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setNewSymbol(`${s.symbol}.NS`);
+                  setShowSuggestions(false);
+                  setPriceFetched(false);
+                }}
+                className="px-4 py-2.5 hover:bg-indigo-600/20 hover:text-white cursor-pointer flex items-center justify-between text-xs transition"
+              >
+                <div>
+                  <span className="font-bold text-white">{s.symbol}.NS</span>
+                  <span className="text-slate-400 ml-2 block sm:inline text-[11px]">{s.name}</span>
+                </div>
+                <TrendingUp size={14} className="text-indigo-400 shrink-0" />
+              </div>
+            ))}
+          </div>
+        )}
         <button 
           type="button" 
           onClick={handleCheckSymbol} 

@@ -24,6 +24,11 @@ class PortfolioService:
             raise HTTPException(status_code=404, detail="Portfolio not found")
         return portfolio
 
+    def delete_portfolio(self, db: Session, user_id: int, portfolio_id: int) -> None:
+        portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
+        db.delete(portfolio)
+        db.commit()
+
     def add_stock(self, db: Session, portfolio_id: int, user_id: int, data: PortfolioStockCreate) -> PortfolioStock:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
             

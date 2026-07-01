@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  getPortfolios, createPortfolio, addStockToPortfolio, analyzePortfolio, askPortfolioCopilot, removeStockFromPortfolio,
+  getPortfolios, createPortfolio, addStockToPortfolio, analyzePortfolio, askPortfolioCopilot, removeStockFromPortfolio, deletePortfolio,
   PortfolioResponse, PortfolioAnalysisResponse 
 } from '../services/portfolioService';
 import { getStockDetails } from '../services/stockService';
@@ -167,6 +167,21 @@ export const usePortfolioManager = () => {
     }
   };
 
+  const handleDeletePortfolio = async (portfolioId: number) => {
+    if (!window.confirm('Are you sure you want to delete this portfolio and all its holdings?')) return;
+    try {
+      await deletePortfolio(portfolioId);
+      const remaining = portfolios.filter(p => p.id !== portfolioId);
+      setPortfolios(remaining);
+      setSelectedPortfolio(remaining.length > 0 ? remaining[0] : null);
+      setAnalysis(null);
+      toast.success('Portfolio deleted successfully');
+    } catch (err) {
+      setError('Failed to delete portfolio.');
+      toast.error('Failed to delete portfolio.');
+    }
+  };
+
   const handleAnalyze = async () => {
     if (!selectedPortfolio) return;
     setAnalyzing(true);
@@ -226,6 +241,7 @@ export const usePortfolioManager = () => {
     priceFetched,
     setPriceFetched,
     handleCreatePortfolio,
+    handleDeletePortfolio,
     handleCheckSymbol,
     handleAddStock,
     handleRemoveStock,

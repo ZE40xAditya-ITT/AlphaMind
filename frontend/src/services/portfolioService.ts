@@ -39,6 +39,9 @@ export const createPortfolio = async (name: string): Promise<PortfolioResponse> 
   return res.data;
 };
 
+export const deletePortfolio = (portfolioId: number) =>
+  api.delete(`/portfolios/${portfolioId}`).then(r => r.data);
+
 export const addStockToPortfolio = (portfolioId: number, data: PortfolioStockCreate) =>
   api.post<PortfolioStockResponse>(`/portfolios/${portfolioId}/stocks`, data).then(r => r.data);
 

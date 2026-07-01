@@ -6,7 +6,7 @@ import PortfolioTable from '../components/portfolio/PortfolioTable';
 import PortfolioMetrics from '../components/portfolio/PortfolioMetrics';
 import AddStockForm from '../components/portfolio/AddStockForm';
 
-import { PieChart, Briefcase, Plus, TrendingUp, AlertTriangle, Loader2 } from 'lucide-react';
+import { PieChart, Briefcase, Plus, TrendingUp, AlertTriangle, Loader2, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const PortfolioPage: React.FC = () => {
@@ -35,6 +35,7 @@ const PortfolioPage: React.FC = () => {
     priceFetched,
     setPriceFetched,
     handleCreatePortfolio,
+    handleDeletePortfolio,
     handleCheckSymbol,
     handleAddStock,
     handleRemoveStock,
@@ -116,14 +117,24 @@ const PortfolioPage: React.FC = () => {
                         {selectedPortfolio.stocks.length} Holdings
                       </span>
                     </h2>
-                    <button 
-                      onClick={handleAnalyze}
-                      disabled={analyzing || selectedPortfolio.stocks.length === 0}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {analyzing ? <Loader2 size={18} className="animate-spin" /> : <TrendingUp size={18} />}
-                      Analyze with AI
-                    </button>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button 
+                        onClick={() => handleDeletePortfolio(selectedPortfolio.id)}
+                        className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition text-sm"
+                        title="Delete Portfolio"
+                      >
+                        <Trash2 size={16} />
+                        Delete Portfolio
+                      </button>
+                      <button 
+                        onClick={handleAnalyze}
+                        disabled={analyzing || selectedPortfolio.stocks.length === 0}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {analyzing ? <Loader2 size={18} className="animate-spin" /> : <TrendingUp size={18} />}
+                        Analyze with AI
+                      </button>
+                    </div>
                   </div>
 
                   <AddStockForm 
