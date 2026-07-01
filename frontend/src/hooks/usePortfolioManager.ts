@@ -26,6 +26,7 @@ export const usePortfolioManager = () => {
   const [isAskingCopilot, setIsAskingCopilot] = useState(false);
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
   const [priceFetched, setPriceFetched] = useState(false);
+  const [liveMarketPrice, setLiveMarketPrice] = useState<number | null>(null);
 
   useEffect(() => {
     fetchPortfolios();
@@ -70,9 +71,9 @@ export const usePortfolioManager = () => {
     try {
       const stockDetails = await getStockDetails(sym);
       if (stockDetails && stockDetails.current_price) {
-        setNewPrice(stockDetails.current_price.toString());
+        setLiveMarketPrice(stockDetails.current_price);
         setPriceFetched(true);
-        toast.success(`Fetched market price for ${sym}: ₹${stockDetails.current_price}`);
+        toast.success(`Fetched live market price for ${sym}: ₹${stockDetails.current_price}`);
       } else {
         setPriceFetched(true);
       }
@@ -115,7 +116,7 @@ export const usePortfolioManager = () => {
       };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
-      setNewSymbol(''); setNewQuantity('1'); setNewPrice(''); setPriceFetched(false);
+      setNewSymbol(''); setNewQuantity('1'); setNewPrice(''); setPriceFetched(false); setLiveMarketPrice(null);
       setAnalysis(null); // invalidate analysis
       toast.success('Stock added successfully');
     } catch (err) {
@@ -240,6 +241,7 @@ export const usePortfolioManager = () => {
     isFetchingPrice,
     priceFetched,
     setPriceFetched,
+    liveMarketPrice,
     handleCreatePortfolio,
     handleDeletePortfolio,
     handleCheckSymbol,

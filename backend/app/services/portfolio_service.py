@@ -4,6 +4,37 @@ from app.schemas.portfolio import PortfolioCreate, PortfolioStockCreate, Portfol
 from app.services.stock_analysis_service import StockAnalysisService
 from fastapi import HTTPException
 
+def resolve_stock_sector(symbol: str, raw_sector: str = None) -> str:
+    if raw_sector and raw_sector.strip() and raw_sector != "Unknown":
+        return raw_sector.strip()
+    sym = symbol.upper().replace(".NS", "").replace(".BO", "").strip()
+    try:
+        from app.services.research_pipeline_service import STOCK_FALLBACK_CATALOG
+        if sym in STOCK_FALLBACK_CATALOG:
+            return STOCK_FALLBACK_CATALOG[sym].get("sector", "Diversified")
+    except Exception:
+        pass
+    
+    if any(k in sym for k in ["BANK", "HDFC", "ICICI", "KOTAK", "SBI", "FIN", "BAJAJ", "MUTHOOT", "CHOLA", "IDFC"]):
+        return "Financial Services"
+    if any(k in sym for k in ["TCS", "INFY", "WIPRO", "HCL", "TECH", "MINDTREE", "COFORGE", "LTIM", "SOFT", "CYIENT"]):
+        return "Information Technology"
+    if any(k in sym for k in ["PHARMA", "LAB", "DRREDDY", "CIPLA", "LUPIN", "BIOCON", "APOLLO", "HEALTH", "MED", "DIVI"]):
+        return "Healthcare"
+    if any(k in sym for k in ["AUTO", "MOTOR", "MARUTI", "EICHER", "MAHINDRA", "TYRE", "HERO", "TVS", "BOSCH"]):
+        return "Automobile"
+    if any(k in sym for k in ["OIL", "GAS", "PETRO", "ENERGY", "POWER", "COAL", "ONGC", "NTPC", "RELIANCE", "ADANI", "SOLAR", "GRID"]):
+        return "Energy & Power"
+    if any(k in sym for k in ["STEEL", "METAL", "MINING", "HINDALCO", "VEDL", "JINDAL", "COPPER", "ALUMINIUM"]):
+        return "Metals & Mining"
+    if any(k in sym for k in ["LEVER", "ITC", "NESTLE", "DABUR", "MARICO", "BRITANNIA", "COLGATE", "FMCG", "CONSUMER", "GODREJ", "TITAN"]):
+        return "Consumer Goods"
+    if any(k in sym for k in ["CEMENT", "INFRA", "CONSTRUCTION", "REALTY", "DLF", "L&T", "LT", "GRASIM", "PORT", "BUILD"]):
+        return "Construction & Infrastructure"
+    if any(k in sym for k in ["AIRTEL", "TELE", "VODAFONE", "IDEA", "COMM"]):
+        return "Telecommunication"
+    return "Diversified"
+
 class PortfolioService:
     def __init__(self, stock_service: StockAnalysisService):
         self.stock_service = stock_service
@@ -127,7 +158,7 @@ class PortfolioService:
                 total_invested += invested
                 total_value += current_value
                 
-                sector = analysis.sector or "Unknown"
+                sector = resolve_stock_sector(stock.symbol, analysis.sector)
                 sector_allocation[sector] = sector_allocation.get(sector, 0.0) + current_value
                 
             except Exception as e:
@@ -146,6 +177,9 @@ class PortfolioService:
                 })
                 total_invested += invested
                 total_value += invested
+                
+                sector = resolve_stock_sector(stock.symbol)
+                sector_allocation[sector] = sector_allocation.get(sector, 0.0) + invested
                 
         if total_invested > 0:
             overall_return_pct = ((total_value - total_invested) / total_invested) * 100

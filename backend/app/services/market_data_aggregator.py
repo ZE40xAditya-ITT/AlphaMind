@@ -67,7 +67,13 @@ class MarketDataAggregator:
 
         # Extract metadata
         company_name = info.get("longName") or info.get("shortName") or self._get_clean_symbol(symbol)
-        sector = info.get("sector") or "Unknown"
+        sector = info.get("sector")
+        if not sector or sector == "Unknown":
+            try:
+                from app.services.portfolio_service import resolve_stock_sector
+                sector = resolve_stock_sector(symbol, sector)
+            except Exception:
+                sector = "Diversified"
 
         # 4. Fetch Description
         description = info.get("longBusinessSummary") or info.get("description") or info.get("businessSummary")

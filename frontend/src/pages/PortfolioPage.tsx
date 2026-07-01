@@ -34,6 +34,7 @@ const PortfolioPage: React.FC = () => {
     isFetchingPrice,
     priceFetched,
     setPriceFetched,
+    liveMarketPrice,
     handleCreatePortfolio,
     handleDeletePortfolio,
     handleCheckSymbol,
@@ -149,6 +150,7 @@ const PortfolioPage: React.FC = () => {
                     setNewQuantity={setNewQuantity}
                     newPrice={newPrice}
                     setNewPrice={setNewPrice}
+                    liveMarketPrice={liveMarketPrice}
                   />
 
                   <PortfolioTable 
