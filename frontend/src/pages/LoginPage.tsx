@@ -50,14 +50,14 @@ const LoginPage: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <div className="relative min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 overflow-hidden">
-        
+
         {/* Background Decorative Glow Blobs */}
         <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-blue-600/10 blur-[100px] glow-blue"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-purple-600/10 blur-[100px] glow-purple"></div>
 
         {/* Login Card Container */}
         <div className="relative w-full max-w-md glass dark:glass rounded-2xl p-8 shadow-2xl animate-slide-up">
-          
+
           {/* Logo and Tagline */}
           <div className="flex flex-col items-center mb-8 text-center">
             <div className="w-16 h-16 flex items-center justify-center mb-4">
@@ -175,7 +175,7 @@ const LoginPage: React.FC = () => {
                 Sign up
               </Link>
             </p>
-            
+
           </div>
 
         </div>

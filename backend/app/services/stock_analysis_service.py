@@ -12,7 +12,7 @@ class StockAnalysisService:
     High-level orchestrator for analyzing stocks.
     Delegates to MarketDataAggregator, AnalysisEngine, InstitutionalService, and NewsService.
     """
-    
+
     def __init__(
         self,
         market_data_aggregator: MarketDataAggregator,
@@ -27,13 +27,13 @@ class StockAnalysisService:
 
     def analyze_stock(self, db: Session, user_id: int, raw_symbol: str) -> StockAnalysisResponse:
         """Orchestrate the full technical and fundamental analysis of a stock."""
-        
+
         # 1. Fetch Market Data
         symbol, hist, info, company_name, sector, current_price, description = self.market_data_aggregator.get_market_data(raw_symbol)
-        
+
         # 2. Perform Analysis
         tech_analysis, fund_analysis, final_score, recommendation, rank_label = self.analysis_engine.analyze(hist, info)
-        
+
         # 3. Fetch Institutional Holdings & News
         holdings = self.institutional_service.get_holdings(db, symbol)
         news_articles = self.news_service.get_news(db, symbol)
@@ -75,7 +75,7 @@ class StockAnalysisService:
         """Compare two stocks."""
         stock1_analysis = self.analyze_stock(db, user_id, symbol1)
         stock2_analysis = self.analyze_stock(db, user_id, symbol2)
-        
+
         if stock1_analysis.final_score > stock2_analysis.final_score:
             winner = stock1_analysis.symbol
             diff = stock1_analysis.final_score - stock2_analysis.final_score

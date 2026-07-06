@@ -7,7 +7,7 @@ interface TooltipProps {
 
 const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
   if (!content) return <>{children}</>;
-  
+
   return (
     <div className="relative group inline-flex items-center justify-center">
       {children}

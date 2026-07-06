@@ -15,7 +15,7 @@ class NewsService:
             NewsCache.symbol == symbol,
             NewsCache.created_at >= threshold
         ).all()
-        
+
         if cached_news:
             return [
                 {
@@ -27,16 +27,16 @@ class NewsService:
                 }
                 for item in cached_news
             ]
-            
+
         # Clear old cache for this symbol to avoid unbound growth
         db.query(NewsCache).filter(NewsCache.symbol == symbol).delete()
         db.commit()
-        
+
         # Fetch fresh news
         news_data = self.provider.get_latest_news(symbol)
         if not news_data:
             return []
-            
+
         # Save to DB
         new_items = []
         for article in news_data:
@@ -50,9 +50,9 @@ class NewsService:
             )
             db.add(item)
             new_items.append(item)
-            
+
         db.commit()
-        
+
         return [
             {
                 "title": item.title,

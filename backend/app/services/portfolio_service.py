@@ -14,7 +14,7 @@ def resolve_stock_sector(symbol: str, raw_sector: str = None) -> str:
             return STOCK_FALLBACK_CATALOG[sym].get("sector", "Diversified")
     except Exception:
         pass
-    
+
     if any(k in sym for k in ["BANK", "HDFC", "ICICI", "KOTAK", "SBI", "FIN", "BAJAJ", "MUTHOOT", "CHOLA", "IDFC"]):
         return "Financial Services"
     if any(k in sym for k in ["TCS", "INFY", "WIPRO", "HCL", "TECH", "MINDTREE", "COFORGE", "LTIM", "SOFT", "CYIENT"]):
@@ -48,7 +48,7 @@ class PortfolioService:
 
     def get_portfolios(self, db: Session, user_id: int) -> list[Portfolio]:
         return db.query(Portfolio).filter(Portfolio.user_id == user_id).all()
-        
+
     def get_portfolio_by_id(self, db: Session, user_id: int, portfolio_id: int) -> Portfolio:
         portfolio = db.query(Portfolio).filter(Portfolio.id == portfolio_id, Portfolio.user_id == user_id).first()
         if not portfolio:
@@ -62,7 +62,7 @@ class PortfolioService:
 
     def add_stock(self, db: Session, portfolio_id: int, user_id: int, data: PortfolioStockCreate) -> PortfolioStock:
         portfolio = self.get_portfolio_by_id(db, user_id, portfolio_id)
-            
+
         sym_clean = data.symbol.upper().replace(".NS", "").replace(".BO", "").strip()
         existing_stock = None
         for s in portfolio.stocks:
@@ -77,7 +77,7 @@ class PortfolioService:
             old_price = existing_stock.average_buy_price
             new_qty = data.quantity
             new_price = data.average_buy_price
-            
+
             total_qty = old_qty + new_qty
             if total_qty > 0:
                 avg_price = ((old_qty * old_price) + (new_qty * new_price)) / total_qty
@@ -113,7 +113,7 @@ class PortfolioService:
         stock = db.query(PortfolioStock).filter(PortfolioStock.id == stock_id, PortfolioStock.portfolio_id == portfolio.id).first()
         if not stock:
             raise HTTPException(status_code=404, detail="Stock not found in portfolio")
-            
+
         if reduce_quantity >= stock.quantity:
             db.delete(stock)
             db.commit()
@@ -131,18 +131,18 @@ class PortfolioService:
         total_invested = 0.0
         sector_allocation = {}
         asset_breakdown = []
-        
+
         for stock in portfolio.stocks:
             try:
                 # Fetch current analysis for each stock
                 analysis = self.stock_service.analyze_stock(db, user_id, stock.symbol)
                 current_price = analysis.current_price or stock.average_buy_price
-                
+
                 invested = stock.quantity * stock.average_buy_price
                 current_value = stock.quantity * current_price
                 return_abs = current_value - invested
                 return_pct = (return_abs / invested * 100) if invested > 0 else 0.0
-                
+
                 asset_breakdown.append({
                     "id": stock.id,
                     "symbol": stock.symbol,
@@ -154,13 +154,13 @@ class PortfolioService:
                     "return_pct": return_pct,
                     "return_abs": return_abs
                 })
-                
+
                 total_invested += invested
                 total_value += current_value
-                
+
                 sector = resolve_stock_sector(stock.symbol, analysis.sector)
                 sector_allocation[sector] = sector_allocation.get(sector, 0.0) + current_value
-                
+
             except Exception as e:
                 # If analysis fails, fallback to average_buy_price
                 invested = stock.quantity * stock.average_buy_price
@@ -177,36 +177,36 @@ class PortfolioService:
                 })
                 total_invested += invested
                 total_value += invested
-                
+
                 sector = resolve_stock_sector(stock.symbol)
                 sector_allocation[sector] = sector_allocation.get(sector, 0.0) + invested
-                
+
         if total_invested > 0:
             overall_return_pct = ((total_value - total_invested) / total_invested) * 100
         else:
             overall_return_pct = 0.0
-            
+
         # Normalize sector allocation to percentages
         if total_value > 0:
             for k in sector_allocation:
                 sector_allocation[k] = (sector_allocation[k] / total_value) * 100
-                
+
         # Diversification Score (HHI inverted)
         hhi = sum([(v/100)**2 for v in sector_allocation.values()])
         diversification_score = max(0.0, 100.0 - (hhi * 100))
-        
+
         # Mock AI Insights
         insights = []
         if diversification_score < 40:
             insights.append("Portfolio is heavily concentrated in a few sectors. Consider diversifying to reduce risk.")
         else:
             insights.append("Portfolio has a healthy level of sector diversification.")
-            
+
         if overall_return_pct > 15:
             insights.append("Your portfolio is strongly outperforming average market returns.")
         elif overall_return_pct < -5:
             insights.append("Your portfolio is underperforming. Review weak assets.")
-            
+
         return PortfolioAnalysisResponse(
             total_value=total_value,
             total_invested=total_invested,

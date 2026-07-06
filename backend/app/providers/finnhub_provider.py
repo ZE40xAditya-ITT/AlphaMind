@@ -32,12 +32,12 @@ class FinnhubProvider(MarketDataProvider):
     def get_historical_data(self, symbol: str) -> pd.DataFrame:
         if not self.is_configured():
             return pd.DataFrame()
-        
+
         clean_symbol = self._clean_symbol(symbol)
-        
+
         end = int(datetime.now().timestamp())
         start = int((datetime.now() - timedelta(days=365)).timestamp())
-        
+
         url = f"{self.base_url}/stock/candle?symbol={clean_symbol}&resolution=D&from={start}&to={end}&token={self.api_key}"
         try:
             res = requests.get(url, timeout=3)
@@ -61,10 +61,10 @@ class FinnhubProvider(MarketDataProvider):
     def get_company_info(self, symbol: str) -> Dict[str, Any]:
         if not self.is_configured():
             return {}
-            
+
         clean_symbol = self._clean_symbol(symbol)
         info = {}
-        
+
         try:
             # Get Quote
             q_res = requests.get(f"{self.base_url}/quote?symbol={clean_symbol}&token={self.api_key}", timeout=5)

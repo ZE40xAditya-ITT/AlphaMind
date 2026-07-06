@@ -17,7 +17,7 @@ class CopilotService:
             "2. Provide a concise, structured, and clear answer using markdown formatting. Use bold headings (e.g., **Heading**), bullet points, and short paragraphs. DO NOT repeat the user's question in your response.\n"
             "3. Ground your answers in the provided data context (which comes from Yahoo Finance and Wikipedia). If the context is missing, use your general financial knowledge."
         )
-        
+
         # Use a modern Gemini model
         try:
             self.model = genai.GenerativeModel(
@@ -33,29 +33,29 @@ class CopilotService:
         """
         if not self.model:
             return "Gemini API is not configured or failed to initialize."
-            
+
         try:
             # Gather grounding context
             analysis = self.stock_service.analyze_stock(db, user_id, symbol)
-            
+
             context = f"**Data Context for {analysis.company_name} ({symbol})**\n"
             context += f"Description (from Wikipedia): {analysis.description}\n"
             context += f"Current Price (from Yahoo Finance): ₹{analysis.current_price}\n"
             context += f"Recommendation: {analysis.recommendation} (Score: {analysis.final_score:.1f}/100)\n"
             context += f"Technical Insights: {analysis.technical.rsi.insight}\n"
             context += f"Fundamental Insights: {analysis.fundamental.roe.insight}\n"
-            
+
             if analysis.institutional:
                 context += f"Institutional Confidence: {analysis.institutional.insight}\n"
-                
+
             if analysis.news and len(analysis.news) > 0:
                 context += f"Recent News Sentiment: {analysis.news[0].sentiment}\n"
-                
+
             prompt = f"System Context:\n{context}\n\nUser Question:\n{question}"
-            
+
             response = self.model.generate_content(prompt)
             return response.text
-            
+
         except Exception as e:
             return f"I'm sorry, I could not gather enough context for {symbol} to answer your question. Error: {str(e)}"
 
@@ -65,21 +65,21 @@ class CopilotService:
         """
         if not self.model:
             return "Gemini API is not configured or failed to initialize."
-            
+
         try:
             context = f"**Data Context for User's Portfolio**\n"
             context += f"Total Value: ₹{analysis.total_value:,.2f}\n"
             context += f"Overall Return: {analysis.overall_return_pct:.2f}%\n"
             context += f"Diversification Score: {analysis.diversification_score:.0f}/100\n"
-            
+
             if hasattr(analysis, 'ai_insights') and analysis.ai_insights:
                 context += f"Key Insight: {analysis.ai_insights[0]}\n"
-                
+
             prompt = f"System Context:\n{context}\n\nUser Question:\n{question}"
-            
+
             response = self.model.generate_content(prompt)
             return response.text
-            
+
         except Exception as e:
             return f"I'm sorry, I could not gather enough context to answer your question. Error: {str(e)}"
 
@@ -89,7 +89,7 @@ class CopilotService:
         """
         if not self.model:
             return "Gemini API is not configured or failed to initialize."
-            
+
         try:
             prompt = f"User Question:\n{question}"
             response = self.model.generate_content(prompt)

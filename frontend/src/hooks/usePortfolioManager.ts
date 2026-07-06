@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   getPortfolios, createPortfolio, addStockToPortfolio, analyzePortfolio, askPortfolioCopilot, removeStockFromPortfolio, deletePortfolio,
-  PortfolioResponse, PortfolioAnalysisResponse 
+  PortfolioResponse, PortfolioAnalysisResponse
 } from '../services/portfolioService';
 import { getStockDetails } from '../services/stockService';
 import toast from 'react-hot-toast';
@@ -10,7 +10,7 @@ export const usePortfolioManager = () => {
   const [portfolios, setPortfolios] = useState<PortfolioResponse[]>([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState<PortfolioResponse | null>(null);
   const [analysis, setAnalysis] = useState<PortfolioAnalysisResponse | null>(null);
-  
+
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
@@ -107,12 +107,12 @@ export const usePortfolioManager = () => {
         const symClean = sym.replace('.NS', '').replace('.BO', '');
         return s.id !== stock.id && sClean !== symClean;
       });
-      const updated = { 
-        ...selectedPortfolio, 
+      const updated = {
+        ...selectedPortfolio,
         stocks: [
           ...updatedStocks,
           stock
-        ] 
+        ]
       };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
@@ -129,9 +129,9 @@ export const usePortfolioManager = () => {
     if (!selectedPortfolio) return;
     try {
       await removeStockFromPortfolio(selectedPortfolio.id, stockId);
-      const updated = { 
-        ...selectedPortfolio, 
-        stocks: selectedPortfolio.stocks.filter(s => s.id !== stockId) 
+      const updated = {
+        ...selectedPortfolio,
+        stocks: selectedPortfolio.stocks.filter(s => s.id !== stockId)
       };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));
@@ -148,7 +148,7 @@ export const usePortfolioManager = () => {
     try {
       const { reduceStockInPortfolio } = await import('../services/portfolioService');
       const updatedStock = await reduceStockInPortfolio(selectedPortfolio.id, stockId, quantityToReduce);
-      
+
       let updatedStocks;
       if (updatedStock && updatedStock.id) {
         updatedStocks = selectedPortfolio.stocks.map(s => s.id === stockId ? updatedStock : s);
@@ -156,7 +156,7 @@ export const usePortfolioManager = () => {
         // Stock was removed
         updatedStocks = selectedPortfolio.stocks.filter(s => s.id !== stockId);
       }
-      
+
       const updated = { ...selectedPortfolio, stocks: updatedStocks };
       setSelectedPortfolio(updated);
       setPortfolios(portfolios.map(p => p.id === updated.id ? updated : p));

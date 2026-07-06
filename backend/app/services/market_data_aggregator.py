@@ -83,7 +83,7 @@ class MarketDataAggregator:
         description = info.get("longBusinessSummary") or info.get("description") or info.get("businessSummary")
         if not description or len(str(description).strip()) < 15:
             description = self.company_info_provider.get_description(company_name)
-            
+
         if not description or len(str(description).strip()) < 15 or "currently unavailable" in str(description).lower():
             sec_label = sector if sector and sector != "Unknown" else "Diversified Industry"
             clean_sym = symbol.replace(".NS", "").replace(".BO", "").replace("^", "")
@@ -92,13 +92,13 @@ class MarketDataAggregator:
         current_price = info.get("currentPrice") or info.get("regularMarketPrice")
         if current_price is None and not hist.empty:
             current_price = float(hist["Close"].iloc[-1])
-            
+
         return symbol, hist, info, company_name, sector, current_price, description
 
     def get_basic_info(self, raw_symbol: str) -> Dict[str, Any]:
         symbol = self._normalize_symbol(raw_symbol)
         info = self.market_provider.get_company_info(symbol)
-        
+
         if not info or len(info) <= 5:
             # Fallback
             hist = self.market_provider.get_historical_data(symbol)
@@ -121,7 +121,7 @@ class MarketDataAggregator:
             }
 
         company_name = info.get("longName") or info.get("shortName") or self._get_clean_symbol(symbol)
-        
+
         return {
             "symbol": raw_symbol.strip().upper(),
             "company_name": company_name,

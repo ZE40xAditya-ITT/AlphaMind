@@ -23,7 +23,7 @@ const UserDashboard: React.FC = () => {
     const fetchHistory = async () => {
       try {
         const data = await getMyHistory();
-        
+
         // Deduplicate history to only show/count each stock once (latest search)
         const uniqueStocks = new Map<string, SearchHistoryItem>();
         data.forEach(item => {
@@ -31,7 +31,7 @@ const UserDashboard: React.FC = () => {
             uniqueStocks.set(item.stock_symbol, item);
           }
         });
-        
+
         setHistory(Array.from(uniqueStocks.values()).slice(0, 10));
       } catch (err) {
         console.error("Error fetching history:", err);
@@ -84,16 +84,16 @@ const UserDashboard: React.FC = () => {
   // Calculations for KPI Cards
   const totalSearches = history.length;
   const latestSearch = history[0] || null;
-  const averageScore = totalSearches > 0 
+  const averageScore = totalSearches > 0
     ? (history.reduce((sum, item) => sum + (item.final_score || 0), 0) / totalSearches).toFixed(1)
     : "0.0";
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8 animate-fade-in">
-        
+
         {/* Enhanced Hero / Welcome Block */}
         <div className="space-y-4">
           {/* Greeting Header */}
@@ -198,13 +198,13 @@ const UserDashboard: React.FC = () => {
           <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
             <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-blue-500/5 blur-[80px]"></div>
           </div>
-          
+
           <div className="max-w-2xl mx-auto text-center space-y-6">
             <h3 className="text-2xl font-extrabold tracking-tight">Run New Equity Analysis</h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm max-w-md mx-auto">
               Enter any NSE symbol (e.g. <span className="text-blue-400 font-semibold">TCS</span>, <span className="text-blue-400 font-semibold">RELIANCE</span>, <span className="text-blue-400 font-semibold">INFY</span>) to run technical and fundamental scoring engines.
             </p>
-            
+
             <form onSubmit={(e) => handleSearch(e)} className="flex flex-col sm:flex-row items-start gap-3 mt-4" ref={searchContainerRef}>
               <div className="flex-1 w-full flex flex-col relative">
                 <div className="relative w-full">
@@ -221,7 +221,7 @@ const UserDashboard: React.FC = () => {
                     className="w-full bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-slate-800 rounded-xl py-3.5 pl-12 pr-4 text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 font-semibold tracking-wide"
                   />
                 </div>
-                
+
                 {/* Premium Search Suggestions Dropdown (Inline Expansion) */}
                 {showSuggestions && (
                   <div className="w-full mt-3 bg-white/90 dark:bg-[#1E293B]/80 border border-slate-300 dark:border-slate-700/80 rounded-2xl shadow-xl overflow-hidden animate-fade-in backdrop-blur-xl">
@@ -230,7 +230,7 @@ const UserDashboard: React.FC = () => {
                     </div>
                     <ul className="max-h-64 overflow-y-auto custom-scrollbar">
                       {symbol.trim() && (
-                        <li 
+                        <li
                           onClick={() => handleSearch(undefined, symbol)}
                           className="px-5 py-3.5 hover:bg-slate-200 dark:hover:bg-slate-700/60 cursor-pointer flex items-center justify-between group transition-all duration-200 border-b border-slate-300 dark:border-slate-700/40 bg-slate-100 dark:bg-slate-800/30"
                         >
@@ -246,11 +246,11 @@ const UserDashboard: React.FC = () => {
                         const sl = symbol.toLowerCase();
                         const su = symbol.toUpperCase();
                         const nameLower = s.name.toLowerCase();
-                        return s.symbol.startsWith(su) || 
-                               nameLower.startsWith(sl) || 
+                        return s.symbol.startsWith(su) ||
+                               nameLower.startsWith(sl) ||
                                nameLower.split(' ').some(word => word.startsWith(sl));
                       }).slice(0, 10).map((stock) => (
-                        <li 
+                        <li
                           key={stock.symbol}
                           onClick={() => handleSearch(undefined, stock.symbol)}
                           className="px-5 py-3.5 hover:bg-slate-200 dark:hover:bg-slate-700/60 cursor-pointer flex items-center justify-between group transition-all duration-200"

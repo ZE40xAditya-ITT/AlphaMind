@@ -65,8 +65,8 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
                 const stockInfo = NSE_STOCKS.find(s => s.symbol.toUpperCase() === cleanSym.toUpperCase());
 
                 return (
-                  <motion.tr 
-                    key={stock.id} 
+                  <motion.tr
+                    key={stock.id}
                     className="hover:bg-slate-800/40 transition duration-150"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -105,7 +105,7 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
                     <td className={`p-4 font-bold ${stock.return_pct > 0 ? 'text-emerald-400' : stock.return_pct < 0 ? 'text-rose-400' : 'text-slate-400'}`}>
                       {stock.return_pct !== undefined ? (
                         <span className="inline-flex items-center gap-1">
-                          {stock.return_pct > 0 ? '+' : ''}₹{stock.return_abs.toLocaleString()} 
+                          {stock.return_pct > 0 ? '+' : ''}₹{stock.return_abs.toLocaleString()}
                           <span className="text-xs px-1.5 py-0.5 rounded bg-black/20">
                             ({stock.return_pct > 0 ? '+' : ''}{stock.return_pct.toFixed(2)}%)
                           </span>
@@ -116,16 +116,16 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end items-center gap-2">
-                        <button 
-                          onClick={() => openReduceModal(stock.id, stock.symbol, stock.quantity)} 
-                          className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl transition text-xs font-bold flex items-center gap-1 shadow-sm" 
+                        <button
+                          onClick={() => openReduceModal(stock.id, stock.symbol, stock.quantity)}
+                          className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl transition text-xs font-bold flex items-center gap-1 shadow-sm"
                           title="Reduce or sell shares"
                         >
                           <MinusCircle size={14} /> Reduce
                         </button>
-                        <button 
-                          onClick={() => handleRemoveStock(stock.id)} 
-                          className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition" 
+                        <button
+                          onClick={() => handleRemoveStock(stock.id)}
+                          className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition"
                           title="Remove entire holding"
                         >
                           <Trash2 size={16} />
@@ -144,19 +144,19 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
       <AnimatePresence>
         {reducingStock && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-[#111827] border border-slate-700 rounded-3xl p-6 max-w-md w-full shadow-2xl relative"
             >
-              <button 
-                onClick={() => setReducingStock(null)} 
+              <button
+                onClick={() => setReducingStock(null)}
                 className="absolute right-5 top-5 text-slate-400 hover:text-white transition"
               >
                 <X size={20} />
               </button>
-              
+
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-3 bg-amber-500/20 text-amber-400 rounded-2xl border border-amber-500/30">
                   <TrendingDown size={24} />
@@ -174,20 +174,20 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
 
               <div className="space-y-3 mb-6">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Quantity to Sell / Reduce</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   step="0.01"
-                  min="0.01" 
-                  max={reducingStock.maxQty} 
-                  placeholder="Enter quantity..." 
-                  value={reduceQty} 
+                  min="0.01"
+                  max={reducingStock.maxQty}
+                  placeholder="Enter quantity..."
+                  value={reduceQty}
                   onChange={e => {
                     setReduceQty(e.target.value);
                     setReduceError('');
-                  }} 
+                  }}
                   className="w-full bg-[#0B1121] text-white border border-slate-700 px-4 py-3 rounded-xl outline-none focus:border-amber-500 font-bold text-base transition"
                 />
-                
+
                 {/* Quick select percentage buttons */}
                 <div className="grid grid-cols-4 gap-2 pt-1">
                   {[25, 50, 75, 100].map(pct => {
@@ -211,15 +211,15 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
               </div>
 
               <div className="flex gap-3">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setReducingStock(null)}
                   className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-bold text-sm transition"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={handleConfirmReduce}
                   className="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-amber-600/25"
                 >

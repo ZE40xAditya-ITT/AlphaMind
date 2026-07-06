@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 class MockNewsProvider(NewsDataProvider):
     """Mock implementation for testing Financial News Intelligence."""
-    
+
     def get_latest_news(self, symbol: str) -> List[Dict[str, Any]]:
         return [
             {

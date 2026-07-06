@@ -29,13 +29,13 @@ class InvoiceNumberedCanvas(canvas.Canvas):
     def draw_page_decorations(self, page_count):
         self.saveState()
         width, height = self._pagesize
-        
+
         # Top Executive Accent Ribbon (Slate-900 with Indigo tip)
         self.setFillColor(colors.HexColor("#0F172A"))
         self.rect(0, height - 6, width - 150, 6, fill=1, stroke=0)
         self.setFillColor(colors.HexColor("#4F46E5"))
         self.rect(width - 150, height - 6, 150, 6, fill=1, stroke=0)
-        
+
         # Running Header
         self.setFont("Helvetica-Bold", 8)
         self.setFillColor(colors.HexColor("#1E293B"))
@@ -44,15 +44,15 @@ class InvoiceNumberedCanvas(canvas.Canvas):
         self.setFillColor(colors.HexColor("#64748B"))
         self.drawString(130, height - 24, "|   COMMERCIAL TAX INVOICE & BILL OF SUPPLY")
         self.drawRightString(width - 54, height - 24, datetime.now().strftime("%d %b %Y"))
-        
+
         # Header Divider Line
         self.setStrokeColor(colors.HexColor("#CBD5E1"))
         self.setLineWidth(0.5)
         self.line(54, height - 30, width - 54, height - 30)
-        
+
         # Footer Divider Line
         self.line(54, 42, width - 54, 42)
-        
+
         # Running Footer
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748B"))
@@ -85,7 +85,7 @@ def generate_invoice_pdf(
     )
 
     styles = getSampleStyleSheet()
-    
+
     # Executive Color Palette
     PRIMARY_DARK = colors.HexColor('#0F172A')
     INDIGO = colors.HexColor('#4F46E5')
@@ -106,7 +106,7 @@ def generate_invoice_pdf(
         textColor=PRIMARY_DARK,
         spaceAfter=3
     )
-    
+
     brand_sub_style = ParagraphStyle(
         'BrandSub',
         parent=styles['Normal'],
@@ -115,7 +115,7 @@ def generate_invoice_pdf(
         leading=13,
         textColor=TEXT_MUTED
     )
-    
+
     inv_title_style = ParagraphStyle(
         'InvTitle',
         parent=styles['Normal'],
@@ -125,7 +125,7 @@ def generate_invoice_pdf(
         textColor=INDIGO,
         alignment=2 # Right align
     )
-    
+
     inv_meta_style = ParagraphStyle(
         'InvMeta',
         parent=styles['Normal'],
@@ -135,7 +135,7 @@ def generate_invoice_pdf(
         textColor=TEXT_SLATE,
         alignment=2 # Right align
     )
-    
+
     card_header_style = ParagraphStyle(
         'CardHeader',
         parent=styles['Heading3'],
@@ -145,7 +145,7 @@ def generate_invoice_pdf(
         textColor=PRIMARY_DARK,
         spaceAfter=4
     )
-    
+
     cell_style = ParagraphStyle(
         'Cell',
         parent=styles['Normal'],
@@ -154,26 +154,26 @@ def generate_invoice_pdf(
         leading=14,
         textColor=TEXT_SLATE
     )
-    
+
     cell_bold_style = ParagraphStyle(
         'CellBold',
         parent=cell_style,
         fontName='Helvetica-Bold',
         textColor=PRIMARY_DARK
     )
-    
+
     cell_right_style = ParagraphStyle(
         'CellRight',
         parent=cell_style,
         alignment=2
     )
-    
+
     cell_right_bold_style = ParagraphStyle(
         'CellRightBold',
         parent=cell_bold_style,
         alignment=2
     )
-    
+
     header_th_style = ParagraphStyle(
         'TH',
         parent=styles['Normal'],
@@ -181,7 +181,7 @@ def generate_invoice_pdf(
         fontSize=10,
         textColor=colors.white
     )
-    
+
     header_th_right_style = ParagraphStyle(
         'THRight',
         parent=header_th_style,
@@ -192,12 +192,12 @@ def generate_invoice_pdf(
 
     # 1. Header Banner (Brand Left, Invoice Badge Right)
     brand_p1 = Paragraph("ALPHAMIND AI", brand_style)
-    brand_p2 = Paragraph("Stock Intelligence & Fundamental Scoring Engine<br/>Email: billing@alphamind.com | Web: www.alphamind.ai<br/>GSTIN: 27AACCA1234F1Z9", brand_sub_style)
-    
+    brand_p2 = Paragraph("Stock Intelligence & Fundamental Scoring Engine<br/> brand_sub_style)
+
     date_str = invoice_date.strftime('%d %B %Y') if invoice_date else datetime.now().strftime('%d %B %Y')
     inv_p1 = Paragraph("COMMERCIAL INVOICE", inv_title_style)
     inv_p2 = Paragraph(f"<b>Invoice #:</b> {invoice_number}<br/><b>Date of Issue:</b> {date_str}<br/><b>Status:</b> <font color='{SUCCESS_GREEN}'><b>DUE / ACTIVE</b></font>", inv_meta_style)
-    
+
     header_table = Table([[ [brand_p1, brand_p2], [inv_p1, inv_p2] ]], colWidths=[260, 227])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -212,10 +212,10 @@ def generate_invoice_pdf(
     # 2. Bill To & Payment Terms Card
     bill_to_title = Paragraph("BILL TO / CLIENT INFORMATION", card_header_style)
     bill_to_desc = Paragraph(f"<b>Customer Name:</b> {username}<br/><b>Account Email:</b> {email}<br/><b>Account Type:</b> AlphaMind Premium Member<br/><b>Service Tier:</b> Pay-As-You-Go API & Search Query Pricing", cell_style)
-    
+
     terms_title = Paragraph("PAYMENT TERMS & SCHEDULE", card_header_style)
     terms_desc = Paragraph("<b>Payment Terms:</b> Due within 15 days of invoice date<br/><b>Payment Method:</b> UPI, Net Banking, or Credit Card<br/><b>Billing Currency:</b> Indian Rupees (INR - ₹)<br/><b>Support:</b> support@alphamind.com", cell_style)
-    
+
     client_card = Table([[ [bill_to_title, bill_to_desc], [terms_title, terms_desc] ]], colWidths=[240, 247])
     client_card.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), LIGHT_BG),
@@ -273,13 +273,13 @@ def generate_invoice_pdf(
     subtotal_str = f"₹ {amount:,.2f}"
     tax_str = "₹ 0.00 (Inclusive)"
     total_str = f"₹ {amount:,.2f}"
-    
+
     summary_data = [
         [Paragraph("Subtotal:", cell_right_style), Paragraph(subtotal_str, cell_right_bold_style)],
         [Paragraph("Estimated Taxes (GST 18% / Inclusive):", cell_right_style), Paragraph(tax_str, cell_right_style)],
         [Paragraph("<font size=11 color='#1E1B4B'><b>GRAND TOTAL DUE:</b></font>", cell_right_bold_style), Paragraph(f"<font size=12 color='#4F46E5'><b>{total_str}</b></font>", cell_right_bold_style)]
     ]
-    
+
     summary_table = Table(summary_data, colWidths=[347, 140])
     summary_table.setStyle(TableStyle([
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
@@ -293,26 +293,6 @@ def generate_invoice_pdf(
     ]))
     elements.append(summary_table)
     elements.append(Spacer(1, 28))
-
-    # 5. Payment Details & Verification Footer Block
-    pay_title = Paragraph("REMITTANCE & BANK TRANSFER DETAILS", card_header_style)
-    pay_desc = Paragraph("<b>Bank Name:</b> HDFC Bank, Kanjurmarg Branch, Mumbai<br/><b>Account Name:</b> AlphaMind Technologies Pvt Ltd<br/><b>Account Number:</b> 50200012345678 &bull; <b>IFSC Code:</b> HDFC0001234<br/><b>UPI ID:</b> alphamind@hdfcbank &bull; <b>SWIFT Code:</b> HDFCINBB", cell_style)
-    
-    verify_title = Paragraph("AUTOMATED CRYPTOGRAPHIC ISSUANCE", card_header_style)
-    verify_desc = Paragraph("This commercial invoice is electronically generated by AlphaMind AI billing server. It constitutes a legal bill of supply under relevant IT & Electronic Commerce regulations. No handwritten signature or stamp is required.", cell_style)
-    
-    footer_card = Table([[ [pay_title, pay_desc], [verify_title, verify_desc] ]], colWidths=[240, 247])
-    footer_card.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), colors.white),
-        ('BOX', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, BORDER_COLOR),
-        ('TOPPADDING', (0,0), (-1,-1), 10),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 10),
-        ('LEFTPADDING', (0,0), (-1,-1), 12),
-        ('RIGHTPADDING', (0,0), (-1,-1), 12),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-    ]))
-    elements.append(footer_card)
 
     # Build PDF with two-pass invoice canvas
     doc.build(elements, canvasmaker=InvoiceNumberedCanvas)

@@ -100,8 +100,8 @@ const Navbar: React.FC = () => {
           {/* Divider + user */}
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
             <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-700 shadow-sm shadow-primary/20 shrink-0">
-              <img 
-                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.username}`} 
+              <img
+                src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.username}`}
                 alt={user.username}
                 className="w-full h-full object-cover bg-amber-50"
               />

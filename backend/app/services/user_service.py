@@ -31,15 +31,15 @@ def update_user(db: Session, user_id: int, data: UserUpdate) -> User | None:
     user = get_user_by_id(db, user_id)
     if not user:
         return None
-    
+
     update_data = data.model_dump(exclude_unset=True)
     if "password" in update_data and update_data["password"]:
         user.password_hash = hash_password(update_data["password"])
         del update_data["password"]
-        
+
     for key, value in update_data.items():
         setattr(user, key, value)
-        
+
     db.commit()
     db.refresh(user)
     return user

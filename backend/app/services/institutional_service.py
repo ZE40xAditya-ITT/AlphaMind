@@ -18,12 +18,12 @@ class InstitutionalService:
                 "public_pct": holding.public_pct,
                 "insight": self._generate_insight(holding.promoter_pct, holding.fii_pct, holding.dii_pct)
             }
-        
+
         # Fetch from provider
         data = self.provider.get_institutional_holdings(symbol)
         if not data:
             return None
-            
+
         # Save to DB
         new_holding = InstitutionalHolding(
             symbol=symbol,
@@ -36,7 +36,7 @@ class InstitutionalService:
         db.add(new_holding)
         db.commit()
         db.refresh(new_holding)
-        
+
         return {
             "promoter_pct": new_holding.promoter_pct,
             "fii_pct": new_holding.fii_pct,

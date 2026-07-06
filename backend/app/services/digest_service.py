@@ -119,7 +119,7 @@ class DigestService:
             ).order_by(SearchHistory.searched_at.desc()).limit(30).all()
             strong_buys = [h.stock_symbol for h in history if h.recommendation and "strong buy" in h.recommendation.lower()]
             avoids = [h.stock_symbol for h in history if h.recommendation and "avoid" in h.recommendation.lower()]
-            
+
             growth_opportunities = [
                 {"symbol": "RELIANCE", "name": "Reliance Industries", "reason": "Aggressive expansion in Green Energy & New Commerce with strong cash flows."},
                 {"symbol": "TCS", "name": "Tata Consultancy Services", "reason": "Digital transformation leader with attractive dividend yield & enterprise AI deal momentum."},

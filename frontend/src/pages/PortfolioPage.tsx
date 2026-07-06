@@ -79,8 +79,8 @@ const PortfolioPage: React.FC = () => {
                     key={p.id}
                     onClick={() => { setSelectedPortfolio(p); setAnalysis(null); }}
                     className={`px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2 ${
-                      selectedPortfolio?.id === p.id 
-                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25' 
+                      selectedPortfolio?.id === p.id
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/25'
                         : 'bg-slate-800/60 text-slate-400 hover:text-white hover:bg-slate-800'
                     }`}
                   >
@@ -91,15 +91,15 @@ const PortfolioPage: React.FC = () => {
                 ))}
               </div>
               <form onSubmit={handleCreatePortfolio} className="flex items-center gap-2">
-                <input 
-                  type="text" 
-                  placeholder="New Portfolio Name..." 
-                  value={newPortfolioName} 
-                  onChange={e => setNewPortfolioName(e.target.value)} 
+                <input
+                  type="text"
+                  placeholder="New Portfolio Name..."
+                  value={newPortfolioName}
+                  onChange={e => setNewPortfolioName(e.target.value)}
                   className="bg-[#1f2937] text-white text-sm px-3 py-2 rounded-xl border border-slate-700 outline-none w-48 focus:border-indigo-500 transition"
                 />
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={!newPortfolioName.trim()}
                   className="bg-slate-800 hover:bg-indigo-600 text-white px-3 py-2 rounded-xl text-sm font-semibold flex items-center gap-1 transition disabled:opacity-50"
                 >
@@ -119,7 +119,7 @@ const PortfolioPage: React.FC = () => {
                       </span>
                     </h2>
                     <div className="flex flex-wrap items-center gap-3">
-                      <button 
+                      <button
                         onClick={() => handleDeletePortfolio(selectedPortfolio.id)}
                         className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 transition text-sm"
                         title="Delete Portfolio"
@@ -127,7 +127,7 @@ const PortfolioPage: React.FC = () => {
                         <Trash2 size={16} />
                         Delete Portfolio
                       </button>
-                      <button 
+                      <button
                         onClick={handleAnalyze}
                         disabled={analyzing || selectedPortfolio.stocks.length === 0}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -142,7 +142,7 @@ const PortfolioPage: React.FC = () => {
                   {analysis ? (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                       <PortfolioMetrics analysis={analysis} />
-                      
+
                       <div className="glass dark:glass p-6 rounded-3xl">
                         <h3 className="text-lg font-bold mb-6 text-white">Sector Allocation</h3>
                         <div className="space-y-4">
@@ -177,7 +177,7 @@ const PortfolioPage: React.FC = () => {
                     </div>
                   )}
 
-                  <AddStockForm 
+                  <AddStockForm
                     handleAddStock={handleAddStock}
                     newSymbol={newSymbol}
                     setNewSymbol={setNewSymbol}
@@ -192,7 +192,7 @@ const PortfolioPage: React.FC = () => {
                     liveMarketPrice={liveMarketPrice}
                   />
 
-                  <PortfolioTable 
+                  <PortfolioTable
                     selectedPortfolio={selectedPortfolio}
                     analysis={analysis}
                     handleRemoveStock={handleRemoveStock}

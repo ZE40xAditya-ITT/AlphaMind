@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/layout/Navbar';
 import * as userService from '../services/userService';
 import * as invoiceService from '../services/invoiceService';
-import { getMyHistory, getUserHistory } from '../services/historyService'; 
+import { getMyHistory, getUserHistory } from '../services/historyService';
 import { User } from '../types/auth';
 import { Invoice } from '../types/invoice';
 import { FileText, Download, CheckCircle, ShieldAlert, Sparkles, UserCheck } from 'lucide-react';
@@ -12,10 +12,10 @@ const InvoiceManagementPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  
+
   // Stats for selected user
   const [unbilledCount, setUnbilledCount] = useState<number>(0);
-  
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -28,10 +28,10 @@ const InvoiceManagementPage: React.FC = () => {
       // Filter out admin users since we only charge standard users
       const standardUsers = uList.filter(u => u.role !== 'admin');
       setUsers(standardUsers);
-      
+
       const invList = await invoiceService.getInvoices();
       setInvoices(invList);
-      
+
       if (standardUsers.length > 0 && !selectedUser) {
         handleUserSelect(standardUsers[0], invList);
       } else if (selectedUser) {
@@ -61,20 +61,20 @@ const InvoiceManagementPage: React.FC = () => {
       // Find unbilled searches count.
       // We look at all searches, and filter out those prior to the last invoice date.
       const userInvoices = currentInvoices.filter(inv => inv.user_id === user.id);
-      
+
       // We need user's search history
       // Note: we fetch user's history list
       // Import user history service
       // Removed dynamic import, using static import
       const history = await getUserHistory(user.id);
-      
+
       if (userInvoices.length > 0) {
         // Sort user invoices descending
         const sortedInvoices = [...userInvoices].sort(
           (a, b) => new Date(b.invoice_date).getTime() - new Date(a.invoice_date).getTime()
         );
         const lastInvoiceDate = new Date(sortedInvoices[0].invoice_date);
-        
+
         // Count searches that occurred after the last invoice
         const unbilled = history.filter(item => new Date(item.searched_at).getTime() > lastInvoiceDate.getTime());
         setUnbilledCount(unbilled.length);
@@ -96,7 +96,7 @@ const InvoiceManagementPage: React.FC = () => {
     try {
       const res = await invoiceService.generateInvoice(selectedUser.id);
       setSuccess(`Successfully generated Invoice ${res.invoice.invoice_number} (₹${res.invoice.amount}) for user ${selectedUser.username}!`);
-      
+
       // Reload invoices and recalculate
       const invList = await invoiceService.getInvoices();
       setInvoices(invList);
@@ -143,7 +143,7 @@ const InvoiceManagementPage: React.FC = () => {
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8 animate-fade-in">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800/60 pb-6 gap-4">
           <div>
@@ -191,7 +191,7 @@ const InvoiceManagementPage: React.FC = () => {
                 </select>
               </div>
             </div>
-            
+
             <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/60 p-4 rounded-2xl flex items-start space-x-2.5">
               <Sparkles className="text-blue-400 shrink-0 mt-0.5" size={16} />
               <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -203,13 +203,13 @@ const InvoiceManagementPage: React.FC = () => {
           {/* Bill Preview Column */}
           <div className="lg:col-span-2 glass dark:glass rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-500/5 blur-[80px]"></div>
-            
+
             <div className="space-y-4 relative">
               <h3 className="text-lg font-bold flex items-center space-x-2">
                 <FileText size={18} className="text-slate-600 dark:text-slate-400" />
                 <span>Invoice Statement Preview</span>
               </h3>
-              
+
               {selectedUser ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
@@ -250,7 +250,7 @@ const InvoiceManagementPage: React.FC = () => {
         {/* Invoice List Table */}
         <div className="space-y-4">
           <h3 className="text-xl font-bold tracking-tight">Invoice History Log</h3>
-          
+
           {loading ? (
             <LoadingSpinner message="Retrieving invoice registers..." />
           ) : invoices.length === 0 ? (
@@ -292,10 +292,10 @@ const InvoiceManagementPage: React.FC = () => {
                               {inv.is_paid ? 'PAID' : 'UNPAID'}
                             </span>
                             <label className="flex items-center space-x-1.5 cursor-pointer hover:opacity-80 transition-opacity">
-                              <input 
-                                type="checkbox" 
-                                checked={inv.is_paid} 
-                                onChange={() => handleTogglePaid(inv.id, inv.is_paid)} 
+                              <input
+                                type="checkbox"
+                                checked={inv.is_paid}
+                                onChange={() => handleTogglePaid(inv.id, inv.is_paid)}
                                 className="w-3.5 h-3.5 rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-900 cursor-pointer"
                               />
                               <span className="text-[9px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider">{inv.is_paid ? 'Mark Unpaid' : 'Mark Paid'}</span>

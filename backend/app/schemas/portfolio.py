@@ -11,7 +11,7 @@ class PortfolioStockResponse(BaseModel):
     symbol: str
     quantity: float
     average_buy_price: float
-    
+
     class Config:
         from_attributes = True
 
@@ -22,7 +22,7 @@ class PortfolioResponse(BaseModel):
     id: int
     name: str
     stocks: List[PortfolioStockResponse]
-    
+
     class Config:
         from_attributes = True
 

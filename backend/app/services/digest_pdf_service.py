@@ -30,11 +30,11 @@ class DigestNumberedCanvas(canvas.Canvas):
     def draw_page_decorations(self, page_count):
         self.saveState()
         width, height = self._pagesize
-        
+
         # Top Executive Ribbon (Indigo-600)
         self.setFillColor(colors.HexColor("#4F46E5"))
         self.rect(0, height - 6, width, 6, fill=1, stroke=0)
-        
+
         # Running Header
         self.setFont("Helvetica-Bold", 8)
         self.setFillColor(colors.HexColor("#1E293B"))
@@ -43,15 +43,15 @@ class DigestNumberedCanvas(canvas.Canvas):
         self.setFillColor(colors.HexColor("#64748B"))
         self.drawString(130, height - 24, "|   EXECUTIVE WEEKLY INVESTMENT DIGEST")
         self.drawRightString(width - 54, height - 24, datetime.now().strftime("%d %b %Y"))
-        
+
         # Header Divider Line
         self.setStrokeColor(colors.HexColor("#CBD5E1"))
         self.setLineWidth(0.5)
         self.line(54, height - 30, width - 54, height - 30)
-        
+
         # Footer Divider Line
         self.line(54, 42, width - 54, 42)
-        
+
         # Running Footer
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748B"))
@@ -64,7 +64,7 @@ def generate_digest_pdf(digest, user) -> str:
     digests_dir = os.path.join(backend_dir, "digests")
     os.makedirs(digests_dir, exist_ok=True)
     filename = os.path.join(digests_dir, f"digest_{user.id}_{digest.id}.pdf")
-    
+
     # Page setup with margins accounting for header/footer
     doc = SimpleDocTemplate(
         filename,
@@ -74,9 +74,9 @@ def generate_digest_pdf(digest, user) -> str:
         topMargin=45,
         bottomMargin=55
     )
-    
+
     styles = getSampleStyleSheet()
-    
+
     # Executive Color Palette
     PRIMARY_NAVY = colors.HexColor('#1E1B4B')
     INDIGO = colors.HexColor('#4F46E5')
@@ -87,7 +87,7 @@ def generate_digest_pdf(digest, user) -> str:
     BORDER_COLOR = colors.HexColor('#E2E8F0')
     ACCENT_GREEN = colors.HexColor('#10B981')
     ACCENT_RED = colors.HexColor('#EF4444')
-    
+
     # Typography Styles
     title_style = ParagraphStyle(
         'TitleStyle',
@@ -98,7 +98,7 @@ def generate_digest_pdf(digest, user) -> str:
         textColor=PRIMARY_NAVY,
         spaceAfter=4
     )
-    
+
     subtitle_style = ParagraphStyle(
         'SubtitleStyle',
         parent=styles['Normal'],
@@ -107,7 +107,7 @@ def generate_digest_pdf(digest, user) -> str:
         leading=14,
         textColor=colors.HexColor('#475569')
     )
-    
+
     section_banner_style = ParagraphStyle(
         'SectionBannerStyle',
         parent=styles['Heading2'],
@@ -116,7 +116,7 @@ def generate_digest_pdf(digest, user) -> str:
         leading=15,
         textColor=colors.white
     )
-    
+
     body_style = ParagraphStyle(
         'BodyStyle',
         parent=styles['Normal'],
@@ -126,14 +126,14 @@ def generate_digest_pdf(digest, user) -> str:
         textColor=TEXT_SLATE,
         spaceAfter=6
     )
-    
+
     body_bold_style = ParagraphStyle(
         'BodyBoldStyle',
         parent=body_style,
         fontName='Helvetica-Bold',
         textColor=DARK_SLATE
     )
-    
+
     callout_text_style = ParagraphStyle(
         'CalloutText',
         parent=body_style,
@@ -149,7 +149,7 @@ def generate_digest_pdf(digest, user) -> str:
     date_str = digest.digest_date.strftime('%d %B %Y') if digest.digest_date else datetime.now().strftime('%d %B %Y')
     title_p = Paragraph("EXECUTIVE WEEKLY INVESTMENT DIGEST", title_style)
     sub_p = Paragraph(f"Prepared Exclusively for <b>{user.username.upper()}</b> &bull; Issued on {date_str}", subtitle_style)
-    
+
     title_table = Table([[title_p], [sub_p]], colWidths=[487])
     title_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#EEF2FF')),
@@ -179,20 +179,20 @@ def generate_digest_pdf(digest, user) -> str:
     if digest.market_summary:
         story.append(create_section_header("1. Market Overview & Sentiment Analysis"))
         story.append(Spacer(1, 8))
-        
+
         m = digest.market_summary
         nifty_p = m.get('nifty_price', 0)
         bank_p = m.get('banknifty_price', 0)
         nifty_chg = m.get('nifty_change_pct', 0)
         bank_chg = m.get('banknifty_change_pct', 0)
-        
+
         n_chg_color = '#10B981' if nifty_chg >= 0 else '#EF4444'
         b_chg_color = '#10B981' if bank_chg >= 0 else '#EF4444'
-        
+
         th_style = ParagraphStyle('TH', fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white)
         td_style = ParagraphStyle('TD', fontName='Helvetica', fontSize=9.5, textColor=DARK_SLATE)
         td_bold = ParagraphStyle('TDB', fontName='Helvetica-Bold', fontSize=9.5, textColor=DARK_SLATE)
-        
+
         data = [
             [Paragraph("Market Index", th_style), Paragraph("Current Level", th_style), Paragraph("Weekly Change (%)", th_style)],
             [
@@ -206,7 +206,7 @@ def generate_digest_pdf(digest, user) -> str:
                 Paragraph(f"<font color='{b_chg_color}'><b>{bank_chg:+.2f}%</b></font>", td_style)
             ],
         ]
-        
+
         t = Table(data, colWidths=[187, 150, 150])
         t.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#334155')),
@@ -221,12 +221,12 @@ def generate_digest_pdf(digest, user) -> str:
         ]))
         story.append(t)
         story.append(Spacer(1, 10))
-        
+
         # Sentiment Badge Callout
         sentiment_val = m.get('sentiment', 'Neutral')
         sent_color = '#10B981' if 'Bullish' in str(sentiment_val) else '#EF4444' if 'Bearish' in str(sentiment_val) else '#6366F1'
         sent_p = Paragraph(f"<b>Market Sentiment Outlook:</b> <font color='{sent_color}'><b>{sentiment_val.upper()}</b></font> &mdash; Market breadth reflects ongoing institutional positioning and sector rotation.", body_style)
-        
+
         sent_box = Table([[sent_p]], colWidths=[487])
         sent_box.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,-1), LIGHT_BG),
@@ -248,7 +248,7 @@ def generate_digest_pdf(digest, user) -> str:
             exec_p = Paragraph(f"<b>Executive Summary:</b> {ai['executive_summary']}", body_style)
             story.append(exec_p)
             story.append(Spacer(1, 6))
-            
+
         suggestions = ai.get('suggestions', [])
         for idx, s in enumerate(suggestions, 1):
             s_p = Paragraph(f"<b>{idx}. Strategic Action:</b> {s}", callout_text_style)
@@ -273,10 +273,10 @@ def generate_digest_pdf(digest, user) -> str:
         p = digest.portfolio_summary
         avg_score = p.get('avg_score', 'N/A')
         health_score = p.get('health_score', 'N/A')
-        
+
         kpi_p1 = Paragraph(f"<font size=14 color='#1E1B4B'><b>{health_score} / 100</b></font><br/><font size=8 color='#64748B'>PORTFOLIO HEALTH SCORE</font>", ParagraphStyle('KPI1', align=1))
         kpi_p2 = Paragraph(f"<font size=14 color='#4F46E5'><b>{avg_score} / 100</b></font><br/><font size=8 color='#64748B'>AVERAGE HOLDING RATING</font>", ParagraphStyle('KPI2', align=1))
-        
+
         kpi_table = Table([[kpi_p1, kpi_p2]], colWidths=[240, 240])
         kpi_table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,-1), LIGHT_BG),
@@ -289,7 +289,7 @@ def generate_digest_pdf(digest, user) -> str:
         ]))
         story.append(kpi_table)
         story.append(Spacer(1, 10))
-        
+
         if p.get('buy_recommendations'):
             buys = p['buy_recommendations']
             buy_p = Paragraph(f"<b>Top High-Conviction Buy Picks:</b> {', '.join([f'<b>{b}</b>' for b in buys])}", body_style)
@@ -304,7 +304,7 @@ def generate_digest_pdf(digest, user) -> str:
         symbols = w.get('watchlist_symbols', [])
         watch_str = ", ".join([f"<b>{sym}</b>" for sym in symbols]) if symbols else "No symbols currently being monitored in active watchlist."
         w_p = Paragraph(f"<b>Monitored Assets:</b> {watch_str}", body_style)
-        
+
         w_table = Table([[w_p]], colWidths=[487])
         w_table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,-1), colors.white),

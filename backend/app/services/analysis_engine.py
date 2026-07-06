@@ -8,7 +8,7 @@ class AnalysisEngine:
     Encapsulates the logic to perform technical and fundamental analysis,
     and calculate composite ranking scores.
     """
-    
+
     def analyze(self, hist: pd.DataFrame, info: Dict[str, Any]) -> Tuple[Any, Any, float, str, str]:
         # 1. Perform Technical Analysis
         tech_analysis = technical_analysis_service.analyze(hist)
@@ -22,5 +22,5 @@ class AnalysisEngine:
         )
         recommendation = ranking_service.get_recommendation(final_score)
         rank_label = ranking_service.get_rank_label(final_score)
-        
+
         return tech_analysis, fund_analysis, final_score, recommendation, rank_label

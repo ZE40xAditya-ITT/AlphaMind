@@ -10,14 +10,14 @@ interface ScoreGaugeProps {
 
 const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, label, size = 'md', tooltip = '' }) => {
   const [animatedScore, setAnimatedScore] = useState(0);
-  
+
   useEffect(() => {
     // Animate counter from 0 to target score
     const duration = 1000; // 1s
     const steps = 60;
     const stepTime = duration / steps;
     let step = 0;
-    
+
     const timer = setInterval(() => {
       step++;
       const val = Math.min(score, Math.round((score / steps) * step * 10) / 10);

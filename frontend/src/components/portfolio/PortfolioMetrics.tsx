@@ -10,7 +10,7 @@ const PortfolioMetrics: React.FC<PortfolioMetricsProps> = ({ analysis }) => {
   return (
     <div className="glass dark:glass p-6 rounded-3xl space-y-6">
       <h3 className="text-lg font-bold flex items-center gap-2 text-white"><PieChart size={20} className="text-blue-500"/> Performance Summary</h3>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-slate-100 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-700/50">
           <span className="text-[11px] text-slate-400 uppercase font-extrabold tracking-widest block mb-1">Total Invested</span>

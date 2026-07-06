@@ -88,7 +88,7 @@ def get_chart_data(
 
         clean_sym = symbol.strip().upper()
         ticker_sym = clean_sym if clean_sym.endswith(".NS") or clean_sym.endswith(".BO") or clean_sym.endswith("^") else f"{clean_sym}.NS"
-        
+
         import concurrent.futures
         ticker = yf.Ticker(ticker_sym)
         try:
@@ -97,22 +97,22 @@ def get_chart_data(
                 df = future.result(timeout=3.0)
         except Exception:
             df = pd.DataFrame()
-        
+
         if df is None or df.empty:
             # Fallback generator for offline/missing data
             periods = 250
             start_date = datetime.now() - timedelta(days=365)
             dates = [start_date + timedelta(days=i) for i in range(periods)]
             base_price = 1500.0 if "RELIANCE" in clean_sym else 3500.0 if "TCS" in clean_sym else 1000.0
-            
+
             np.random.seed(abs(hash(clean_sym)) % (2**32))
             changes = np.random.normal(0.001, 0.015, periods)
             prices = base_price * np.cumprod(1 + changes)
-            
+
             candles = []
             sma50 = []
             sma200 = []
-            
+
             for i, p in enumerate(prices):
                 dt_str = dates[i].strftime("%Y-%m-%d")
                 high = p * (1 + abs(np.random.normal(0, 0.01)))
@@ -130,15 +130,15 @@ def get_chart_data(
                     sma50.append({"time": dt_str, "value": round(np.mean(prices[i-50:i]), 2)})
                 if i >= 200:
                     sma200.append({"time": dt_str, "value": round(np.mean(prices[i-200:i]), 2)})
-            
+
             return {"symbol": clean_sym, "candles": candles, "sma50": sma50, "sma200": sma200}
-            
+
         df = df.reset_index()
         df["time"] = pd.to_datetime(df["Date"]).dt.strftime("%Y-%m-%d")
-        
+
         df["SMA_50"] = df["Close"].rolling(window=50).mean()
         df["SMA_200"] = df["Close"].rolling(window=200).mean()
-        
+
         candles = [
             {
                 "time": str(row["time"]),
@@ -150,19 +150,19 @@ def get_chart_data(
             }
             for _, row in df.iterrows()
         ]
-        
+
         sma50 = [
             {"time": str(r["time"]), "value": round(float(r["SMA_50"]), 2)}
             for _, r in df.dropna(subset=["SMA_50"]).iterrows()
         ]
-        
+
         sma200 = [
             {"time": str(r["time"]), "value": round(float(r["SMA_200"]), 2)}
             for _, r in df.dropna(subset=["SMA_200"]).iterrows()
         ]
-        
+
         return {"symbol": clean_sym, "candles": candles, "sma50": sma50, "sma200": sma200}
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

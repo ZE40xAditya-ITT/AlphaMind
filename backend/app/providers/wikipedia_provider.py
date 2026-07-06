@@ -6,7 +6,7 @@ class WikipediaProvider(CompanyInfoProvider):
     """
     Concrete implementation of CompanyInfoProvider using the Wikipedia API with strict timeout.
     """
-    
+
     def get_description(self, company_name: str) -> str:
         def _fetch():
             try:
@@ -14,7 +14,7 @@ class WikipediaProvider(CompanyInfoProvider):
                 return wikipedia.summary(search_query, sentences=3)
             except Exception:
                 return "Company description is currently unavailable."
-                
+
         try:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(_fetch)

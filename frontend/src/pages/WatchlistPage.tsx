@@ -10,7 +10,7 @@ import StockLogo from '../components/common/StockLogo';
 const getCompanyInfo = (symbol: string) => {
   const nseMatch = NSE_STOCKS.find(s => s.symbol.toUpperCase() === symbol.toUpperCase());
   const name = nseMatch ? nseMatch.name : `${symbol} Corporation`;
-  
+
   const descriptions: Record<string, string> = {
     RELIANCE: "India's largest private sector conglomerate with diversified market leadership across petrochemicals, refining, green energy infrastructure, telecom, and digital retail commerce.",
     TCS: "Global IT services and business solutions leader providing cutting-edge cloud architecture, AI consulting, and enterprise software engineering across global markets.",
@@ -30,7 +30,7 @@ const getCompanyInfo = (symbol: string) => {
     SUNPHARMA: "Top specialty generic pharmaceutical company developing complex formulations, active pharmaceutical ingredients, and global therapeutic solutions.",
     KOTAKBANK: "Trusted financial services conglomerate providing commercial banking, stock broking, mutual funds, and wealth management across Indian markets."
   };
-  
+
   const desc = descriptions[symbol.toUpperCase()] || `${name} is a prominent listed enterprise on the National Stock Exchange (NSE), operating in vital industry sectors and driving sustained competitive excellence across market cycles.`;
   return { name, desc };
 };
@@ -120,7 +120,7 @@ const WatchlistPage: React.FC = () => {
                 className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900/70 p-6 shadow-xl transition-all duration-300 hover:border-primary/60 hover:bg-slate-50 dark:hover:bg-slate-800/90 hover:shadow-primary/10"
               >
                 <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-primary/10 blur-2xl group-hover:bg-primary/20 transition-all"></div>
-                
+
                 <div className="relative flex flex-col h-full justify-between">
                   <div>
                     <div className="flex items-start justify-between mb-3">

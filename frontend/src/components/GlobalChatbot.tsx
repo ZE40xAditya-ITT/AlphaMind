@@ -82,8 +82,8 @@ const GlobalChatbot: React.FC = () => {
               {messages.map((msg, idx) => (
                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[80%] rounded-2xl p-3 text-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-indigo-600 text-white rounded-br-none' 
+                    msg.role === 'user'
+                      ? 'bg-indigo-600 text-white rounded-br-none'
                       : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none shadow-sm border border-slate-100 dark:border-slate-700'
                   }`}>
                     {msg.role === 'user' ? (
@@ -101,14 +101,14 @@ const GlobalChatbot: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               {messages.length === 1 && !isLoading && (
                 <div className="mt-4 space-y-2">
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider px-1">Suggested Questions</p>
                   <div className="flex flex-wrap gap-2">
                     {faqs.map((faq, idx) => (
-                      <button 
-                        key={idx} 
+                      <button
+                        key={idx}
                         onClick={() => {
                           setQuery('');
                           setMessages(prev => [...prev, { role: 'user', content: faq }]);

@@ -5,7 +5,7 @@ import { CompareResponse } from '../types/stock';
 import Navbar from '../components/layout/Navbar';
 
 const POPULAR_STOCKS = [
-  'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'INFY.NS', 
+  'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'ICICIBANK.NS', 'INFY.NS',
   'ITC.NS', 'SBIN.NS', 'BHARTIARTL.NS', 'BAJFINANCE.NS', 'LART.NS',
   'HINDUNILVR.NS', 'AXISBANK.NS', 'KOTAKBANK.NS', 'TATAMOTORS.NS', 'SUNPHARMA.NS',
   'MARUTI.NS', 'NTPC.NS', 'ASIANPAINT.NS', 'TITAN.NS', 'M&M.NS',
@@ -23,8 +23,8 @@ interface StockSearchInputProps {
 
 const StockSearchInput: React.FC<StockSearchInputProps> = ({ value, onChange, placeholder }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  
-  const filteredStocks = POPULAR_STOCKS.filter(stock => 
+
+  const filteredStocks = POPULAR_STOCKS.filter(stock =>
     stock.toLowerCase().includes(value.toLowerCase()) && value.trim() !== ''
   ).slice(0, 5);
 
@@ -49,7 +49,7 @@ const StockSearchInput: React.FC<StockSearchInputProps> = ({ value, onChange, pl
       {showDropdown && filteredStocks.length > 0 && (
         <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden animate-fade-in">
           {filteredStocks.map((stock) => (
-            <div 
+            <div
               key={stock}
               onClick={() => {
                 onChange(stock);
@@ -119,20 +119,20 @@ const ComparePage: React.FC = () => {
 
       <div className="glass dark:glass p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
         <form onSubmit={handleCompare} className="flex flex-col md:flex-row items-center gap-4">
-          <StockSearchInput 
-            value={symbol1} 
-            onChange={setSymbol1} 
-            placeholder="First Symbol (e.g., TCS)" 
+          <StockSearchInput
+            value={symbol1}
+            onChange={setSymbol1}
+            placeholder="First Symbol (e.g., TCS)"
           />
 
           <div className="flex items-center justify-center p-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0 border border-slate-300 dark:border-slate-700">
             <ArrowRightLeft size={20} />
           </div>
 
-          <StockSearchInput 
-            value={symbol2} 
-            onChange={setSymbol2} 
-            placeholder="Second Symbol (e.g., INFY)" 
+          <StockSearchInput
+            value={symbol2}
+            onChange={setSymbol2}
+            placeholder="Second Symbol (e.g., INFY)"
           />
 
           <button
@@ -154,7 +154,7 @@ const ComparePage: React.FC = () => {
 
       {result && (
         <div className="space-y-6 animate-slide-up mt-8">
-          
+
           <div className="p-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-200 dark:border-indigo-500/30 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-indigo-100 dark:bg-indigo-500/20 rounded-xl border border-indigo-200 dark:border-indigo-500/50">
@@ -181,7 +181,7 @@ const ComparePage: React.FC = () => {
                   {isWinner && (
                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full"></div>
                   )}
-                  
+
                   <div className="flex justify-between items-start mb-6 border-b border-slate-300 dark:border-slate-700/50 pb-6 relative z-10">
                     <div>
                       <h2 className="text-3xl font-black text-slate-900 dark:text-white">{stock.symbol}</h2>

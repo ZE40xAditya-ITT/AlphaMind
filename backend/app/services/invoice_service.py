@@ -25,14 +25,14 @@ def generate_invoice(db: Session, user_id: int, rate_per_search: float = 20.0) -
 
     # Determine the date of the latest invoice to only bill subsequent searches
     latest_invoice = db.query(Invoice).filter(Invoice.user_id == user_id).order_by(desc(Invoice.invoice_date)).first()
-    
+
     query = db.query(SearchHistory).filter(SearchHistory.user_id == user_id)
     if latest_invoice:
         query = query.filter(SearchHistory.searched_at > latest_invoice.invoice_date)
-        
+
     searches = query.all()
     total_searches = len(searches)
-    
+
     # If the user has zero unbilled searches, we can still generate an invoice for 0 or raise an exception.
     # Let's generate it anyway (or return none/empty). The BRD suggests generation based on stats.
     # We will raise or return None if there are no new searches to bill, or generate a zero invoice.
@@ -71,11 +71,11 @@ def generate_invoice(db: Session, user_id: int, rate_per_search: float = 20.0) -
         invoice_date=invoice_date,
         pdf_path=pdf_path
     )
-    
+
     db.add(db_invoice)
     db.commit()
     db.refresh(db_invoice)
-    
+
     return db_invoice
 
 def mark_invoice_as_paid(db: Session, invoice_id: int, is_paid: bool) -> Invoice | None:

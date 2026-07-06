@@ -31,7 +31,7 @@ def login(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Inactive user account"
         )
-    
+
     token = auth_service.create_token_for_user(user)
     return TokenResponse(access_token=token, token_type="bearer")
 
@@ -50,7 +50,7 @@ def signup(
     existing = db.query(User).filter(User.email == user_data.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
+
     # Check if username exists
     existing_username = db.query(User).filter(User.username == user_data.username).first()
     if existing_username:
@@ -75,12 +75,12 @@ def google_login(
         client_id = settings.GOOGLE_CLIENT_ID or None
         # Verify token with 60s clock skew tolerance
         idinfo = id_token.verify_oauth2_token(
-            req.token, 
-            requests.Request(), 
-            client_id, 
+            req.token,
+            requests.Request(),
+            client_id,
             clock_skew_in_seconds=60
         )
-        
+
         email = idinfo.get("email")
         if not email:
             raise HTTPException(status_code=400, detail="Google token does not contain email.")
@@ -90,7 +90,7 @@ def google_login(
 
         # Find user by google_id or email
         user = db.query(User).filter((User.google_id == google_id) | (User.email == email)).first()
-        
+
         if not user:
             # Ensure username is unique
             name = raw_name
@@ -118,7 +118,7 @@ def google_login(
 
         token = auth_service.create_token_for_user(user)
         return TokenResponse(access_token=token, token_type="bearer")
-        
+
     except Exception as e:
         import logging
         logging.getLogger(__name__).error(f"Google SSO Error: {str(e)}")

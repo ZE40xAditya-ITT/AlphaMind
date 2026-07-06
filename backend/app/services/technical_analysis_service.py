@@ -6,19 +6,19 @@ def calculate_rsi(prices: pd.Series, period: int = 14) -> float:
     """Calculate the Relative Strength Index (RSI)."""
     if len(prices) < period + 1:
         return 50.0  # Neutral default if not enough data
-    
+
     delta = prices.diff()
     gain = delta.clip(lower=0)
     loss = -delta.clip(upper=0)
-    
+
     avg_gain = gain.rolling(window=period, min_periods=period).mean()
     avg_loss = loss.rolling(window=period, min_periods=period).mean()
-    
+
     # Avoid division by zero
     avg_loss = avg_loss.replace(0, 0.00001)
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
-    
+
     val = rsi.iloc[-1]
     if pd.isna(val):
         return 50.0
@@ -41,11 +41,11 @@ def analyze(hist_data: pd.DataFrame) -> TechnicalAnalysis:
     close = hist_data["Close"].ffill().bfill()
     if isinstance(close, pd.DataFrame):
         close = close.iloc[:, 0]
-        
+
     volume = hist_data["Volume"].ffill().bfill()
     if isinstance(volume, pd.DataFrame):
         volume = volume.iloc[:, 0]
-    
+
     # Ensure current_price is a valid float, not NaN
     try:
         current_price = float(close.iloc[-1])
@@ -77,7 +77,7 @@ def analyze(hist_data: pd.DataFrame) -> TechnicalAnalysis:
         if pd.isna(sma200): sma200 = current_price
     except Exception:
         sma200 = current_price
-    
+
     if sma50 >= sma200:
         sma_score = 100.0
         sma_insight = f"Golden/Bullish Trend (SMA50 {sma50:.2f} > SMA200 {sma200:.2f})"

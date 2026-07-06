@@ -1,0 +1,45 @@
+# Environments & Virtual Envs
+venv/
+env/
+.venv
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+*.local
+
+# Database & Logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# Generated Artifacts & Reports
+backend/digests/*.pdf
+backend/invoices/*.pdf
+digests/
+invoices/
+
+# IDE & System
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.gemini/
+.system_generated/

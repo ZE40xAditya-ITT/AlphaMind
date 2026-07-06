@@ -7,7 +7,7 @@ class MarketDataProvider(ABC):
     Boundary interface for retrieving financial market data.
     Decouples the business logic from external libraries like yfinance.
     """
-    
+
     @abstractmethod
     def get_historical_data(self, symbol: str) -> pd.DataFrame:
         """Fetch 1-year of daily historical price data."""

@@ -20,7 +20,7 @@ const StockAnalysisPage: React.FC = () => {
   const navigate = useNavigate();
   const [chartPeriod, setChartPeriod] = useState<string>('1y');
   const [watchlistSuccess, setWatchlistSuccess] = useState('');
-  
+
   // Copilot State
   const [copilotQuery, setCopilotQuery] = useState('');
   const [copilotResponse, setCopilotResponse] = useState('');
@@ -123,13 +123,13 @@ const StockAnalysisPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col">
       <Navbar />
 
-      <motion.main 
+      <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8 animate-fade-in"
       >
-        
+
         {/* Header Navigation & Stock Name */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800/60 pb-6 gap-4">
           <div className="flex items-center space-x-4">
@@ -189,7 +189,7 @@ const StockAnalysisPage: React.FC = () => {
         </div>
 
         {/* Triple Gauges Row */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -252,7 +252,7 @@ const StockAnalysisPage: React.FC = () => {
 
         {/* Detailed KPI Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
+
           {/* Card A: Technical KPI Analysis */}
           <div className="glass dark:glass rounded-3xl p-6 lg:p-8 space-y-6">
             <h3 className="text-xl font-bold border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center space-x-2.5">
@@ -488,15 +488,15 @@ const StockAnalysisPage: React.FC = () => {
             {analysis.summary || `I am your AI investment assistant specialized in ${analysis.company_name}. I can analyze technical patterns, evaluate fundamental health, assess institutional movements, and interpret the latest market sentiment to provide actionable insights for your portfolio.`}
           </p>
           <div className="flex gap-4">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={copilotQuery}
               onChange={(e) => setCopilotQuery(e.target.value)}
               placeholder={`E.g., Why is ${analysis.company_name} rated ${analysis.recommendation}?`}
               onKeyDown={(e) => e.key === 'Enter' && handleAskCopilot()}
               className="flex-grow bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <button 
+            <button
               onClick={handleAskCopilot}
               disabled={isAskingCopilot || !copilotQuery.trim()}
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 transition disabled:opacity-50"

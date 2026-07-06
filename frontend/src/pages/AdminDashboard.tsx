@@ -11,15 +11,15 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  
+
   // Modals state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  
+
   // Selected user for edit/delete
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  
+
   // Form states
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -84,7 +84,7 @@ const AdminDashboard: React.FC = () => {
     if (!selectedUser) return;
     setError('');
     setSuccessMsg('');
-    
+
     try {
       const payload: UserUpdate = { username, email, role, is_active: isActive };
       if (password) {
@@ -109,7 +109,7 @@ const AdminDashboard: React.FC = () => {
     if (!selectedUser) return;
     setError('');
     setSuccessMsg('');
-    
+
     try {
       await userService.deleteUser(selectedUser.id);
       setSuccessMsg(`User '${selectedUser.username}' deleted successfully!`);
@@ -141,7 +141,7 @@ const AdminDashboard: React.FC = () => {
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8 animate-fade-in">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800/60 pb-6 gap-4">
           <div>

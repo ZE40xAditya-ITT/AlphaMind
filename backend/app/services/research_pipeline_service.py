@@ -100,14 +100,14 @@ class ResearchPipelineService:
     def _screen_stocks(self, symbols: List[str], limit: int = 10) -> List[Dict]:
         """Screen stocks with strict per-stock timeouts and instant fallback catalog."""
         candidates = []
-        
+
         def fetch_stock_info(sym: str):
             try:
                 nse_sym = f"{sym}.NS" if "." not in sym else sym
                 info = market_provider.get_company_info(nse_sym)
                 if not info or len(info) < 3:
                     return STOCK_FALLBACK_CATALOG.get(sym) or {"symbol": sym, "name": sym, "sector": "General", "price": 1000.0, "pe": 20.0, "roe": 0.15, "debt_equity": 50.0, "revenue_growth": 0.10}
-                    
+
                 price = info.get("currentPrice") or info.get("regularMarketPrice") or info.get("navPrice") or 0
                 return {
                     "symbol": sym,
@@ -130,10 +130,10 @@ class ResearchPipelineService:
                 future_to_sym = {executor.submit(fetch_stock_info, sym): sym for sym in symbols[:limit]}
                 # 6 second max wait so the UI responds lightning fast
                 done, not_done = concurrent.futures.wait(future_to_sym, timeout=6, return_when=concurrent.futures.ALL_COMPLETED)
-                
+
                 for f in not_done:
                     f.cancel()
-                
+
                 for f, sym in future_to_sym.items():
                     try:
                         if f.done() and not f.cancelled():
@@ -150,7 +150,7 @@ class ResearchPipelineService:
             for sym in symbols[:limit]:
                 fb = STOCK_FALLBACK_CATALOG.get(sym) or {"symbol": sym, "name": sym, "sector": "General", "price": 1000.0, "pe": 20.0, "roe": 0.15, "debt_equity": 50.0, "revenue_growth": 0.10}
                 candidates.append(fb)
-                
+
         return candidates
 
     def _score_candidates(self, candidates: List[Dict]) -> List[Dict]:
@@ -261,7 +261,7 @@ Write a complete markdown report with:
         def event(stage: str, status: str, **kwargs):
             payload = {"stage": stage, "status": status, **kwargs}
             return f"data: {json.dumps(payload)}\n\n"
-            
+
         # Parse requested amount from query (default to 5, max 15)
         match = re.search(r'\b(\d+)\b', query)
         requested_amount = min(int(match.group(1)), 15) if match else 5
@@ -272,33 +272,33 @@ Write a complete markdown report with:
         try:
             universe = self._pick_universe(query)
             logger.info(f"Universe for '{query}': {len(universe)} symbols")
-            
+
             candidates_raw = self._screen_stocks(universe, limit=screen_limit)
             logger.info(f"Screening returned {len(candidates_raw)} candidates")
-            
+
             if not candidates_raw:
                 # If screening failed completely, provide basic data so user isn't stuck
                 yield event("screening", "done", message="Using cached stock universe (data providers temporarily unavailable)")
                 candidates_raw = [{"symbol": s, "name": s, "sector": "Unknown", "price": 0} for s in universe[:requested_amount]]
             else:
                 yield event("screening", "done", message=f"Found {len(candidates_raw)} candidates")
-            
+
             yield event("fundamental", "running", message="Running fundamental analysis...")
             scored = self._score_candidates(candidates_raw)
             yield event("fundamental", "done", message="Fundamental analysis complete")
-            
+
             yield event("technical", "running", message="Analyzing technical indicators...")
             yield event("technical", "done", message="Technical analysis complete")
-            
+
             yield event("news", "running", message="Gathering news intelligence...")
             yield event("news", "done", message="News analysis complete")
-            
+
             yield event("ranking", "running", message="Ranking opportunities...")
             top_candidates = scored[:requested_amount]
             yield event("ranking", "done", message=f"Top {len(top_candidates)} opportunities ranked")
-            
+
             yield event("ai_report", "running", message="Generating AI research report...")
-            
+
             # Run AI generation in background thread with keep-alive pings
             report_text = None
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
@@ -312,7 +312,7 @@ Write a complete markdown report with:
                     # Send keep-alive comment to prevent proxy timeout
                     yield ": keep-alive\n\n"
                     time.sleep(3)
-                
+
                 try:
                     report_text = future.result(timeout=2)
                 except (concurrent.futures.TimeoutError, Exception) as e:
@@ -326,10 +326,10 @@ Write a complete markdown report with:
                 report.candidates = top_candidates
                 report.generated_report = report_text
                 db.commit()
-            
+
             yield event("ai_report", "done", message="Report ready!", report_id=report_id, candidates=top_candidates)
             yield event("complete", "done", report_id=report_id)
-            
+
         except Exception as e:
             logger.error(f"Pipeline error: {e}", exc_info=True)
             yield event("error", "failed", message=str(e))

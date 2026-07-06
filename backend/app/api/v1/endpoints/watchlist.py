@@ -15,16 +15,16 @@ def add_to_watchlist(
 ):
     """Add a stock to the user's watchlist."""
     symbol = item.stock_symbol.strip().upper()
-    
+
     # Check if already exists
     existing = db.query(Watchlist).filter(
         Watchlist.user_id == current_user.id,
         Watchlist.stock_symbol == symbol
     ).first()
-    
+
     if existing:
         raise HTTPException(status_code=400, detail="Stock already in watchlist")
-        
+
     db_item = Watchlist(user_id=current_user.id, stock_symbol=symbol)
     db.add(db_item)
     db.commit()
@@ -50,10 +50,10 @@ def remove_from_watchlist(
         Watchlist.user_id == current_user.id,
         Watchlist.stock_symbol == symbol.strip().upper()
     ).first()
-    
+
     if not item:
         raise HTTPException(status_code=404, detail="Stock not found in watchlist")
-        
+
     db.delete(item)
     db.commit()
     return {"message": "Removed from watchlist"}

@@ -19,7 +19,7 @@ class YahooFinanceProvider(MarketDataProvider):
     Concrete implementation of MarketDataProvider using yfinance.
     All calls have strict timeouts to prevent hanging on rate limits.
     """
-    
+
     def _fetch_ticker(self, symbol: str):
         # Rotate user-agent for each request to avoid rate limits
         session = requests.Session()
@@ -38,7 +38,7 @@ class YahooFinanceProvider(MarketDataProvider):
                 hist = ticker.history(period="1y")
             except Exception:
                 hist = pd.DataFrame()
-                
+
             if hist.empty:
                 try:
                     hist = yf.download(tickers=symbol, period="1y", progress=False)

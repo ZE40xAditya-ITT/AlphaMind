@@ -6,7 +6,7 @@ class CacheProvider(ABC):
     Boundary interface for caching layer.
     Decouples the business logic from memory-dicts, Redis, or other caching mechanisms.
     """
-    
+
     @abstractmethod
     def get(self, key: str) -> Optional[Any]:
         """Retrieve an item from the cache by key. Returns None if miss or expired."""

@@ -22,14 +22,14 @@ def create_new_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered"
         )
-        
+
     existing_email = db.query(User).filter(User.email == data.email).first()
     if existing_email:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
-        
+
     return user_service.create_user(db, data)
 
 @router.get("", response_model=list[UserResponse])

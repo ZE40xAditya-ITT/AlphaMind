@@ -96,12 +96,12 @@ def clean_percentage_value(val: float | None) -> float:
 
 def analyze(stock_info: dict) -> FundamentalAnalysis:
     """Perform fundamental analysis using ticker info dictionary with multi-tier ROE derivation."""
-    
+
     # Identify clean symbol
     raw_sym = str(stock_info.get("symbol") or stock_info.get("cleanSymbol") or stock_info.get("shortName") or stock_info.get("longName") or "")
     clean_sym = raw_sym.replace(".NS", "").replace(".BO", "").replace("^", "").split(" ")[0].strip().upper()
     catalog_data = STOCK_FUNDAMENTALS_CATALOG.get(clean_sym, {})
-    
+
     # 1. Return on Equity (ROE) (30%)
     raw_roe = stock_info.get("returnOnEquity")
     roe_val = 0.0
@@ -154,7 +154,7 @@ def analyze(stock_info: dict) -> FundamentalAnalysis:
         de_val = catalog_data["debtToEquity"] / 100.0
     else:
         de_val = 0.45
-        
+
     # Normalize: <=0.5 = 100, >=2.0 = 0
     de_score = max(0.0, min(100.0, 100.0 - ((de_val - 0.5) * 66.6)))
     de_insight = f"D/E Ratio: {de_val:.2f} ({'Low leverage' if de_val < 0.5 else 'Moderate leverage' if de_val <= 1.5 else 'High leverage'})"

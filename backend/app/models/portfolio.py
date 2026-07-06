@@ -10,7 +10,7 @@ class Portfolio(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     name = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     owner = relationship("User")
     stocks = relationship("PortfolioStock", back_populates="portfolio", cascade="all, delete-orphan")
 
@@ -22,5 +22,5 @@ class PortfolioStock(Base):
     symbol = Column(String, nullable=False)
     quantity = Column(Float, nullable=False)
     average_buy_price = Column(Float, nullable=False)
-    
+
     portfolio = relationship("Portfolio", back_populates="stocks")

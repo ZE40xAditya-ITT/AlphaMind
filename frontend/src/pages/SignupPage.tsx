@@ -52,7 +52,7 @@ const SignupPage: React.FC = () => {
     if (/[^A-Za-z0-9]/.test(password)) score++;
     return score;
   };
-  
+
   const strengthScore = getPasswordStrength();
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
@@ -96,7 +96,7 @@ const SignupPage: React.FC = () => {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
           <div className="glass dark:glass py-8 px-6 shadow-2xl rounded-3xl border border-slate-200 dark:border-slate-800/80 sm:px-10">
             <form className="space-y-5" onSubmit={handleSignup}>
-              
+
               {error && (
                 <div className="p-4 rounded-xl bg-red-950/40 border border-red-800/80 text-red-300 text-sm font-medium animate-fade-in flex items-start space-x-3">
                   <ShieldAlert size={18} className="shrink-0 mt-0.5" />

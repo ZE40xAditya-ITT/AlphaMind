@@ -3,7 +3,7 @@ from typing import Dict, Optional
 
 class InstitutionalDataProvider(ABC):
     """Boundary interface for retrieving institutional holdings data."""
-    
+
     @abstractmethod
     def get_institutional_holdings(self, symbol: str) -> Optional[Dict[str, float]]:
         """

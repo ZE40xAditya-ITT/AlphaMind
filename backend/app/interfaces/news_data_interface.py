@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 
 class NewsDataProvider(ABC):
     """Boundary interface for retrieving financial news."""
-    
+
     @abstractmethod
     def get_latest_news(self, symbol: str) -> List[Dict[str, Any]]:
         """
