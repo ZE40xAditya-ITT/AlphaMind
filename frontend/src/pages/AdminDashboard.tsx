@@ -222,7 +222,7 @@ const AdminDashboard: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-800/60">
                   {users.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-100 dark:bg-slate-800/10 transition-colors duration-200">
+                    <tr key={item.id} className="hover:bg-slate-100 dark:hover:bg-slate-800/60 dark:bg-slate-800/10 transition-colors duration-200">
                       <td className="py-4 px-6 font-bold text-slate-800 dark:text-slate-200 text-sm">{item.username}</td>
                       <td className="py-4 px-6 text-slate-800 dark:text-slate-400 text-sm">{item.email}</td>
                       <td className="py-4 px-6 text-center">
@@ -259,7 +259,7 @@ const AdminDashboard: React.FC = () => {
                           </button>
                           <button
                             onClick={() => handleEditClick(item)}
-                            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-slate-100 dark:bg-slate-800 rounded transition-all cursor-pointer"
+                            className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-700/60 dark:bg-slate-800 rounded transition-all cursor-pointer"
                             title="Edit User"
                           >
                             <Edit2 size={15} />
@@ -332,7 +332,7 @@ const AdminDashboard: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:bg-slate-900 text-sm font-semibold cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:bg-slate-900 text-sm font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -413,7 +413,7 @@ const AdminDashboard: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => { setShowEditModal(false); clearForm(); }}
-                    className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:bg-slate-900 text-sm font-semibold cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:bg-slate-900 text-sm font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -443,7 +443,7 @@ const AdminDashboard: React.FC = () => {
               <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800/80">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-white dark:bg-slate-900 text-sm font-semibold cursor-pointer"
+                  className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:bg-slate-900 text-sm font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
