@@ -40,9 +40,11 @@ class MarketDataAggregator:
 
         # 1. Check Cache
         cached_data = self.cache_provider.get(symbol)
-        if cached_data:
+        if cached_data and len(cached_data.get('info', {})) > 5 and cached_data.get('info', {}).get('sector', 'Unknown') != 'Unknown':
             hist = cached_data['hist']
             info = cached_data['info']
+            info["symbol"] = symbol
+            info["cleanSymbol"] = self._get_clean_symbol(symbol)
         else:
             # 2. Fetch Historical Data
             hist = self.market_provider.get_historical_data(symbol)
@@ -62,6 +64,8 @@ class MarketDataAggregator:
                     "currentPrice": float(hist["Close"].iloc[-1]) if not hist.empty else 0.0
                 }
 
+            info["symbol"] = symbol
+            info["cleanSymbol"] = self._get_clean_symbol(symbol)
             # Update Cache
             self.cache_provider.set(symbol, {'hist': hist, 'info': info}, ttl_seconds=900)
 
