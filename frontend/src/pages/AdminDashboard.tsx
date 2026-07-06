@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/layout/Navbar';
 import * as userService from '../services/userService';
 import { generateInvoice } from '../services/invoiceService';
 import { User, UserCreate, UserUpdate } from '../types/auth';
-import { Users, UserPlus, Edit2, Trash2, ShieldAlert, CheckCircle, XCircle, FileText, TrendingUp, Search } from 'lucide-react';
+import { Users, UserPlus, Edit2, Trash2, ShieldAlert, CheckCircle, XCircle, FileText, TrendingUp, Search, LogOut } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const AdminDashboard: React.FC = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  const handleSignOut = () => {
+    logout();
+    navigate('/login');
+  };
 
   // Modals state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -148,13 +157,23 @@ const AdminDashboard: React.FC = () => {
             <h2 className="text-3xl font-extrabold tracking-tight">User Administration</h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Manage user credentials, database roles, and invoice generation metrics.</p>
           </div>
-          <button
-            onClick={() => { clearForm(); setShowCreateModal(true); }}
-            className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-slate-900 dark:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
-          >
-            <UserPlus size={18} />
-            <span>Create New User</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => { clearForm(); setShowCreateModal(true); }}
+              className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-slate-900 dark:text-white text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer"
+            >
+              <UserPlus size={18} />
+              <span>Create New User</span>
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 hover:bg-red-500/20 text-sm font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.01] active:scale-[0.99]"
+              title="Sign Out of Admin Dashboard"
+            >
+              <LogOut size={18} />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
 
         {/* Success/Error Alerts */}
