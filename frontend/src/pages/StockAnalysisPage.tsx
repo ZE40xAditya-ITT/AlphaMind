@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { askCopilot } from '../services/copilotService';
 import MarkdownViewer from '../components/common/MarkdownViewer';
 import StockChart from '../components/charts/StockChart';
+import StockLogo from '../components/common/StockLogo';
 
 const StockAnalysisPage: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
@@ -139,13 +140,16 @@ const StockAnalysisPage: React.FC = () => {
             >
               <ArrowLeft size={18} />
             </button>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">NSE</span>
-                <span className="text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">{analysis.sector}</span>
+            <div className="flex items-center space-x-4">
+              <StockLogo symbol={analysis.symbol} name={analysis.company_name} size="lg" className="h-14 w-14" />
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">NSE</span>
+                  <span className="text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">{analysis.sector}</span>
+                </div>
+                <h2 className="text-3xl font-extrabold tracking-tight mt-1">{analysis.company_name}</h2>
+                <p className="text-sm font-semibold text-slate-500 dark:text-slate-500 tracking-wide mt-0.5">{analysis.symbol}</p>
               </div>
-              <h2 className="text-3xl font-extrabold tracking-tight mt-1">{analysis.company_name}</h2>
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-500 tracking-wide mt-0.5">{analysis.symbol}</p>
             </div>
           </div>
           <div className="text-left md:text-right flex flex-col items-end">

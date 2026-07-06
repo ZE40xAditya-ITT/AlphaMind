@@ -5,6 +5,7 @@ import { getWatchlist, removeFromWatchlist } from '../services/watchlistService'
 import { WatchlistItem } from '../types/watchlist';
 import Navbar from '../components/layout/Navbar';
 import { NSE_STOCKS } from '../utils/nseStocks';
+import StockLogo from '../components/common/StockLogo';
 
 const getCompanyInfo = (symbol: string) => {
   const nseMatch = NSE_STOCKS.find(s => s.symbol.toUpperCase() === symbol.toUpperCase());
@@ -124,9 +125,7 @@ const WatchlistPage: React.FC = () => {
                   <div>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3.5">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-lg font-black text-primary shadow-inner shrink-0">
-                          {item.stock_symbol.charAt(0)}
-                        </div>
+                        <StockLogo symbol={item.stock_symbol} name={info.name} size="lg" />
                         <div>
                           <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{item.stock_symbol}</h3>
                           <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 truncate max-w-[170px]">{info.name}</p>

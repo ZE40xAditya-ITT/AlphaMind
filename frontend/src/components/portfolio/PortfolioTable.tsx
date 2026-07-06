@@ -3,6 +3,7 @@ import { Trash2, MinusCircle, X, Loader2, TrendingDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioResponse, PortfolioAnalysisResponse } from '../../services/portfolioService';
 import { NSE_STOCKS } from '../../utils/nseStocks';
+import StockLogo from '../common/StockLogo';
 
 interface PortfolioTableProps {
   selectedPortfolio: PortfolioResponse;
@@ -72,9 +73,12 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ selectedPortfolio, anal
                     transition={{ delay: index * 0.05 }}
                   >
                     <td className="p-4">
-                      <div className="flex flex-col">
-                        <span className="font-extrabold text-white text-base tracking-wide">{stock.symbol}</span>
-                        {stockInfo && <span className="text-[11px] text-slate-400 font-medium">{stockInfo.name}</span>}
+                      <div className="flex items-center gap-3">
+                        <StockLogo symbol={stock.symbol} name={stockInfo?.name} size="sm" />
+                        <div className="flex flex-col">
+                          <span className="font-extrabold text-white text-base tracking-wide">{stock.symbol}</span>
+                          {stockInfo && <span className="text-[11px] text-slate-400 font-medium">{stockInfo.name}</span>}
+                        </div>
                       </div>
                     </td>
                     <td className="p-4 font-semibold text-slate-200">{stock.quantity}</td>

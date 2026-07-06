@@ -7,6 +7,7 @@ import { Search, History, HelpCircle, Activity, TrendingUp, ChevronRight, Brain,
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { NSE_STOCKS } from '../utils/nseStocks';
 import { useAuth } from '../context/AuthContext';
+import StockLogo from '../components/common/StockLogo';
 
 const UserDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -254,9 +255,12 @@ const UserDashboard: React.FC = () => {
                           onClick={() => handleSearch(undefined, stock.symbol)}
                           className="px-5 py-3.5 hover:bg-slate-200 dark:hover:bg-slate-700/60 cursor-pointer flex items-center justify-between group transition-all duration-200"
                         >
-                          <div className="flex flex-col text-left">
-                            <span className="font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors text-sm">{stock.symbol}</span>
-                            <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 tracking-wide mt-0.5">{stock.name}</span>
+                          <div className="flex items-center space-x-3 text-left">
+                            <StockLogo symbol={stock.symbol} name={stock.name} size="sm" />
+                            <div className="flex flex-col">
+                              <span className="font-extrabold text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors text-sm">{stock.symbol}</span>
+                              <span className="text-[11px] font-medium text-slate-600 dark:text-slate-400 tracking-wide mt-0.5">{stock.name}</span>
+                            </div>
                           </div>
                           <TrendingUp size={16} className="text-slate-500 dark:text-slate-500 group-hover:text-primary opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
                         </li>
@@ -318,9 +322,14 @@ const UserDashboard: React.FC = () => {
                     {history.map((item) => (
                       <tr key={item.id} onClick={() => navigate(`/analysis/${item.stock_symbol}`)} className="hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors duration-200 cursor-pointer">
                         <td className="py-4 px-6">
-                          <div className="font-bold text-slate-800 dark:text-slate-200 tracking-wide text-sm">{item.stock_symbol}</div>
-                          <div className="text-xs text-slate-800 dark:text-slate-400 mt-0.5 truncate max-w-[180px]">
-                            {item.stock_name || 'N/A'}
+                          <div className="flex items-center space-x-3">
+                            <StockLogo symbol={item.stock_symbol} name={item.stock_name} size="sm" />
+                            <div>
+                              <div className="font-bold text-slate-800 dark:text-slate-200 tracking-wide text-sm">{item.stock_symbol}</div>
+                              <div className="text-xs text-slate-800 dark:text-slate-400 mt-0.5 truncate max-w-[180px]">
+                                {item.stock_name || 'N/A'}
+                              </div>
+                            </div>
                           </div>
                         </td>
                         <td className="py-4 px-6 text-center">
