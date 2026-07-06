@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
     setError('');
     setIsSubmitting(true);
     try {
-      await login({ email, password });
+      await login({ email: email.trim(), password });
     } catch (err: any) {
       console.error(err);
       setError(err.response?.data?.detail || 'Invalid email or password. Please try again.');

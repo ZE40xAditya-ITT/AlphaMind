@@ -11,7 +11,8 @@ class UserCreate(BaseModel):
     @field_validator('email')
     @classmethod
     def validate_email(cls, v: str) -> str:
-        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', v):
+        v = v.strip()
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', v):
             raise ValueError('Invalid email address')
         return v
 
@@ -38,8 +39,10 @@ class UserUpdate(BaseModel):
     @field_validator('email')
     @classmethod
     def validate_email(cls, v: str | None) -> str | None:
-        if v is not None and not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', v):
-            raise ValueError('Invalid email address')
+        if v is not None:
+            v = v.strip()
+            if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', v):
+                raise ValueError('Invalid email address')
         return v
 
     @field_validator('password')
