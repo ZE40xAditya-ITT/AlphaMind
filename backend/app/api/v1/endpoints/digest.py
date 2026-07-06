@@ -44,7 +44,8 @@ def download_digest_pdf(
     digest = digest_service.get_digest_by_id(db, digest_id, current_user.id)
     if not digest:
         raise HTTPException(status_code=404, detail="Digest not found")
-    if not digest.pdf_path or not os.path.exists(digest.pdf_path):
+    pdf_path = digest_service.ensure_pdf(db, digest)
+    if not pdf_path or not os.path.exists(pdf_path):
         raise HTTPException(status_code=404, detail="PDF not yet available")
-    return FileResponse(digest.pdf_path, media_type="application/pdf",
+    return FileResponse(pdf_path, media_type="application/pdf",
                         filename=f"AlphaMind_Digest_{digest.id}.pdf")

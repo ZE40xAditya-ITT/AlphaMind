@@ -8,8 +8,10 @@ from reportlab.lib.units import cm
 
 
 def generate_digest_pdf(digest, user) -> str:
-    os.makedirs("./digests", exist_ok=True)
-    filename = f"./digests/digest_{user.id}_{digest.id}.pdf"
+    backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    digests_dir = os.path.join(backend_dir, "digests")
+    os.makedirs(digests_dir, exist_ok=True)
+    filename = os.path.join(digests_dir, f"digest_{user.id}_{digest.id}.pdf")
     doc = SimpleDocTemplate(filename, pagesize=A4, rightMargin=2*cm, leftMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
     styles = getSampleStyleSheet()
     INDIGO = colors.HexColor('#6366F1')

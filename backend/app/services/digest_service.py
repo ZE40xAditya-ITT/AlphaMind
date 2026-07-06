@@ -206,6 +206,39 @@ Return ONLY a JSON object with this exact schema:
             pass
         return digest
 
+    def ensure_pdf(self, db: Session, digest) -> Optional[str]:
+        if not digest:
+            return None
+        import os
+        pdf_path = digest.pdf_path
+        if pdf_path and os.path.exists(pdf_path):
+            return pdf_path
+
+        # Try resolving relative path against absolute backend directory
+        backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if pdf_path:
+            alt_path = os.path.join(backend_dir, "digests", os.path.basename(pdf_path))
+            if os.path.exists(alt_path):
+                digest.pdf_path = alt_path
+                db.commit()
+                return alt_path
+
+        # If file is still missing or was never generated, generate on the fly
+        try:
+            from app.services.digest_pdf_service import generate_digest_pdf
+            from app.models.user import User
+            user = db.query(User).filter(User.id == digest.user_id).first()
+            if user:
+                new_pdf = generate_digest_pdf(digest, user)
+                if new_pdf and os.path.exists(new_pdf):
+                    digest.pdf_path = new_pdf
+                    db.commit()
+                    db.refresh(digest)
+                    return new_pdf
+        except Exception:
+            pass
+        return digest.pdf_path
+
     def get_latest_digest(self, db: Session, user_id: int) -> Optional[WeeklyDigest]:
         digest = db.query(WeeklyDigest).filter(
             WeeklyDigest.user_id == user_id
@@ -214,6 +247,8 @@ Return ONLY a JSON object with this exact schema:
             digest.market_summary = self._get_market_summary()
             db.commit()
             db.refresh(digest)
+        if digest:
+            self.ensure_pdf(db, digest)
         return digest
 
     def get_digest_history(self, db: Session, user_id: int):
@@ -230,4 +265,6 @@ Return ONLY a JSON object with this exact schema:
             digest.market_summary = self._get_market_summary()
             db.commit()
             db.refresh(digest)
+        if digest:
+            self.ensure_pdf(db, digest)
         return digest
