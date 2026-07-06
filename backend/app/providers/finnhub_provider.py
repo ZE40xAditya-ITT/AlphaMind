@@ -40,7 +40,7 @@ class FinnhubProvider(MarketDataProvider):
         
         url = f"{self.base_url}/stock/candle?symbol={clean_symbol}&resolution=D&from={start}&to={end}&token={self.api_key}"
         try:
-            res = requests.get(url, timeout=8)
+            res = requests.get(url, timeout=3)
             data = res.json()
             if data.get("s") == "ok":
                 df = pd.DataFrame({

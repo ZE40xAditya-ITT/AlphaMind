@@ -63,7 +63,7 @@ class MarketDataAggregator:
                 }
 
             # Update Cache
-            self.cache_provider.set(symbol, {'hist': hist, 'info': info}, ttl_seconds=3600)
+            self.cache_provider.set(symbol, {'hist': hist, 'info': info}, ttl_seconds=900)
 
         # Extract metadata
         company_name = info.get("longName") or info.get("shortName") or self._get_clean_symbol(symbol)
@@ -77,8 +77,13 @@ class MarketDataAggregator:
 
         # 4. Fetch Description
         description = info.get("longBusinessSummary") or info.get("description") or info.get("businessSummary")
-        if not description or len(str(description).strip()) < 10:
+        if not description or len(str(description).strip()) < 15:
             description = self.company_info_provider.get_description(company_name)
+            
+        if not description or len(str(description).strip()) < 15 or "currently unavailable" in str(description).lower():
+            sec_label = sector if sector and sector != "Unknown" else "Diversified Industry"
+            clean_sym = symbol.replace(".NS", "").replace(".BO", "").replace("^", "")
+            description = f"{company_name} ({clean_sym}) is a prominent Indian enterprise operating within the {sec_label} sector. The company engages in delivering core industry products, innovative technologies, and specialized services across domestic and international markets. Listed on the National Stock Exchange (NSE), it demonstrates strong operational capabilities and maintains a competitive strategic presence in India's growing economic landscape."
 
         current_price = info.get("currentPrice") or info.get("regularMarketPrice")
         if current_price is None and not hist.empty:

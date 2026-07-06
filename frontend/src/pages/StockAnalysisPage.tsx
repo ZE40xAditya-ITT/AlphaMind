@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import Navbar from '../components/layout/Navbar';
 import ScoreGauge from '../components/common/ScoreGauge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { analyzeStock } from '../services/stockService';
+import { analyzeStock, getChartData } from '../services/stockService';
 import { StockAnalysisResponse } from '../types/stock';
 import { ArrowLeft, BookOpen, BarChart3, ShieldAlert, Award, TrendingUp, Info, BookmarkPlus, AlignLeft, Newspaper, Bot, Send, Loader2 } from 'lucide-react';
 import Tooltip from '../components/common/Tooltip';
@@ -11,12 +12,12 @@ import { addToWatchlist } from '../services/watchlistService';
 import { motion } from 'framer-motion';
 import { askCopilot } from '../services/copilotService';
 import MarkdownViewer from '../components/common/MarkdownViewer';
+import StockChart from '../components/charts/StockChart';
 
 const StockAnalysisPage: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
-  const [analysis, setAnalysis] = useState<StockAnalysisResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [chartPeriod, setChartPeriod] = useState<string>('1y');
   const [watchlistSuccess, setWatchlistSuccess] = useState('');
   
   // Copilot State
@@ -25,25 +26,21 @@ const StockAnalysisPage: React.FC = () => {
   const [isAskingCopilot, setIsAskingCopilot] = useState(false);
   const [copilotError, setCopilotError] = useState('');
 
-  const navigate = useNavigate();
+  const { data: analysis, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ['stockAnalysis', symbol],
+    queryFn: () => analyzeStock(symbol!),
+    enabled: !!symbol,
+    staleTime: 15 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    const runAnalysis = async () => {
-      if (!symbol) return;
-      setLoading(true);
-      setError('');
-      try {
-        const data = await analyzeStock(symbol);
-        setAnalysis(data);
-      } catch (err: any) {
-        console.error("Analysis execution error:", err);
-        setError(err.response?.data?.detail || `Failed to analyze stock symbol ${symbol}. Verify it is a valid symbol.`);
-      } finally {
-        setLoading(false);
-      }
-    };
-    runAnalysis();
-  }, [symbol]);
+  const { data: chartData, isLoading: chartLoading } = useQuery({
+    queryKey: ['stockChart', symbol, chartPeriod],
+    queryFn: () => getChartData(symbol!, chartPeriod),
+    enabled: !!symbol,
+    staleTime: 15 * 60 * 1000,
+  });
+
+  const error = queryError ? ((queryError as any).response?.data?.detail || `Failed to analyze stock symbol ${symbol}. Verify it is a valid symbol.`) : '';
 
   const handleAddToWatchlist = async () => {
     if (!analysis) return;
@@ -213,6 +210,40 @@ const StockAnalysisPage: React.FC = () => {
               {analysis.recommendation}
             </span>
           </div>
+        </div>
+
+        {/* Advanced Interactive Candlestick Chart */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2">
+            <div className="flex items-center space-x-2">
+              <BarChart3 className="text-indigo-400" size={20} />
+              <h3 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
+                Interactive Technical Chart & Indicators
+              </h3>
+            </div>
+            <div className="flex items-center space-x-1.5 bg-slate-200 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-300 dark:border-slate-800">
+              {(['1mo', '3mo', '6mo', '1y'] as const).map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setChartPeriod(period)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    chartPeriod === period
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-300/50 dark:hover:bg-slate-800/50'
+                  }`}
+                >
+                  {period.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+          <StockChart
+            data={chartData?.candles || []}
+            sma50={chartData?.sma50}
+            sma200={chartData?.sma200}
+            symbol={symbol || ''}
+            isLoading={chartLoading}
+          />
         </div>
 
         {/* Detailed KPI Cards */}

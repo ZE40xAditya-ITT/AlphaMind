@@ -31,22 +31,29 @@ class YahooFinanceProvider(MarketDataProvider):
         return yf.Ticker(symbol, session=session)
 
     def get_historical_data(self, symbol: str) -> pd.DataFrame:
-        ticker = self._fetch_ticker(symbol)
-        try:
-            hist = ticker.history(period="1y", timeout=8)
-        except Exception:
-            hist = pd.DataFrame()
-            
-        if hist.empty:
+        import concurrent.futures
+        def _fetch():
+            ticker = self._fetch_ticker(symbol)
             try:
-                # Fallback to yf.download which sometimes bypasses certain restrictions
-                hist = yf.download(tickers=symbol, period="1y", progress=False, timeout=8)
-                if not hist.empty and isinstance(hist.columns, pd.MultiIndex):
-                    hist.columns = hist.columns.droplevel('Ticker')
+                hist = ticker.history(period="1y")
             except Exception:
-                pass
+                hist = pd.DataFrame()
                 
-        return hist
+            if hist.empty:
+                try:
+                    hist = yf.download(tickers=symbol, period="1y", progress=False)
+                    if not hist.empty and isinstance(hist.columns, pd.MultiIndex):
+                        hist.columns = hist.columns.droplevel('Ticker')
+                except Exception:
+                    pass
+            return hist
+
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(_fetch)
+                return future.result(timeout=3.5)  # Hard 3.5-second timeout
+        except Exception:
+            return pd.DataFrame()
 
     def get_company_info(self, symbol: str) -> Dict[str, Any]:
         """Fetch company info with a hard timeout using ThreadPoolExecutor."""
@@ -59,7 +66,7 @@ class YahooFinanceProvider(MarketDataProvider):
         try:
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                 future = executor.submit(_fetch)
-                result = future.result(timeout=8)  # Hard 8-second timeout
+                result = future.result(timeout=3.5)  # Hard 3.5-second timeout
                 return result if result else {}
         except concurrent.futures.TimeoutError:
             return {}

@@ -31,7 +31,7 @@ const UserDashboard: React.FC = () => {
           }
         });
         
-        setHistory(Array.from(uniqueStocks.values()));
+        setHistory(Array.from(uniqueStocks.values()).slice(0, 10));
       } catch (err) {
         console.error("Error fetching history:", err);
         setError("Failed to load search history.");
