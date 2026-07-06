@@ -158,7 +158,7 @@ const StockAnalysisPage: React.FC = () => {
             </p>
             <button
               onClick={handleAddToWatchlist}
-              className="mt-3 flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-slate-900 dark:text-white border border-indigo-500/30 transition-colors text-sm font-bold"
+              className="mt-3 flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white dark:hover:text-white border border-indigo-500/30 transition-colors text-sm font-bold"
             >
               <BookmarkPlus size={16} />
               <span>{watchlistSuccess || 'Add to Watchlist'}</span>
