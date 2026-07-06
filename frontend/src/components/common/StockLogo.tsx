@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 interface StockLogoProps {
-  symbol: str;
-  name?: str;
-  className?: str;
+  symbol: string;
+  name?: string | null;
+  className?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
 // Dictionary mapping top Indian NSE symbols to their official domains
-const DOMAIN_MAP: Record<str, str> = {
+const DOMAIN_MAP: Record<string, string> = {
   'HDFCBANK': 'hdfcbank.com',
   'BAJFINANCE': 'bajajfinserv.in',
   'BAJAJFINSV': 'bajajfinserv.in',
@@ -95,7 +95,7 @@ const DOMAIN_MAP: Record<str, str> = {
   'NYKAA': 'nykaa.com',
 };
 
-const getDomain = (cleanSym: str, companyName?: str): str => {
+const getDomain = (cleanSym: string, companyName?: string | null): string => {
   if (DOMAIN_MAP[cleanSym]) {
     return DOMAIN_MAP[cleanSym];
   }
