@@ -138,6 +138,45 @@ const PortfolioPage: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* Top Performance & Allocation Block */}
+                  {analysis ? (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                      <PortfolioMetrics analysis={analysis} />
+                      
+                      <div className="glass dark:glass p-6 rounded-3xl">
+                        <h3 className="text-lg font-bold mb-6 text-white">Sector Allocation</h3>
+                        <div className="space-y-4">
+                          {Object.entries(analysis.sector_allocation).sort((a,b)=>b[1]-a[1]).map(([sector, pct], idx) => (
+                            <div key={idx}>
+                              <div className="flex justify-between text-sm mb-1 font-medium text-slate-300">
+                                <span>{sector}</span>
+                                <span>{pct.toFixed(1)}%</span>
+                              </div>
+                              <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
+                                <div className="bg-indigo-500 h-full rounded-full" style={{width: `${pct}%`}}></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <div className="glass dark:glass p-6 rounded-3xl mb-8 border border-slate-800">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <span className="text-xs text-slate-400 uppercase font-extrabold tracking-widest">Total Invested (Cost Basis)</span>
+                          <div className="text-3xl font-black text-white">
+                            ₹{selectedPortfolio.stocks.reduce((acc, s) => acc + (s.quantity * s.average_buy_price), 0).toLocaleString(undefined, {maximumFractionDigits: 0})}
+                          </div>
+                        </div>
+                        <div className="text-left sm:text-right">
+                          <span className="text-xs text-slate-400 block mb-1">Live AI Valuation & Sector Breakdown</span>
+                          <p className="text-sm text-indigo-400 font-semibold">Click "Analyze with AI" above to compute live performance metrics!</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <AddStockForm 
                     handleAddStock={handleAddStock}
                     newSymbol={newSymbol}
@@ -160,30 +199,6 @@ const PortfolioPage: React.FC = () => {
                     handleReduceStock={handleReduceStock}
                   />
                 </div>
-
-                {/* Analysis Results */}
-                {analysis && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <PortfolioMetrics analysis={analysis} />
-                    
-                    <div className="glass dark:glass p-6 rounded-3xl">
-                      <h3 className="text-lg font-bold mb-6">Sector Allocation</h3>
-                      <div className="space-y-4">
-                        {Object.entries(analysis.sector_allocation).sort((a,b)=>b[1]-a[1]).map(([sector, pct], idx) => (
-                          <div key={idx}>
-                            <div className="flex justify-between text-sm mb-1 font-medium">
-                              <span>{sector}</span>
-                              <span>{pct.toFixed(1)}%</span>
-                            </div>
-                            <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
-                              <div className="bg-indigo-500 h-full rounded-full" style={{width: `${pct}%`}}></div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
               </>
             ) : (
               <div className="glass dark:glass p-12 rounded-3xl text-center text-slate-500">

@@ -10,6 +10,7 @@ import Tooltip from '../components/common/Tooltip';
 import { addToWatchlist } from '../services/watchlistService';
 import { motion } from 'framer-motion';
 import { askCopilot } from '../services/copilotService';
+import MarkdownViewer from '../components/common/MarkdownViewer';
 
 const StockAnalysisPage: React.FC = () => {
   const { symbol } = useParams<{ symbol: string }>();
@@ -165,18 +166,26 @@ const StockAnalysisPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Company Description */}
-        {analysis.description && (
-          <div className="glass dark:glass rounded-3xl p-6 lg:p-8 space-y-4">
-            <h3 className="text-lg font-bold border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center space-x-2">
-              <AlignLeft className="text-slate-600 dark:text-slate-400" size={18} />
-              <span>About {analysis.company_name}</span>
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed text-justify">
-              {analysis.description}
-            </p>
-          </div>
-        )}
+        {/* Company Description (Always visible, brief 2-3 lines) */}
+        <div className="glass dark:glass rounded-3xl p-6 lg:p-8 space-y-3">
+          <h3 className="text-lg font-bold border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center space-x-2">
+            <AlignLeft className="text-slate-600 dark:text-slate-400" size={18} />
+            <span>About {analysis.company_name}</span>
+          </h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed text-justify">
+            {(() => {
+              const desc = analysis.description?.trim();
+              if (desc && desc.length > 20) {
+                const sentences = desc.split(/(?<=[.!?])\s+/);
+                if (sentences.length > 3) {
+                  return sentences.slice(0, 3).join(' ');
+                }
+                return desc.length > 380 ? desc.slice(0, 380).trim() + '...' : desc;
+              }
+              return `${analysis.company_name} is a prominent Indian corporation operating within the ${analysis.sector || 'domestic market'} sector. The company engages in delivering core industry products and specialized services across national markets, driving sustained operational excellence and market competitiveness. It maintains a strong strategic presence on the National Stock Exchange (NSE) and plays a vital role in India's growing economic landscape.`;
+            })()}
+          </p>
+        </div>
 
         {/* Triple Gauges Row */}
         <motion.div 
@@ -438,10 +447,10 @@ const StockAnalysisPage: React.FC = () => {
         <div className="glass dark:glass rounded-3xl p-6 lg:p-8 space-y-6 mt-8">
           <h3 className="text-xl font-bold border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center space-x-2.5">
             <Bot className="text-indigo-400" size={24} />
-            <span>AI Investment Copilot</span>
+            <span>AlphaMind Agent</span>
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Ask me anything about {analysis.company_name}. I have deep knowledge of its technicals, fundamentals, institutional holdings, and latest news.
+          <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3">
+            {analysis.summary || `I am your AI investment assistant specialized in ${analysis.company_name}. I can analyze technical patterns, evaluate fundamental health, assess institutional movements, and interpret the latest market sentiment to provide actionable insights for your portfolio.`}
           </p>
           <div className="flex gap-4">
             <input 
@@ -463,8 +472,8 @@ const StockAnalysisPage: React.FC = () => {
           </div>
           {copilotError && <p className="text-rose-500 text-sm">{copilotError}</p>}
           {copilotResponse && (
-            <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 p-5 rounded-2xl mt-4 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">
-              {copilotResponse}
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/30 p-5 rounded-2xl mt-4">
+              <MarkdownViewer content={copilotResponse} />
             </div>
           )}
         </div>

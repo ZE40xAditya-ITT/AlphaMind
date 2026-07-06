@@ -23,6 +23,7 @@ export interface DigestData {
     avoid_list: string[];
     upgrades: string[];
     downgrades: string[];
+    growth_opportunities?: Array<{symbol: string; name: string; reason: string}>;
   };
   watchlist_insights: {
     watchlist_symbols: string[];

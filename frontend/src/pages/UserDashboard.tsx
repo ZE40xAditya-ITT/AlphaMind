@@ -316,7 +316,7 @@ const UserDashboard: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-800/60">
                     {history.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors duration-200">
+                      <tr key={item.id} onClick={() => navigate(`/analysis/${item.stock_symbol}`)} className="hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors duration-200 cursor-pointer">
                         <td className="py-4 px-6">
                           <div className="font-bold text-slate-800 dark:text-slate-200 tracking-wide text-sm">{item.stock_symbol}</div>
                           <div className="text-xs text-slate-800 dark:text-slate-400 mt-0.5 truncate max-w-[180px]">

@@ -3,13 +3,13 @@ import { MessageSquare, X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import LoadingSpinner from './common/LoadingSpinner';
-import ReactMarkdown from 'react-markdown';
+import MarkdownViewer from './common/MarkdownViewer';
 
 const GlobalChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'bot'; content: string }[]>([
-    { role: 'bot', content: 'Hello! I am your AlphaMind Global Copilot. Ask me anything about the market or how to use the platform.' }
+    { role: 'bot', content: 'Hello! I am **AlphaMind Agent**. Ask me anything about the market, stock analysis, or how to use the platform.' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -71,7 +71,7 @@ const GlobalChatbot: React.FC = () => {
             <div className="bg-indigo-600 p-4 flex justify-between items-center text-white">
               <div className="flex items-center gap-2">
                 <MessageSquare size={20} />
-                <h3 className="font-bold">Global Copilot</h3>
+                <h3 className="font-bold">AlphaMind Agent</h3>
               </div>
               <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1 rounded-lg transition">
                 <X size={20} />
@@ -89,9 +89,7 @@ const GlobalChatbot: React.FC = () => {
                     {msg.role === 'user' ? (
                       msg.content
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none">
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      </div>
+                      <MarkdownViewer content={msg.content} />
                     )}
                   </div>
                 </div>

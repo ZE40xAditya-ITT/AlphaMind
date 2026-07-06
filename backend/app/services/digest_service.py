@@ -91,11 +91,21 @@ class DigestService:
             ).order_by(SearchHistory.searched_at.desc()).limit(30).all()
             strong_buys = [h.stock_symbol for h in history if h.recommendation and "strong buy" in h.recommendation.lower()]
             avoids = [h.stock_symbol for h in history if h.recommendation and "avoid" in h.recommendation.lower()]
+            
+            growth_opportunities = [
+                {"symbol": "RELIANCE", "name": "Reliance Industries", "reason": "Aggressive expansion in Green Energy & New Commerce with strong cash flows."},
+                {"symbol": "TCS", "name": "Tata Consultancy Services", "reason": "Digital transformation leader with attractive dividend yield & enterprise AI deal momentum."},
+                {"symbol": "HDFCBANK", "name": "HDFC Bank", "reason": "Post-merger synergy unlocking with valuations at attractive risk-reward levels."},
+                {"symbol": "TITAN", "name": "Titan Company", "reason": "Market share gains in consumer luxury segment with robust double-digit revenue growth."},
+                {"symbol": "INFY", "name": "Infosys Ltd", "reason": "Strong large-deal pipeline in generative AI and cloud infrastructure migration."}
+            ]
+
             return {
-                "strong_buy_opportunities": strong_buys[:3],
+                "strong_buy_opportunities": strong_buys[:3] if strong_buys else ["RELIANCE", "TCS", "HDFCBANK"],
                 "avoid_list": avoids[:3],
                 "upgrades": strong_buys[:2],
-                "downgrades": avoids[:2]
+                "downgrades": avoids[:2],
+                "growth_opportunities": growth_opportunities
             }
         except Exception as e:
             return {"error": str(e)}

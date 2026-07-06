@@ -59,6 +59,7 @@ export interface StockAnalysisResponse {
   recommendation: string;
   rank_label: string;
   description: string | null;
+  summary?: string;
 }
 
 export interface CompareResponse {
