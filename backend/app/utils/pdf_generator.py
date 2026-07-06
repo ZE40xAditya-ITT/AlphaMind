@@ -191,7 +191,7 @@ def generate_invoice_pdf(
     elements = []
 
     brand_p1 = Paragraph("ALPHAMIND AI", brand_style)
-    brand_p2 = Paragraph("Stock Intelligence & Fundamental Scoring Engine<br/>Email: billing@alphamind.com | Web: www.alphamind.ai<br/>GSTIN: 27AACCA1234F1Z9", brand_sub_style)
+    brand_p2 = Paragraph("Stock Intelligence & Fundamental Scoring Engine", brand_sub_style)
 
     date_str = invoice_date.strftime('%d %B %Y') if invoice_date else datetime.now().strftime('%d %B %Y')
     inv_p1 = Paragraph("COMMERCIAL INVOICE", inv_title_style)
