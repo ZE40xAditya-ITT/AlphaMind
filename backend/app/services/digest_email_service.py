@@ -1,10 +1,12 @@
+import logging
 import resend
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
 
 def send_digest_email(digest, user) -> bool:
     if not settings.RESEND_API_KEY:
-        print("RESEND_API_KEY not configured, skipping email.")
+        logger.info("RESEND_API_KEY not configured, skipping email.")
         return False
     resend.api_key = settings.RESEND_API_KEY
     market = digest.market_summary or {}
@@ -58,5 +60,5 @@ def send_digest_email(digest, user) -> bool:
         resend.Emails.send(params)
         return True
     except Exception as e:
-        print(f"Email send failed: {e}")
+        logger.error(f"Email send failed: {e}")
         return False

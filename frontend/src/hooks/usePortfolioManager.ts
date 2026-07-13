@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  getPortfolios, createPortfolio, addStockToPortfolio, analyzePortfolio, askPortfolioCopilot, removeStockFromPortfolio, deletePortfolio,
+  getPortfolios, createPortfolio, addStockToPortfolio, analyzePortfolio, askPortfolioCopilot, removeStockFromPortfolio, reduceStockInPortfolio, deletePortfolio,
   PortfolioResponse, PortfolioAnalysisResponse
 } from '../services/portfolioService';
 import { getStockDetails } from '../services/stockService';
@@ -146,7 +146,6 @@ export const usePortfolioManager = () => {
   const handleReduceStock = async (stockId: number, quantityToReduce: number) => {
     if (!selectedPortfolio) return;
     try {
-      const { reduceStockInPortfolio } = await import('../services/portfolioService');
       const updatedStock = await reduceStockInPortfolio(selectedPortfolio.id, stockId, quantityToReduce);
 
       let updatedStocks;
