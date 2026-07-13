@@ -21,12 +21,9 @@ const SignupPage: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    const cleanUsername = username.trim();
-    const cleanEmail = email.trim();
-
     // Frontend validation to match backend constraints
-    if (cleanUsername.length < 3) return setError('Username must be at least 3 characters');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return setError('Please enter a valid email address');
+    if (username.length < 3) return setError('Username must be at least 3 characters');
+    
     if (password.length < 8) return setError('Password must be at least 8 characters');
     if (!/[A-Z]/.test(password)) return setError('Password must contain at least one uppercase letter');
     if (!/[a-z]/.test(password)) return setError('Password must contain at least one lowercase letter');
@@ -35,9 +32,9 @@ const SignupPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await signup({ username: cleanUsername, email: cleanEmail, password, role: 'user' });
+      await signup({ username, email, password, role: 'user' });
       // After signup, automatically log them in
-      await contextLogin({ email: cleanEmail, password });
+      await contextLogin({ email, password });
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Signup failed');

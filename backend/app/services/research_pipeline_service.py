@@ -15,30 +15,52 @@ if settings.GOOGLE_API_KEY:
     genai.configure(api_key=settings.GOOGLE_API_KEY)
 
 NSE_UNIVERSE = [
-    "HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "SBIN", "BANDHANBNK", "FEDERALBNK",
-    "TCS", "INFY", "WIPRO", "HCLTECH", "TECHM", "MPHASIS",
-    "HINDUNILVR", "ITC", "NESTLEIND", "DABUR", "MARICO",
-    "SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB", "APOLLOHOSP",
-    "MARUTI", "TATAMOTORS", "BAJAJ-AUTO", "EICHERMOT",
-    "RELIANCE", "ONGC", "BPCL", "NTPC",
-    "BAJFINANCE", "BAJAJFINSV", "MUTHOOTFIN",
-    "LT", "ADANIPORTS", "TITAN", "ASIANPAINT", "DMART"
+    "HDFCBANK", "ICICIBANK", "SBIN", "TCS", "INFY", "RELIANCE",
+    "ITC", "HINDUNILVR", "SUNPHARMA", "TATAMOTORS", "HAL", "BEL",
+    "TATASTEEL", "NTPC", "ONGC", "TITAN", "BAJFINANCE", "DMART",
+    "SRF", "DLF", "BHARTIARTL", "ZOMATO", "CIPLA", "LT", "ASIANPAINT"
 ]
 
 SECTOR_MAP = {
-    "banking": ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "SBIN", "BANDHANBNK", "FEDERALBNK"],
+    "defense": ["HAL", "BEL", "BDL", "LT", "MAZDOCK"],
+    "aerospace": ["HAL", "BEL", "BDL", "LT"],
+    "military": ["HAL", "BEL", "BDL"],
+    "green": ["TATAMOTORS", "TATAPOWER", "NTPC", "SUZLON", "ADANIGREEN"],
+    "renewable": ["TATAPOWER", "SUZLON", "ADANIGREEN", "NTPC"],
+    "ev": ["TATAMOTORS", "MARUTI", "EXIDEIND", "AMARAJABAT", "TATAPOWER"],
+    "solar": ["TATAPOWER", "ADANIGREEN", "SUZLON"],
+    "chemical": ["SRF", "PIIND", "DEEPAKNTR", "TATACHEM"],
+    "pharma": ["SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB", "APOLLOHOSP", "LUPIN"],
+    "biotech": ["SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB"],
+    "healthcare": ["APOLLOHOSP", "SUNPHARMA", "DRREDDY", "CIPLA"],
+    "banking": ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "SBIN", "FEDERALBNK"],
     "bank": ["HDFCBANK", "ICICIBANK", "KOTAKBANK", "AXISBANK", "SBIN"],
-    "it": ["TCS", "INFY", "WIPRO", "HCLTECH", "TECHM"],
-    "tech": ["TCS", "INFY", "WIPRO", "HCLTECH", "TECHM"],
-    "pharma": ["SUNPHARMA", "DRREDDY", "CIPLA", "DIVISLAB", "APOLLOHOSP"],
-    "fmcg": ["HINDUNILVR", "ITC", "NESTLEIND", "DABUR", "MARICO"],
-    "auto": ["MARUTI", "TATAMOTORS", "BAJAJ-AUTO", "EICHERMOT"],
-    "energy": ["RELIANCE", "ONGC", "BPCL", "NTPC"],
-    "finance": ["BAJFINANCE", "BAJAJFINSV", "MUTHOOTFIN", "HDFCBANK"],
-    "dividend": ["ITC", "ONGC", "BPCL", "NTPC", "HINDUNILVR"],
-    "growth": ["TCS", "INFY", "HDFCBANK", "BAJFINANCE", "TITAN"],
-    "undervalue": ["SBIN", "ONGC", "BPCL", "FEDERALBNK", "ITC"],
-    "low risk": ["TCS", "INFY", "HINDUNILVR", "NESTLEIND", "HDFCBANK"],
+    "nbfc": ["BAJFINANCE", "BAJAJFINSV", "MUTHOOTFIN", "CHOLAFIN"],
+    "it": ["TCS", "INFY", "WIPRO", "HCLTECH", "TECHM", "MPHASIS"],
+    "tech": ["TCS", "INFY", "WIPRO", "HCLTECH", "TECHM", "ZOMATO"],
+    "ai": ["TCS", "INFY", "HCLTECH", "TECHM"],
+    "fmcg": ["HINDUNILVR", "ITC", "NESTLEIND", "DABUR", "MARICO", "BRITANNIA"],
+    "consumer": ["TITAN", "DMART", "HINDUNILVR", "ITC", "TRENT", "ZOMATO"],
+    "retail": ["DMART", "TRENT", "TITAN", "ZOMATO"],
+    "auto": ["MARUTI", "TATAMOTORS", "BAJAJ-AUTO", "EICHERMOT", "M&M"],
+    "energy": ["RELIANCE", "ONGC", "BPCL", "NTPC", "TATAPOWER"],
+    "power": ["NTPC", "TATAPOWER", "NHPC", "ONGC"],
+    "metals": ["TATASTEEL", "HINDALCO", "JSWSTEEL", "COALINDIA", "VEDL"],
+    "steel": ["TATASTEEL", "JSWSTEEL"],
+    "mining": ["COALINDIA", "HINDALCO", "VEDL"],
+    "realty": ["DLF", "GODREJPROP", "OBEROIRLTY"],
+    "infra": ["LT", "ADANIPORTS", "DLF", "NTPC"],
+    "telecom": ["BHARTIARTL", "RELIANCE"],
+    "dividend": ["ITC", "COALINDIA", "ONGC", "BPCL", "NTPC", "HINDUNILVR", "BEL"],
+    "growth": ["TITAN", "BAJFINANCE", "TATAMOTORS", "ZOMATO", "TRENT", "DMART", "HAL"],
+    "undervalue": ["ONGC", "SBIN", "COALINDIA", "BPCL", "FEDERALBNK", "ITC"],
+    "value": ["ONGC", "SBIN", "COALINDIA", "BPCL", "FEDERALBNK", "ITC"],
+    "cheap": ["ONGC", "SBIN", "COALINDIA", "BPCL", "FEDERALBNK", "ITC"],
+    "low risk": ["TCS", "INFY", "HINDUNILVR", "NESTLEIND", "HDFCBANK", "RELIANCE"],
+    "safe": ["TCS", "RELIANCE", "HDFCBANK", "INFY", "ITC"],
+    "midcap": ["FEDERALBNK", "PIIND", "DEEPAKNTR", "EXIDEIND", "SUZLON", "BDL"],
+    "roe": ["TCS", "ITC", "NESTLEIND", "HAL", "HINDUNILVR", "COALINDIA", "BEL"],
+    "quality": ["TCS", "NESTLEIND", "ITC", "HAL", "ASIANPAINT", "HDFCBANK"]
 }
 
 
@@ -57,24 +79,42 @@ STOCK_FALLBACK_CATALOG = {
     "KOTAKBANK": {"symbol": "KOTAKBANK", "name": "Kotak Mahindra Bank Limited", "sector": "Financial Services", "price": 1780.0, "pe": 22.1, "roe": 0.14, "debt_equity": 65.0, "revenue_growth": 0.15},
     "AXISBANK": {"symbol": "AXISBANK", "name": "Axis Bank Limited", "sector": "Financial Services", "price": 1150.0, "pe": 14.8, "roe": 0.16, "debt_equity": 80.0, "revenue_growth": 0.16},
     "SBIN": {"symbol": "SBIN", "name": "State Bank of India", "sector": "Financial Services", "price": 820.0, "pe": 10.5, "roe": 0.19, "debt_equity": 110.0, "revenue_growth": 0.14},
+    "FEDERALBNK": {"symbol": "FEDERALBNK", "name": "Federal Bank Limited", "sector": "Financial Services", "price": 195.0, "pe": 11.2, "roe": 0.15, "debt_equity": 90.0, "revenue_growth": 0.16},
     "TCS": {"symbol": "TCS", "name": "Tata Consultancy Services Limited", "sector": "Information Technology", "price": 3950.0, "pe": 28.5, "roe": 0.45, "debt_equity": 8.0, "revenue_growth": 0.08},
     "INFY": {"symbol": "INFY", "name": "Infosys Limited", "sector": "Information Technology", "price": 1580.0, "pe": 24.2, "roe": 0.32, "debt_equity": 10.0, "revenue_growth": 0.09},
     "WIPRO": {"symbol": "WIPRO", "name": "Wipro Limited", "sector": "Information Technology", "price": 480.0, "pe": 22.0, "roe": 0.16, "debt_equity": 15.0, "revenue_growth": 0.05},
     "HCLTECH": {"symbol": "HCLTECH", "name": "HCL Technologies Limited", "sector": "Information Technology", "price": 1450.0, "pe": 23.5, "roe": 0.26, "debt_equity": 12.0, "revenue_growth": 0.11},
+    "TECHM": {"symbol": "TECHM", "name": "Tech Mahindra Limited", "sector": "Information Technology", "price": 1320.0, "pe": 25.0, "roe": 0.18, "debt_equity": 14.0, "revenue_growth": 0.07},
     "RELIANCE": {"symbol": "RELIANCE", "name": "Reliance Industries Limited", "sector": "Energy", "price": 2950.0, "pe": 26.0, "roe": 0.11, "debt_equity": 45.0, "revenue_growth": 0.12},
     "ONGC": {"symbol": "ONGC", "name": "Oil and Natural Gas Corporation", "sector": "Energy", "price": 285.0, "pe": 7.5, "roe": 0.18, "debt_equity": 35.0, "revenue_growth": 0.08},
     "BPCL": {"symbol": "BPCL", "name": "Bharat Petroleum Corporation", "sector": "Energy", "price": 610.0, "pe": 6.8, "roe": 0.22, "debt_equity": 50.0, "revenue_growth": 0.06},
-    "NTPC": {"symbol": "NTPC", "name": "NTPC Limited", "sector": "Energy", "price": 365.0, "pe": 16.5, "roe": 0.13, "debt_equity": 120.0, "revenue_growth": 0.10},
+    "NTPC": {"symbol": "NTPC", "name": "NTPC Limited", "sector": "Power & Energy", "price": 365.0, "pe": 16.5, "roe": 0.13, "debt_equity": 120.0, "revenue_growth": 0.10},
+    "TATAPOWER": {"symbol": "TATAPOWER", "name": "Tata Power Company Limited", "sector": "Power & Renewables", "price": 430.0, "pe": 31.0, "roe": 0.13, "debt_equity": 140.0, "revenue_growth": 0.16},
+    "SUZLON": {"symbol": "SUZLON", "name": "Suzlon Energy Limited", "sector": "Green Energy", "price": 68.0, "pe": 45.0, "roe": 0.28, "debt_equity": 18.0, "revenue_growth": 0.35},
+    "HAL": {"symbol": "HAL", "name": "Hindustan Aeronautics Limited", "sector": "Defense & Aerospace", "price": 4850.0, "pe": 38.0, "roe": 0.27, "debt_equity": 0.0, "revenue_growth": 0.18},
+    "BEL": {"symbol": "BEL", "name": "Bharat Electronics Limited", "sector": "Defense & Electronics", "price": 310.0, "pe": 42.0, "roe": 0.25, "debt_equity": 1.0, "revenue_growth": 0.17},
+    "BDL": {"symbol": "BDL", "name": "Bharat Dynamics Limited", "sector": "Defense & Aerospace", "price": 1450.0, "pe": 48.0, "roe": 0.19, "debt_equity": 2.0, "revenue_growth": 0.21},
     "HINDUNILVR": {"symbol": "HINDUNILVR", "name": "Hindustan Unilever Limited", "sector": "Fast Moving Consumer Goods", "price": 2450.0, "pe": 55.0, "roe": 0.28, "debt_equity": 5.0, "revenue_growth": 0.06},
     "ITC": {"symbol": "ITC", "name": "ITC Limited", "sector": "Fast Moving Consumer Goods", "price": 440.0, "pe": 26.5, "roe": 0.29, "debt_equity": 2.0, "revenue_growth": 0.08},
+    "NESTLEIND": {"symbol": "NESTLEIND", "name": "Nestle India Limited", "sector": "Fast Moving Consumer Goods", "price": 2520.0, "pe": 72.0, "roe": 0.85, "debt_equity": 3.0, "revenue_growth": 0.10},
     "SUNPHARMA": {"symbol": "SUNPHARMA", "name": "Sun Pharma Industries", "sector": "Healthcare", "price": 1520.0, "pe": 34.0, "roe": 0.16, "debt_equity": 15.0, "revenue_growth": 0.11},
+    "DRREDDY": {"symbol": "DRREDDY", "name": "Dr. Reddy's Laboratories", "sector": "Healthcare", "price": 6300.0, "pe": 21.0, "roe": 0.19, "debt_equity": 8.0, "revenue_growth": 0.14},
+    "CIPLA": {"symbol": "CIPLA", "name": "Cipla Limited", "sector": "Healthcare", "price": 1480.0, "pe": 27.0, "roe": 0.17, "debt_equity": 4.0, "revenue_growth": 0.12},
+    "DIVISLAB": {"symbol": "DIVISLAB", "name": "Divi's Laboratories Limited", "sector": "Healthcare", "price": 4650.0, "pe": 58.0, "roe": 0.18, "debt_equity": 1.0, "revenue_growth": 0.15},
     "MARUTI": {"symbol": "MARUTI", "name": "Maruti Suzuki India Limited", "sector": "Automobile", "price": 12500.0, "pe": 29.0, "roe": 0.17, "debt_equity": 2.0, "revenue_growth": 0.15},
-    "TATAMOTORS": {"symbol": "TATAMOTORS", "name": "Tata Motors Limited", "sector": "Automobile", "price": 980.0, "pe": 18.0, "roe": 0.25, "debt_equity": 110.0, "revenue_growth": 0.22},
+    "TATAMOTORS": {"symbol": "TATAMOTORS", "name": "Tata Motors Limited", "sector": "Automobile & EV", "price": 980.0, "pe": 18.0, "roe": 0.25, "debt_equity": 110.0, "revenue_growth": 0.22},
     "BAJFINANCE": {"symbol": "BAJFINANCE", "name": "Bajaj Finance Limited", "sector": "Financial Services", "price": 7100.0, "pe": 30.5, "roe": 0.22, "debt_equity": 180.0, "revenue_growth": 0.25},
-    "LT": {"symbol": "LT", "name": "Larsen & Toubro Limited", "sector": "Construction", "price": 3650.0, "pe": 32.0, "roe": 0.15, "debt_equity": 85.0, "revenue_growth": 0.17},
+    "LT": {"symbol": "LT", "name": "Larsen & Toubro Limited", "sector": "Construction & Engineering", "price": 3650.0, "pe": 32.0, "roe": 0.15, "debt_equity": 85.0, "revenue_growth": 0.17},
     "TITAN": {"symbol": "TITAN", "name": "Titan Company Limited", "sector": "Consumer Durables", "price": 3400.0, "pe": 75.0, "roe": 0.26, "debt_equity": 30.0, "revenue_growth": 0.19},
     "ASIANPAINT": {"symbol": "ASIANPAINT", "name": "Asian Paints Limited", "sector": "Consumer Durables", "price": 2850.0, "pe": 52.0, "roe": 0.27, "debt_equity": 10.0, "revenue_growth": 0.07},
-    "DMART": {"symbol": "DMART", "name": "Avenue Supermarts Limited", "sector": "Consumer Services", "price": 4650.0, "pe": 95.0, "roe": 0.16, "debt_equity": 5.0, "revenue_growth": 0.18}
+    "DMART": {"symbol": "DMART", "name": "Avenue Supermarts Limited", "sector": "Consumer Services", "price": 4650.0, "pe": 95.0, "roe": 0.16, "debt_equity": 5.0, "revenue_growth": 0.18},
+    "ZOMATO": {"symbol": "ZOMATO", "name": "Zomato Limited", "sector": "Internet & Tech", "price": 260.0, "pe": 88.0, "roe": 0.14, "debt_equity": 0.0, "revenue_growth": 0.65},
+    "TATASTEEL": {"symbol": "TATASTEEL", "name": "Tata Steel Limited", "sector": "Metals & Mining", "price": 165.0, "pe": 14.0, "roe": 0.13, "debt_equity": 70.0, "revenue_growth": 0.08},
+    "COALINDIA": {"symbol": "COALINDIA", "name": "Coal India Limited", "sector": "Metals & Mining", "price": 490.0, "pe": 8.5, "roe": 0.42, "debt_equity": 12.0, "revenue_growth": 0.09},
+    "SRF": {"symbol": "SRF", "name": "SRF Limited", "sector": "Chemicals", "price": 2450.0, "pe": 38.0, "roe": 0.18, "debt_equity": 40.0, "revenue_growth": 0.11},
+    "PIIND": {"symbol": "PIIND", "name": "PI Industries Limited", "sector": "Chemicals", "price": 3850.0, "pe": 34.0, "roe": 0.21, "debt_equity": 3.0, "revenue_growth": 0.16},
+    "DLF": {"symbol": "DLF", "name": "DLF Limited", "sector": "Real Estate", "price": 860.0, "pe": 48.0, "roe": 0.12, "debt_equity": 15.0, "revenue_growth": 0.22},
+    "BHARTIARTL": {"symbol": "BHARTIARTL", "name": "Bharti Airtel Limited", "sector": "Telecom", "price": 1480.0, "pe": 55.0, "roe": 0.15, "debt_equity": 130.0, "revenue_growth": 0.14}
 }
 
 class ResearchPipelineService:
@@ -91,10 +131,48 @@ class ResearchPipelineService:
             self.model = None
 
     def _pick_universe(self, query: str) -> List[str]:
+        """
+        Intelligently select stocks based on natural language query intent, NLP semantic themes,
+        explicit tickers, and AI parsing.
+        """
+        query_upper = query.upper()
         query_lower = query.lower()
-        for keyword, stocks in SECTOR_MAP.items():
+
+        # 1. Check if user explicitly mentioned stock symbols in query
+        explicit_symbols = []
+        for sym in STOCK_FALLBACK_CATALOG.keys():
+            if re.search(rf'\b{sym}\b', query_upper):
+                explicit_symbols.append(sym)
+        if explicit_symbols:
+            return list(dict.fromkeys(explicit_symbols + NSE_UNIVERSE[:6]))
+
+        # 2. Check keyword/semantic themes in query
+        matched_symbols = []
+        for keyword, symbols in SECTOR_MAP.items():
             if keyword in query_lower:
-                return stocks
+                matched_symbols.extend(symbols)
+
+        if matched_symbols:
+            return list(dict.fromkeys(matched_symbols))
+
+        # 3. Try NLP LLM parsing if available for complex natural language queries
+        if self.model:
+            try:
+                prompt = (
+                    f"User research request: '{query}'.\n"
+                    "Select up to 12 top Indian NSE stock tickers (without .NS suffix) from our catalog that best match this NLP intent. "
+                    "Respond ONLY with a JSON list of strings, e.g. [\"HAL\", \"BEL\", \"LT\"]."
+                )
+                response = self.model.generate_content(prompt)
+                parsed = json.loads(response.text.strip().strip("`").replace("json", "").strip())
+                if isinstance(parsed, list) and len(parsed) > 0:
+                    valid_symbols = [s.upper().replace(".NS", "") for s in parsed if isinstance(s, str)]
+                    if valid_symbols:
+                        return list(dict.fromkeys(valid_symbols))
+            except Exception as e:
+                logger.debug(f"LLM NLP symbol extraction fallback: {e}")
+
+        # 4. Fallback: return a diversified multi-sector basket instead of only 5 banks
         return NSE_UNIVERSE
 
     def _screen_stocks(self, symbols: List[str], limit: int = 10) -> List[Dict]:
@@ -153,7 +231,8 @@ class ResearchPipelineService:
 
         return candidates
 
-    def _score_candidates(self, candidates: List[Dict]) -> List[Dict]:
+    def _score_candidates(self, candidates: List[Dict], query: str = "") -> List[Dict]:
+        query_lower = query.lower()
         scored = []
         for c in candidates:
             score = 50.0
@@ -162,7 +241,7 @@ class ResearchPipelineService:
             if roe:
                 roe_pct = roe * 100 if abs(roe) < 5 else roe
                 if roe_pct >= 20:
-                    score += 20
+                    score += 25 if any(k in query_lower for k in ["roe", "quality", "profit"]) else 20
                     insights.append(f"Strong ROE: {roe_pct:.1f}%")
                 elif roe_pct >= 10:
                     score += 10
@@ -172,7 +251,7 @@ class ResearchPipelineService:
             de = c.get("debt_equity")
             if de is not None:
                 if de < 30:
-                    score += 15
+                    score += 25 if any(k in query_lower for k in ["debt", "safe", "zero debt"]) else 15
                     insights.append("Low debt burden")
                 elif de > 150:
                     score -= 15
@@ -181,16 +260,16 @@ class ResearchPipelineService:
             if rev_growth:
                 rg_pct = rev_growth * 100 if abs(rev_growth) < 5 else rev_growth
                 if rg_pct >= 15:
-                    score += 15
+                    score += 25 if any(k in query_lower for k in ["growth", "multibagger", "fast"]) else 15
                     insights.append(f"Strong revenue growth: {rg_pct:.1f}%")
                 elif rg_pct >= 5:
                     score += 7
             pe = c.get("pe")
             if pe and pe > 0:
-                if pe < 15:
-                    score += 10
+                if pe < 18:
+                    score += 25 if any(k in query_lower for k in ["value", "undervalue", "cheap", "pe"]) else 10
                     insights.append(f"Attractive valuation P/E: {pe:.1f}x")
-                elif pe > 60:
+                elif pe > 65:
                     score -= 10
                     insights.append(f"Expensive P/E: {pe:.1f}x")
             score = max(0, min(100, score))
@@ -284,7 +363,7 @@ Write a complete markdown report with:
                 yield event("screening", "done", message=f"Found {len(candidates_raw)} candidates")
 
             yield event("fundamental", "running", message="Running fundamental analysis...")
-            scored = self._score_candidates(candidates_raw)
+            scored = self._score_candidates(candidates_raw, query)
             yield event("fundamental", "done", message="Fundamental analysis complete")
 
             yield event("technical", "running", message="Analyzing technical indicators...")

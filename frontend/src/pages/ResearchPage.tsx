@@ -23,11 +23,11 @@ const PIPELINE_STAGES = [
 ];
 
 const SUGGESTED_QUERIES = [
-  'Find undervalued banking stocks',
-  'Find growth stocks with strong momentum',
-  'Find dividend opportunities with low risk',
-  'Find IT stocks with strong fundamentals',
-  'Find pharma stocks with high ROE',
+  'Find defense & aerospace stocks with zero debt and high ROE',
+  'Find EV & renewable energy leaders with strong revenue growth',
+  'Find undervalued banking stocks with PE under 15',
+  'Find high dividend yield stocks for passive income',
+  'Find midcap chemical & specialty stocks with strong profit margins',
 ];
 
 const getScoreColor = (score: number) => {
@@ -157,7 +157,7 @@ const ResearchPage: React.FC = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">research?</span>
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Powered by 7 specialized AI agents that screen, analyze, and rank Indian stocks for you.
+            Powered by natural language AI that understands your exact criteria across sectors, fundamentals, valuation, and growth themes.
           </p>
         </motion.div>
 
