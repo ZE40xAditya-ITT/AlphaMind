@@ -132,8 +132,8 @@ class ResearchPipelineService:
 
     def _pick_universe(self, query: str) -> List[str]:
         """
-        Intelligently select stocks based on natural language query intent, NLP semantic themes,
-        explicit tickers, and AI parsing.
+        Intelligently select and rank candidate stocks based on natural language query intent,
+        strict word-boundary NLP semantic themes, financial criteria, and explicit tickers.
         """
         query_upper = query.upper()
         query_lower = query.lower()
@@ -143,19 +143,75 @@ class ResearchPipelineService:
         for sym in STOCK_FALLBACK_CATALOG.keys():
             if re.search(rf'\b{sym}\b', query_upper):
                 explicit_symbols.append(sym)
-        if explicit_symbols:
-            return list(dict.fromkeys(explicit_symbols + NSE_UNIVERSE[:6]))
+        if len(explicit_symbols) >= 2:
+            # User specified exact comparison/analysis symbols
+            return list(dict.fromkeys(explicit_symbols + ["NIFTY", "HDFCBANK"]))
 
-        # 2. Check keyword/semantic themes in query
-        matched_symbols = []
+        # 2. Score every symbol in our catalog against user NLP query keywords & financial criteria
+        symbol_scores: Dict[str, float] = {sym: 0.0 for sym in STOCK_FALLBACK_CATALOG.keys()}
+
+        # Match sector & semantic keywords using strict word boundaries to avoid false substring matches
+        matched_any_keyword = False
         for keyword, symbols in SECTOR_MAP.items():
-            if keyword in query_lower:
-                matched_symbols.extend(symbols)
+            pattern = rf'\b{re.escape(keyword)}\b' if len(keyword.split()) == 1 else re.escape(keyword)
+            if re.search(pattern, query_lower):
+                matched_any_keyword = True
+                for s in symbols:
+                    if s in symbol_scores:
+                        symbol_scores[s] += 65.0
 
-        if matched_symbols:
-            return list(dict.fromkeys(matched_symbols))
+        # Match financial metrics & fundamental constraints
+        for sym, data in STOCK_FALLBACK_CATALOG.items():
+            price = data.get("price", 1000)
+            roe = data.get("roe", 0.15)
+            de = data.get("debt_equity", 50)
+            pe = data.get("pe", 20)
+            rev_growth = data.get("revenue_growth", 0.10)
 
-        # 3. Try NLP LLM parsing if available for complex natural language queries
+            # Price constraints
+            if any(term in query_lower for term in ["under 500", "below 500", "low price", "cheap price"]) and price < 500:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+            elif any(term in query_lower for term in ["under 1000", "below 1000"]) and price < 1000:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+            # ROE / Quality constraints
+            if any(term in query_lower for term in ["roe", "quality", "profit", "high return"]) and roe >= 0.20:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+            # Debt constraints
+            if any(term in query_lower for term in ["debt free", "zero debt", "low debt", "safe"]) and de < 12:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+            # Valuation constraints
+            if any(term in query_lower for term in ["undervalue", "value", "low pe", "cheap"]) and pe < 16:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+            # Dividend constraints
+            if any(term in query_lower for term in ["dividend", "yield", "passive income"]) and sym in SECTOR_MAP.get("dividend", []):
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+            # Growth constraints
+            if any(term in query_lower for term in ["growth", "multibagger", "fast"]) and rev_growth >= 0.18:
+                symbol_scores[sym] += 40.0
+                matched_any_keyword = True
+
+        # Sort symbols by score descending
+        sorted_symbols = sorted(symbol_scores.keys(), key=lambda s: symbol_scores[s], reverse=True)
+
+        # If we matched specific keywords or criteria, return the highest-scoring symbols
+        if matched_any_keyword and symbol_scores[sorted_symbols[0]] > 0:
+            top_matches = [s for s in sorted_symbols if symbol_scores[s] > 0]
+            if len(top_matches) >= 3:
+                return top_matches
+            return list(dict.fromkeys(top_matches + sorted_symbols[:15]))
+
+        # 3. Try LLM NLP parsing if available for complex free-form queries
         if self.model:
             try:
                 prompt = (
@@ -172,8 +228,12 @@ class ResearchPipelineService:
             except Exception as e:
                 logger.debug(f"LLM NLP symbol extraction fallback: {e}")
 
-        # 4. Fallback: return a diversified multi-sector basket instead of only 5 banks
-        return NSE_UNIVERSE
+        # 4. Fallback for completely generic queries: return top diverse market leaders across sectors
+        return [
+            "RELIANCE", "TCS", "HDFCBANK", "HAL", "SUNPHARMA",
+            "TATAMOTORS", "ITC", "COALINDIA", "TITAN", "BAJFINANCE",
+            "NTPC", "SRF", "DLF", "BHARTIARTL", "ZOMATO"
+        ]
 
     def _screen_stocks(self, symbols: List[str], limit: int = 10) -> List[Dict]:
         """Screen stocks with strict per-stock timeouts and instant fallback catalog."""
