@@ -104,3 +104,7 @@ class FinnhubProvider(MarketDataProvider):
         except Exception as e:
             logger.debug(f"Finnhub company info error for {symbol}: {e}")
             return info
+
+    def get_chart_data(self, symbol: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+        """Fetch chart data via Finnhub or fall back to historical series."""
+        return self.get_historical_data(symbol)

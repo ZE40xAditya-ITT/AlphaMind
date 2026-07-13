@@ -81,7 +81,6 @@ def get_chart_data(
 ):
     """Fetch structured OHLCV and moving average series for Lightweight Charts."""
     try:
-        import yfinance as yf
         import pandas as pd
         import numpy as np
         from datetime import datetime, timedelta
@@ -89,14 +88,7 @@ def get_chart_data(
         clean_sym = symbol.strip().upper()
         ticker_sym = clean_sym if clean_sym.endswith(".NS") or clean_sym.endswith(".BO") or clean_sym.endswith("^") else f"{clean_sym}.NS"
 
-        import concurrent.futures
-        ticker = yf.Ticker(ticker_sym)
-        try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                future = executor.submit(lambda: ticker.history(period=period, interval=interval))
-                df = future.result(timeout=3.0)
-        except Exception:
-            df = pd.DataFrame()
+        df = market_provider.get_chart_data(ticker_sym, period=period, interval=interval)
 
         if df is None or df.empty:
             # Fallback generator for offline/missing data

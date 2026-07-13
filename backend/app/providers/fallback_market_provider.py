@@ -23,3 +23,9 @@ class FallbackMarketDataProvider(MarketDataProvider):
             if sec_info and len(sec_info) > len(info):
                 return sec_info
         return info
+
+    def get_chart_data(self, symbol: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+        df = self.primary.get_chart_data(symbol, period=period, interval=interval)
+        if df is None or df.empty:
+            df = self.secondary.get_chart_data(symbol, period=period, interval=interval)
+        return df

@@ -72,3 +72,21 @@ class YahooFinanceProvider(MarketDataProvider):
             return {}
         except Exception:
             return {}
+
+    def get_chart_data(self, symbol: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+        """Fetch chart data via yfinance with timeout encapsulation."""
+        import concurrent.futures
+        def _fetch():
+            ticker = self._fetch_ticker(symbol)
+            try:
+                hist = ticker.history(period=period, interval=interval)
+            except Exception:
+                hist = pd.DataFrame()
+            return hist
+
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(_fetch)
+                return future.result(timeout=3.5)
+        except Exception:
+            return pd.DataFrame()

@@ -17,3 +17,8 @@ class MarketDataProvider(ABC):
     def get_company_info(self, symbol: str) -> Dict[str, Any]:
         """Fetch fundamental company information and current metrics."""
         pass
+
+    @abstractmethod
+    def get_chart_data(self, symbol: str, period: str = "1y", interval: str = "1d") -> pd.DataFrame:
+        """Fetch historical chart time-series data for lightweight charts."""
+        pass
